@@ -16,18 +16,18 @@
 #' @examples
 #' \dontrun{
 #' # Basic usage
-#' stop_better("Something went wrong")
+#' stop2("Something went wrong")
 #'
 #' # With variable interpolation (if cli available)
 #' x <- 5
-#' stop_better("Expected value < 3, got {x}")
+#' stop2("Expected value < 3, got {x}")
 #'
 #' # With custom error class
-#' stop_better("Invalid input", class = "invalid_input_error")
+#' stop2("Invalid input", class = "invalid_input_error")
 #' }
 #'
 #' @export
-stop_better <- function(message,
+stop2 <- function(message,
                         ...,
                         .envir = parent.frame(),
                         class = NULL) {
