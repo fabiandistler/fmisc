@@ -1,0 +1,12 @@
+id: replace-t-with-true
+language: r
+severity: warning
+rule:
+  any:
+    - pattern: T
+    - pattern: "TRUE"
+  inside:
+    not:
+      kind: string_content
+message: Use TRUE instead of T for better code clarity and to avoid confusion with variable T
+fix: "TRUE"

@@ -1,0 +1,12 @@
+id: replace-f-with-false
+language: r
+severity: warning
+rule:
+  any:
+    - pattern: F
+    - pattern: "FALSE"
+  inside:
+    not:
+      kind: string_content
+message: Use FALSE instead of F for better code clarity and to avoid confusion with variable F
+fix: "FALSE"

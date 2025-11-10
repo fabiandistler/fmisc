@@ -1,0 +1,24 @@
+Package: fmisc
+Type: Package
+Title: Custom Linting Rules for R Code
+Version: 0.1.0
+Authors@R: person("Developer", "Name", email = "dev@example.com",
+                  role = c("aut", "cre"))
+Description: Provides custom linting rules for both lintr and flir packages.
+    This package exports custom linters for lintr and custom rules for flir,
+    enabling standardized code quality checks and automatic refactoring
+    patterns across projects.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.0
+Imports:
+    lintr (>= 3.0.0),
+    xml2
+Suggests:
+    flir,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+URL: https://github.com/fabiandistler/fmisc
+BugReports: https://github.com/fabiandistler/fmisc/issues

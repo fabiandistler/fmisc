@@ -1,0 +1,367 @@
+---
+title: "Using fmisc Custom Linting Rules"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using fmisc Custom Linting Rules}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+The `fmisc` package provides custom linting rules for both **lintr** and **flir** packages. This vignette demonstrates how to use these custom rules in your R projects.
+
+## Installation
+
+```{r eval=FALSE}
+# Install from GitHub
+remotes::install_github("fabiandistler/fmisc")
+```
+
+# Using lintr Custom Linters
+
+## Basic Usage
+
+```{r eval=FALSE}
+library(lintr)
+library(fmisc)
+
+# Lint a single file
+lint("my_script.R", linters = todo_fixme_linter())
+
+# Lint with multiple custom linters
+lint("my_script.R", linters = c(
+  todo_fixme_linter(),
+  deprecated_function_linter()
+))
+```
+
+## Integration with Project Configuration
+
+Create a `.lintr` file in your project root:
+
+```r
+linters: linters_with_defaults(
+  # Add custom linters from fmisc
+  todo_fixme_linter = fmisc::todo_fixme_linter(),
+  deprecated_function_linter = fmisc::deprecated_function_linter(),
+
+  # Adjust default linters as needed
+  line_length_linter = lintr::line_length_linter(100)
+)
+```
+
+Now you can simply run:
+
+```{r eval=FALSE}
+lintr::lint_dir()
+```
+
+## Available lintr Linters
+
+### todo_fixme_linter()
+
+Identifies TODO, FIXME, XXX, and HACK comments:
+
+```{r eval=FALSE}
+# This code will trigger the linter
+# TODO: implement this feature
+calculate_sum <- function(x, y) {
+  # FIXME: handle NA values
+  x + y
+}
+```
+
+### deprecated_function_linter()
+
+Detects deprecated functions and suggests alternatives:
+
+```{r eval=FALSE}
+# This will trigger the linter
+result <- sapply(1:10, sqrt)
+
+# Recommended instead:
+result <- vapply(1:10, sqrt, numeric(1))
+```
+
+# Using flir Custom Rules
+
+## Setup
+
+First, set up flir in your project:
+
+```{r eval=FALSE}
+library(flir)
+setup_flir()
+```
+
+This creates a `flir/` directory with a `config.yml` file.
+
+## Loading fmisc Rules
+
+Edit `flir/config.yml` to include fmisc rules:
+
+```yaml
+from-package:
+  - fmisc
+```
+
+You can also manually get the rules path:
+
+```{r eval=FALSE}
+library(fmisc)
+get_flir_rules()
+```
+
+## Running flir
+
+Check your code for issues:
+
+```{r eval=FALSE}
+# Lint all R files in current directory
+flir::lint_dir()
+
+# Lint specific files
+flir::lint_file("my_script.R")
+```
+
+Apply automatic fixes:
+
+```{r eval=FALSE}
+# Fix all R files in current directory
+flir::fix_dir()
+
+# Fix specific files
+flir::fix_file("my_script.R")
+```
+
+## Available flir Rules
+
+### replace-t-with-true
+
+Replaces abbreviated `T` with full `TRUE`:
+
+**Before:**
+```r
+is_valid <- T
+```
+
+**After:**
+```r
+is_valid <- TRUE
+```
+
+### replace-f-with-false
+
+Replaces abbreviated `F` with full `FALSE`:
+
+**Before:**
+```r
+is_valid <- F
+```
+
+**After:**
+```r
+is_valid <- FALSE
+```
+
+### deprecated-sample-n
+
+Updates dplyr's deprecated `sample_n()`:
+
+**Before:**
+```r
+sampled <- sample_n(mtcars, 10)
+```
+
+**After:**
+```r
+sampled <- slice_sample(mtcars, n = 10)
+```
+
+### deprecated-sample-frac
+
+Updates dplyr's deprecated `sample_frac()`:
+
+**Before:**
+```r
+sampled <- sample_frac(mtcars, 0.1)
+```
+
+**After:**
+```r
+sampled <- slice_sample(mtcars, prop = 0.1)
+```
+
+### use-seq-along
+
+Replaces unsafe `1:length(x)` with `seq_along(x)`:
+
+**Before:**
+```r
+for (i in 1:length(x)) {
+  print(x[i])
+}
+```
+
+**After:**
+```r
+for (i in seq_along(x)) {
+  print(x[i])
+}
+```
+
+This is safer because `seq_along()` handles empty vectors correctly:
+
+```{r eval=FALSE}
+x <- numeric(0)
+
+# Unsafe: will iterate once with i = 1, then i = 0
+for (i in 1:length(x)) {
+  print(i)  # Prints: 1, 0
+}
+
+# Safe: will not iterate at all
+for (i in seq_along(x)) {
+  print(i)  # Nothing printed
+}
+```
+
+# Creating Custom Rules
+
+## Creating lintr Linters
+
+Create a new function in your package or project:
+
+```{r eval=FALSE}
+my_custom_linter <- function() {
+  xpath <- "//SYMBOL[text() = 'my_deprecated_function']"
+
+  lintr::make_linter_from_xpath(
+    xpath = xpath,
+    lint_message = "Use new_function() instead of my_deprecated_function()",
+    type = "warning"
+  )
+}
+```
+
+For more complex linters:
+
+```{r eval=FALSE}
+my_advanced_linter <- function() {
+  lintr::Linter(function(source_expression) {
+    xml <- source_expression$xml_parsed_content
+
+    # Find problematic patterns
+    bad_expr <- lintr::xml_find_all(xml, "//YOUR_XPATH")
+
+    if (length(bad_expr) == 0L) {
+      return(list())
+    }
+
+    # Create lints
+    lintr::xml_nodes_to_lints(
+      bad_expr,
+      source_expression = source_expression,
+      lint_message = "Your message here",
+      type = "warning"
+    )
+  })
+}
+```
+
+## Creating flir Rules
+
+Create a YAML file (e.g., `my-rule.yml`):
+
+```yaml
+id: my-custom-rule
+language: r
+severity: warning
+rule:
+  pattern: old_function($ARG1, $ARG2)
+message: "Use new_function() instead of old_function()"
+fix: new_function(~~ARG1, ~~ARG2)
+```
+
+### Rule Structure
+
+- `id`: Unique identifier for the rule
+- `language`: Programming language (always "r" for R)
+- `severity`: One of "warning", "error", or "info"
+- `rule`: Pattern matching specification
+  - `pattern`: ast-grep pattern to match
+  - `any`: List of alternative patterns
+  - `inside`: Context where pattern should match
+- `message`: Description shown to users
+- `fix`: (Optional) Automatic replacement
+
+### Using Metavariables
+
+Metavariables capture code patterns:
+
+- In patterns: Use `$VAR` syntax
+- In messages/fixes: Use `~~VAR` syntax
+
+Example with multiple patterns:
+
+```yaml
+id: modernize-apply
+language: r
+severity: warning
+rule:
+  any:
+    - pattern: sapply($DATA, $FUN)
+    - pattern: sapply($DATA, $FUN, simplify = $SIMP)
+message: "Consider using vapply() for type-stable results"
+```
+
+# Best Practices
+
+## When to Use lintr vs flir
+
+**Use lintr when:**
+- You want to detect issues but not automatically fix them
+- The issue requires manual intervention
+- You need complex pattern matching beyond simple syntax
+- You're checking code style or conventions
+
+**Use flir when:**
+- You have a clear automatic fix available
+- You're refactoring deprecated functions
+- You want to enforce consistent syntax (e.g., `TRUE` vs `T`)
+- You're migrating code between package versions
+
+## Combining Both
+
+Use both tools in your workflow:
+
+```{r eval=FALSE}
+# 1. Check for issues with lintr
+lintr::lint_dir()
+
+# 2. Review and address lints manually
+
+# 3. Apply automatic fixes with flir
+flir::fix_dir()
+
+# 4. Run lintr again to verify
+lintr::lint_dir()
+```
+
+# Conclusion
+
+The `fmisc` package provides a solid foundation for custom linting rules in R. By combining lintr and flir, you can maintain high code quality standards across your projects.
+
+For more information:
+
+- [lintr documentation](https://lintr.r-lib.org/)
+- [flir documentation](https://flir.etiennebacher.com/)
+- [fmisc GitHub repository](https://github.com/fabiandistler/fmisc)
