@@ -253,28 +253,28 @@ smart_parallel_apply <- function(X, FUN, n_cores = NULL, ..., setup = NULL) {
 print_parallel_info <- function() {
   info <- detect_parallel_backend()
 
-  cat("=== Parallel Computing Environment ===\n")
-  cat(sprintf("OS Type: %s\n", info$os_type))
-  cat(sprintf("Available Cores: %d\n", info$available_cores))
-  cat(sprintf("Recommended Backend: %s\n", info$backend))
-  cat("\nAvailable Packages:\n")
+  message("=== Parallel Computing Environment ===")
+  message(sprintf("OS Type: %s", info$os_type))
+  message(sprintf("Available Cores: %d", info$available_cores))
+  message(sprintf("Recommended Backend: %s", info$backend))
+  message("\nAvailable Packages:")
 
   for (pkg in names(info$packages)) {
     status <- if (info$packages[[pkg]]) "✓" else "✗"
-    cat(sprintf("  %s %s\n", status, pkg))
+    message(sprintf("  %s %s", status, pkg))
   }
 
-  cat("\nBackend Priority:\n")
+  message("\nBackend Priority:")
   if (info$os_type == "unix") {
-    cat("  1. furrr (future-based, most flexible)\n")
-    cat("  2. doMC (fork-based, fast for Unix)\n")
-    cat("  3. mclapply (fork-based, built-in)\n")
-    cat("  4. doParallel (socket-based, compatible)\n")
+    message("  1. furrr (future-based, most flexible)")
+    message("  2. doMC (fork-based, fast for Unix)")
+    message("  3. mclapply (fork-based, built-in)")
+    message("  4. doParallel (socket-based, compatible)")
   } else {
-    cat("  1. furrr (future-based, most flexible)\n")
-    cat("  2. doParallel (socket-based, Windows compatible)\n")
-    cat("  3. parLapply (socket-based, built-in)\n")
-    cat("  4. foreach (sequential fallback)\n")
+    message("  1. furrr (future-based, most flexible)")
+    message("  2. doParallel (socket-based, Windows compatible)")
+    message("  3. parLapply (socket-based, built-in)")
+    message("  4. foreach (sequential fallback)")
   }
 
   invisible(info)

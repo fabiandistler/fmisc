@@ -8,24 +8,24 @@
 # Source the main file
 source("smart_parallel.R")
 
-cat("\n=== Smart Parallel Framework Examples ===\n\n")
+message("\n=== Smart Parallel Framework Examples ===\n")
 
 # Example 1: Check environment
-cat("Example 1: Checking parallel environment\n")
-cat("==========================================\n")
+message("Example 1: Checking parallel environment")
+message("==========================================")
 print_parallel_info()
-cat("\n\n")
+message("\n")
 
 # Example 2: Simple parallel computation
-cat("Example 2: Simple parallel computation\n")
-cat("========================================\n")
-cat("Computing squares of 1:20 in parallel...\n")
+message("Example 2: Simple parallel computation")
+message("========================================")
+message("Computing squares of 1:20 in parallel...")
 result <- smart_parallel_apply(1:20, function(x) x^2, n_cores = 2)
-cat("Results:", unlist(result[1:10]), "...\n\n")
+message(sprintf("Results: %s ...\n", paste(unlist(result[1:10]), collapse = " ")))
 
 # Example 3: Parallel computation with timing
-cat("Example 3: Performance comparison\n")
-cat("==================================\n")
+message("Example 3: Performance comparison")
+message("==================================")
 
 test_function <- function(x) {
   # Simulate some work
@@ -34,42 +34,42 @@ test_function <- function(x) {
 }
 
 # Sequential
-cat("Sequential execution: ")
+message("Sequential execution: ", appendLF = FALSE)
 start_time <- Sys.time()
 result_seq <- lapply(1:100, test_function)
 seq_time <- as.numeric(difftime(Sys.time(), start_time, units = "secs"))
-cat(sprintf("%.3f seconds\n", seq_time))
+message(sprintf("%.3f seconds", seq_time))
 
 # Parallel
-cat("Parallel execution:   ")
+message("Parallel execution:   ", appendLF = FALSE)
 start_time <- Sys.time()
 result_par <- smart_parallel_apply(1:100, test_function, n_cores = 2)
 par_time <- as.numeric(difftime(Sys.time(), start_time, units = "secs"))
-cat(sprintf("%.3f seconds\n", par_time))
+message(sprintf("%.3f seconds", par_time))
 
 speedup <- seq_time / par_time
-cat(sprintf("Speedup: %.2fx\n\n", speedup))
+message(sprintf("Speedup: %.2fx\n", speedup))
 
 # Example 4: Reusing setup
-cat("Example 4: Reusing setup for multiple operations\n")
-cat("==================================================\n")
+message("Example 4: Reusing setup for multiple operations")
+message("==================================================")
 setup <- setup_parallel(n_cores = 2, verbose = TRUE)
 
-cat("Operation 1: Square roots\n")
+message("Operation 1: Square roots")
 result1 <- smart_parallel_apply(1:50, sqrt, setup = setup)
 
-cat("Operation 2: Natural logarithms\n")
+message("Operation 2: Natural logarithms")
 result2 <- smart_parallel_apply(1:50, log, setup = setup)
 
-cat("Operation 3: Cubes\n")
+message("Operation 3: Cubes")
 result3 <- smart_parallel_apply(1:50, function(x) x^3, setup = setup)
 
 stop_parallel(setup)
-cat("Cleanup complete\n\n")
+message("Cleanup complete\n")
 
 # Example 5: Custom function with multiple arguments
-cat("Example 5: Custom function with arguments\n")
-cat("==========================================\n")
+message("Example 5: Custom function with arguments")
+message("==========================================")
 
 transform_data <- function(x, scale, shift) {
   (x * scale) + shift
@@ -83,12 +83,12 @@ result <- smart_parallel_apply(
   n_cores = 2
 )
 
-cat("Transform f(x) = 2.5x + 100 for x in 1:5:\n")
-cat("  Results:", unlist(result[1:5]), "...\n\n")
+message("Transform f(x) = 2.5x + 100 for x in 1:5:")
+message(sprintf("  Results: %s ...\n", paste(unlist(result[1:5]), collapse = " ")))
 
 # Example 6: Error handling demonstration
-cat("Example 6: Error handling\n")
-cat("=========================\n")
+message("Example 6: Error handling")
+message("=========================")
 
 # Function that might fail
 risky_function <- function(x) {
@@ -101,10 +101,10 @@ risky_function <- function(x) {
   return(x * 2)
 }
 
-cat("Processing with potential warnings...\n")
+message("Processing with potential warnings...")
 result <- suppressWarnings(
   smart_parallel_apply(1:10, risky_function, n_cores = 2)
 )
-cat("Successfully processed:", length(result), "items\n\n")
+message(sprintf("Successfully processed: %d items\n", length(result)))
 
-cat("=== All examples completed successfully! ===\n")
+message("=== All examples completed successfully! ===")
