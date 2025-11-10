@@ -1,9 +1,13 @@
 # Makefile for R Package Development
 # =================================
+# h/t to @jimhester and @yihui for this parse block:
+# https://github.com/yihui/knitr/blob/dc5ead7bcfc0ebd2789fe99c527c7d91afb3de4a/Makefile#L1-L4
+# Note the portability change as suggested in the manual:
+# https://cran.r-project.org/doc/manuals/r-release/R-exts.html#Writing-portable-packages
 
-# Package name (update this to match your package)
-PKG_NAME := $(shell grep "^Package:" DESCRIPTION 2>/dev/null | sed 's/Package: //' || echo "fmisc")
-PKG_VERSION := $(shell grep "^Version:" DESCRIPTION 2>/dev/null | sed 's/Version: //' || echo "0.0.1")
+# Parse package name and version from DESCRIPTION file
+PKGNAME = `sed -n "s/Package: *\([^ ]*\)/\1/p" DESCRIPTION`
+PKGVERS = `sed -n "s/Version: *\([^ ]*\)/\1/p" DESCRIPTION`
 
 # R command
 R := R --quiet --no-save --no-restore
@@ -53,19 +57,19 @@ document:
 
 # Build source package
 build: document
-	@echo "Building package $(PKG_NAME)..."
+	@echo "Building package $(PKGNAME)..."
 	$(R) CMD build $(BUILD_DIR)
 
 # Install package locally
 install: document
-	@echo "Installing package $(PKG_NAME)..."
+	@echo "Installing package $(PKGNAME)..."
 	$(R) -e "devtools::install()"
 
 # Run R CMD check
 check: document
 	@echo "Running R CMD check..."
 	$(R) CMD build $(BUILD_DIR)
-	$(R) CMD check --as-cran $(PKG_NAME)_$(PKG_VERSION).tar.gz
+	$(R) CMD check --as-cran $(PKGNAME)_$(PKGVERS).tar.gz
 
 # Run quick check (without building vignettes)
 check-quick: document
@@ -110,14 +114,14 @@ load:
 
 # Create a new release
 release: clean all
-	@echo "Package $(PKG_NAME) $(PKG_VERSION) ready for release"
+	@echo "Package $(PKGNAME) $(PKGVERS) ready for release"
 	@echo "Run 'devtools::release()' in R to submit to CRAN"
 
 # Clean up generated files
 clean:
 	@echo "Cleaning up..."
-	@rm -rf $(PKG_NAME).Rcheck/
-	@rm -f $(PKG_NAME)_*.tar.gz
+	@rm -rf $(PKGNAME).Rcheck/
+	@rm -f $(PKGNAME)_*.tar.gz
 	@rm -rf man/*.Rd
 	@rm -rf docs/
 	@rm -rf src/*.o src/*.so src/*.dll
@@ -128,7 +132,7 @@ clean:
 # Create package structure (for new packages)
 init:
 	@echo "Initializing package structure..."
-	$(R) -e "usethis::create_package('$(PKG_NAME)', rstudio = TRUE, open = FALSE)"
+	$(R) -e "usethis::create_package('$(PKGNAME)', rstudio = TRUE, open = FALSE)"
 	$(R) -e "usethis::use_testthat()"
 	$(R) -e "usethis::use_roxygen_md()"
 	$(R) -e "usethis::use_package_doc()"
