@@ -7,16 +7,19 @@ Description: Provides utility functions for R package development.
 License: MIT + file LICENSE
 URL: https://github.com/fabiandistler/fmisc
 BugReports: https://github.com/fabiandistler/fmisc/issues
-Depends: 
+Depends:
     R (>= 3.5.0)
 Imports:
     cli,
     data.table,
     foreach,
+    lintr (>= 3.0.0),
     Rcpp,
     usethis,
-    utils
+    utils,
+    xml2
 Suggests:
+    flir,
     rlang,
     glue,
     future,
@@ -25,7 +28,7 @@ Suggests:
     parallel,
     doMC,
     testthat (>= 3.0.0)
-LinkingTo: 
+LinkingTo:
     Rcpp
 Config/testthat/edition: 3
 Encoding: UTF-8
