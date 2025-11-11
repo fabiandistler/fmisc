@@ -6,43 +6,11 @@
 #' documentation, code quality, and more.
 #'
 #' @details
-#' The Makefile includes the following categories of targets:
-#'
-#' **Package Management:**
-#' * `make install` - Install the package locally
-#' * `make build` - Build source tarball
-#' * `make check` - Run R CMD check (CRAN-style)
-#' * `make check-quick` - Quick check without vignettes
-#'
-#' **Testing & Quality:**
-#' * `make test` - Run tests with testthat
-#' * `make coverage` - Generate test coverage report
-#' * `make lint` - Lint code with lintr
-#' * `make style` - Auto-format code with styler
-#' * `make spellcheck` - Run spell check
-#'
-#' **Documentation:**
-#' * `make document` - Generate documentation with roxygen2
-#' * `make site` - Build pkgdown website
-#' * `make site-preview` - Build and open pkgdown website
-#' * `make readme` - Render README from Rmd
-#'
-#' **Development Workflow:**
-#' * `make deps` - Install package dependencies
-#' * `make deps-dev` - Install development dependencies
-#' * `make load` - Load package for interactive use
-#' * `make clean` - Remove generated files
-#'
-#' **Setup Helpers:**
-#' * `make init` - Initialize package structure
-#' * `make setup-ci` - Add GitHub Actions CI/CD
-#'
-#' **Convenience:**
-#' * `make all` - document + build + check (default)
-#' * `make help` - Show all available targets
-#'
-#' The Makefile uses portable sed parsing for package name and version
-#' extraction, following CRAN guidelines for portable package development.
+#' Run `make help` to see available targets
+#' Quick start:
+#' `make all` - document, build, and check package
+#' `make test` - run tests
+#' `make deps-dev` - install development dependencies
 #'
 #' @param open Whether to open the newly created Makefile for editing.
 #'   Default is `TRUE` in interactive sessions.
@@ -59,7 +27,7 @@
 #' # Create without opening
 #' use_make2(open = FALSE)
 #' }
-use_make2 <- function(open = rlang::is_interactive()) {
+use_make2 <- function(open = interactive()) {
   # Check if we're in a package project
   if (!file.exists("DESCRIPTION")) {
     stop(

@@ -4,7 +4,7 @@
 \alias{use_make2}
 \title{Add a comprehensive Makefile for R package development}
 \usage{
-use_make2(open = rlang::is_interactive())
+use_make2(open = interactive())
 }
 \arguments{
 \item{open}{Whether to open the newly created Makefile for editing.
@@ -19,55 +19,11 @@ for common R package development tasks including building, checking, testing,
 documentation, code quality, and more.
 }
 \details{
-The Makefile includes the following categories of targets:
-
-\strong{Package Management:}
-\itemize{
-\item \code{make install} - Install the package locally
-\item \code{make build} - Build source tarball
-\item \code{make check} - Run R CMD check (CRAN-style)
-\item \code{make check-quick} - Quick check without vignettes
-}
-
-\strong{Testing & Quality:}
-\itemize{
-\item \code{make test} - Run tests with testthat
-\item \code{make coverage} - Generate test coverage report
-\item \code{make lint} - Lint code with lintr
-\item \code{make style} - Auto-format code with styler
-\item \code{make spellcheck} - Run spell check
-}
-
-\strong{Documentation:}
-\itemize{
-\item \code{make document} - Generate documentation with roxygen2
-\item \code{make site} - Build pkgdown website
-\item \code{make site-preview} - Build and open pkgdown website
-\item \code{make readme} - Render README from Rmd
-}
-
-\strong{Development Workflow:}
-\itemize{
-\item \code{make deps} - Install package dependencies
-\item \code{make deps-dev} - Install development dependencies
-\item \code{make load} - Load package for interactive use
-\item \code{make clean} - Remove generated files
-}
-
-\strong{Setup Helpers:}
-\itemize{
-\item \code{make init} - Initialize package structure
-\item \code{make setup-ci} - Add GitHub Actions CI/CD
-}
-
-\strong{Convenience:}
-\itemize{
-\item \code{make all} - document + build + check (default)
-\item \code{make help} - Show all available targets
-}
-
-The Makefile uses portable sed parsing for package name and version
-extraction, following CRAN guidelines for portable package development.
+Run \verb{make help} to see available targets
+Quick start:
+\verb{make all} - document, build, and check package
+\verb{make test} - run tests
+\verb{make deps-dev} - install development dependencies
 }
 \examples{
 \dontrun{
