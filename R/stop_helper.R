@@ -5,6 +5,18 @@
 #' `rlang::abort()` for better error handling, and ultimately uses base
 #' `stop()` if neither is available.
 #'
+#' @details
+#' This function implements a fallback mechanism for error handling:
+#' \itemize{
+#'   \item{If \pkg{cli} is available, uses \code{\link[cli]{cli_abort}} for rich,
+#'     formatted error messages with color and styling support.}
+#'   \item{If \pkg{cli} is not available but \pkg{rlang} is, uses
+#'     \code{\link[rlang]{abort}} for structured error objects with better
+#'     error handling capabilities.}
+#'   \item{If neither package is available, falls back to base R's \code{\link[base]{stop}}
+#'     with \code{call. = FALSE} to follow tidyverse style conventions.}
+#' }
+#'
 #' @param message An error message string. Can include cli-style formatting
 #'   like `{variable}` if cli is available, or glue-style formatting for rlang.
 #' @param ... Additional arguments passed to the error function.
@@ -13,8 +25,10 @@
 #'
 #' @return This function does not return; it stops execution with an error.
 #'
+#' @seealso \code{\link[cli]{cli_abort}}, \code{\link[rlang]{abort}}, \code{\link[base]{stop}}
+#'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' # Basic usage
 #' stop2("Something went wrong")
 #'
@@ -28,10 +42,9 @@
 #'
 #' @export
 stop2 <- function(message,
-                        ...,
-                        .envir = parent.frame(),
-                        class = NULL) {
-  # Try cli::cli_abort first (best error messages with formatting)
+                  ...,
+                  .envir = parent.frame(),
+                  class = NULL) {
   if (requireNamespace("cli", quietly = TRUE)) {
     cli::cli_abort(
       message = message,
@@ -41,7 +54,6 @@ stop2 <- function(message,
     )
   }
 
-  # Fall back to rlang::abort (better than base stop)
   if (requireNamespace("rlang", quietly = TRUE)) {
     rlang::abort(
       message = message,
@@ -50,7 +62,5 @@ stop2 <- function(message,
     )
   }
 
-  # Last resort: base R stop
-  # Use call. = FALSE to match tidyverse style (no call in error message)
   stop(message, call. = FALSE, ...)
 }
