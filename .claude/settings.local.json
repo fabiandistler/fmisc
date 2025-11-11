@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(gh pr view:*)",
-      "Bash(R CMD check:*)"
+      "Bash(R CMD check:*)",
+      "mcp__sequential-thinking__sequentialthinking",
+      "mcp__r-btw__btw_tool_git_status",
+      "mcp__r-btw__btw_tool_git_diff",
+      "mcp__r-btw__btw_tool_git_log"
     ],
     "deny": [],
     "ask": []
