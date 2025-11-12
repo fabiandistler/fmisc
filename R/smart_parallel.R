@@ -3,18 +3,25 @@
 #' This module provides intelligent selection and setup of R parallelization
 #' frameworks based on OS capabilities and available packages.
 #'
-#' @author Auto-generated
-#' @date 2025-11-10
+#' @family parallel
+#' @keywords internal
 
 #' Detect the best parallelization backend for the current environment
 #'
 #' @return A list containing backend information:
-#'   \item{backend}{Character string identifying the backend (mclapply, parLapply, doParallel, doMC, future, foreach, sequential)}
+#'   \item{backend}{Character string identifying the backend. One of:
+#'     "mclapply", "parLapply", "doParallel", "doMC", "future",
+#'     "foreach", or "sequential"}
 #'   \item{os_type}{Operating system type (unix or windows)}
 #'   \item{available_cores}{Number of available CPU cores}
 #'   \item{packages}{List of available parallel packages}
 #'
+#' @seealso [setup_parallel()], [smart_parallel_apply()]
+#' @family parallel
+#' @export
+#'
 #' @examples
+#' # Detect available backend
 #' info <- detect_parallel_backend()
 #' print(info$backend)
 #' print(info$available_cores)
@@ -22,8 +29,12 @@ detect_parallel_backend <- function() {
   # Detect OS type
   os_type <- .Platform$OS.type
 
-  # Get number of available cores
+  # Get number of available cores (handle NA case)
   available_cores <- parallel::detectCores(logical = TRUE)
+  if (is.na(available_cores)) {
+    available_cores <- 1  # Safe fallback
+    warning("Could not detect CPU cores, defaulting to 1")
+  }
 
   # Check for available packages
   packages <- list(
@@ -73,27 +84,56 @@ detect_parallel_backend <- function() {
 
 #' Setup parallel backend with automatic configuration
 #'
-#' @param n_cores Number of cores to use. Default is NULL (auto-detect and use all but one)
-#' @param backend Force a specific backend. Default is NULL (auto-detect)
+#' @param n_cores Number of cores to use. Default is NULL (auto-detect and use
+#'   all but one core to keep system responsive)
+#' @param backend Force a specific backend. Default is NULL (auto-detect).
+#'   Options: "mclapply", "parLapply", "doParallel", "doMC", "furrr",
+#'   "foreach", "sequential"
 #' @param verbose Print setup information. Default is TRUE
 #'
-#' @return A list with cluster object (if applicable) and backend information
+#' @return A list with cluster object (if applicable) and backend information:
+#'   \item{cluster}{Cluster object (or NULL if not applicable)}
+#'   \item{backend}{Character string of selected backend}
+#'   \item{n_cores}{Number of cores configured}
+#'   \item{info}{Backend detection information}
+#'
+#' @seealso [detect_parallel_backend()], [stop_parallel()],
+#'   [smart_parallel_apply()]
+#' @family parallel
+#' @export
 #'
 #' @examples
+#' \donttest{
 #' # Auto-detect and setup
 #' setup <- setup_parallel()
+#' stop_parallel(setup)
 #'
 #' # Use specific number of cores
-#' setup <- setup_parallel(n_cores = 4)
+#' setup <- setup_parallel(n_cores = 2)
+#' stop_parallel(setup)
 #'
 #' # Force specific backend
 #' setup <- setup_parallel(backend = "doParallel")
+#' stop_parallel(setup)
+#' }
 setup_parallel <- function(n_cores = NULL, backend = NULL, verbose = TRUE) {
   info <- detect_parallel_backend()
 
+  # Validate n_cores parameter
+  if (!is.null(n_cores)) {
+    if (!is.numeric(n_cores) || length(n_cores) != 1 || n_cores < 1) {
+      stop(
+        "n_cores must be a positive integer, got: ",
+        paste(n_cores, collapse = ", "),
+        call. = FALSE
+      )
+    }
+    n_cores <- as.integer(n_cores)
+  }
+
   # Determine number of cores to use
   if (is.null(n_cores)) {
-    # Use all cores minus 1 to keep system responsive
+    # Leave one core free for system responsiveness
     n_cores <- max(1, info$available_cores - 1)
   } else {
     n_cores <- min(n_cores, info$available_cores)
@@ -159,12 +199,18 @@ setup_parallel <- function(n_cores = NULL, backend = NULL, verbose = TRUE) {
 
 #' Stop parallel backend and clean up resources
 #'
-#' @param setup The setup object returned by setup_parallel()
+#' @param setup The setup object returned by [setup_parallel()]
+#'
+#' @seealso [setup_parallel()], [smart_parallel_apply()]
+#' @family parallel
+#' @export
 #'
 #' @examples
-#' setup <- setup_parallel()
+#' \donttest{
+#' setup <- setup_parallel(n_cores = 2)
 #' # ... do parallel work ...
 #' stop_parallel(setup)
+#' }
 stop_parallel <- function(setup) {
   if (!is.null(setup$cluster)) {
     parallel::stopCluster(setup$cluster)
@@ -181,28 +227,37 @@ stop_parallel <- function(setup) {
 #' Universal parallel apply function
 #'
 #' Applies a function to elements of a vector/list using the best available
-#' parallel backend automatically.
+#' parallel backend automatically. This function automatically detects the best
+#' parallelization method for your system and applies FUN to each element of X.
 #'
 #' @param X A vector or list to iterate over
 #' @param FUN Function to apply to each element
-#' @param n_cores Number of cores to use (NULL for auto)
+#' @param n_cores Number of cores to use (NULL for auto-detection)
 #' @param ... Additional arguments passed to FUN
-#' @param setup Optional pre-configured setup object from setup_parallel()
+#' @param setup Optional pre-configured setup object from [setup_parallel()].
+#'   If provided, n_cores is ignored. Reusing setup is more efficient for
+#'   multiple operations.
 #'
 #' @return A list of results
+#'
+#' @seealso [setup_parallel()], [detect_parallel_backend()]
+#' @family parallel
+#' @export
 #'
 #' @examples
 #' # Simple parallel computation
 #' result <- smart_parallel_apply(1:10, function(x) x^2)
 #'
+#' \donttest{
 #' # With additional arguments
 #' result <- smart_parallel_apply(1:10, function(x, p) x^p, p = 3)
 #'
-#' # Reusing setup for multiple operations
-#' setup <- setup_parallel(n_cores = 4)
+#' # Reusing setup for multiple operations (more efficient)
+#' setup <- setup_parallel(n_cores = 2)
 #' result1 <- smart_parallel_apply(1:100, sqrt, setup = setup)
 #' result2 <- smart_parallel_apply(1:100, log, setup = setup)
 #' stop_parallel(setup)
+#' }
 smart_parallel_apply <- function(X, FUN, n_cores = NULL, ..., setup = NULL) {
   # Create setup if not provided
   cleanup <- FALSE
@@ -247,6 +302,15 @@ smart_parallel_apply <- function(X, FUN, n_cores = NULL, ..., setup = NULL) {
 
 
 #' Print parallel backend information
+#'
+#' Displays detailed information about your parallel computing environment,
+#' including available CPU cores, recommended backend, and installed packages.
+#'
+#' @return Invisibly returns the backend detection information
+#'
+#' @seealso [detect_parallel_backend()]
+#' @family parallel
+#' @export
 #'
 #' @examples
 #' print_parallel_info()
