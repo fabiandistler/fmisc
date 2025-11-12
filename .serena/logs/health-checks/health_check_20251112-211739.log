@@ -40,3 +40,22 @@ INFO  2025-11-12 21:17:47,542 serena.agent:stop:367 - Language server initializa
 INFO  2025-11-12 21:17:47,542 serena.task_executor:stop:367 - Task-1:init_language_server_manager completed in 7.684 seconds
 INFO  2025-11-12 21:17:47,543 serena.task_executor:_process_task_queue:123 - Starting execution of Task-2:<lambda>
 INFO  2025-11-12 21:17:47,544 serena.task_executor:start:360 - Task-2:<lambda> starting ...
+ERROR 2025-11-12 21:20:28,488 sensai.util.logging:__exit__:410 - Exception within FileLoggerContext
+Traceback (most recent call last):
+  File "/home/fabian/.cache/uv/archive-v0/SFOnDADIMYqazVHU6eUT_/lib/python3.11/site-packages/serena/cli.py", line 611, in health_check
+    overview_result = agent.execute_task(lambda: overview_tool.apply(target_file))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fabian/.cache/uv/archive-v0/SFOnDADIMYqazVHU6eUT_/lib/python3.11/site-packages/serena/agent.py", line 410, in execute_task
+    return self._task_executor.execute_task(task, name=name, logged=logged, timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fabian/.cache/uv/archive-v0/SFOnDADIMYqazVHU6eUT_/lib/python3.11/site-packages/serena/task_executor.py", line 209, in execute_task
+    return task_obj.result()
+           ^^^^^^^^^^^^^^^^^
+  File "/home/fabian/.cache/uv/archive-v0/SFOnDADIMYqazVHU6eUT_/lib/python3.11/site-packages/serena/task_executor.py", line 85, in result
+    return self.future.result(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fabian/.local/share/uv/python/cpython-3.11.13-linux-x86_64-gnu/lib/python3.11/concurrent/futures/_base.py", line 451, in result
+    self._condition.wait(timeout)
+  File "/home/fabian/.local/share/uv/python/cpython-3.11.13-linux-x86_64-gnu/lib/python3.11/threading.py", line 327, in wait
+    waiter.acquire()
+KeyboardInterrupt
