@@ -4,12 +4,12 @@
 \name{fmisc-package}
 \alias{fmisc}
 \alias{fmisc-package}
-\title{fmisc: Miscellaneous R Package Development Utilities}
+\title{fmisc: Miscellaneous R Utilities}
 \description{
-Provides utility functions for R package development, including a comprehensive Makefile template with targets for building, checking, testing, documentation, and code quality tasks.
+Provides utility functions for R development including chunking algorithms for RAM management and package development utilities. The chunking functionality manages RAM usage by writing chunks of data to disk, allowing processing of large datasets that don't fit in memory. The package development utilities include Makefile templates, error handling helpers, and workflow tools.
 }
 \author{
-\strong{Maintainer}: First Last \email{first.last@example.com}
+\strong{Maintainer}: Fabian Distler \email{fabian.distler@example.com}
 
 }
 \keyword{internal}
