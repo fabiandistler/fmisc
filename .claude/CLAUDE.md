@@ -2,11 +2,6 @@
 
 - [rule] All text in Code, Comments, README should be in english
 
-# Python
-
-- [rule] Use uv for python package development
-- [rule] Use ruff for python formatting and linting
-
 # R
 
 - [rule] Use message(), or warning() for console output, not print() and cat()
@@ -22,6 +17,7 @@
 - [rule] Always connect issues with PRs.
 - [rule] Always run the test suite before pushing a PR.
 - [rule] Always run available checks, linters, stylers, and formatters before pushing a PR.
+- [rule] use context7 mcp for current package documentation.
 
 ## Code comments
 Do not add new code comments when editing files.
