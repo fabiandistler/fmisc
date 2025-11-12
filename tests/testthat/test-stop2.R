@@ -74,10 +74,6 @@ test_that("simple_glue() handles expressions", {
   expect_equal(result, "Double: 20")
 })
 
-# test_that("simple_glue() fails gracefully on invalid expressions", {
-#   result <- simple_glue("Value: {nonexistent_var}")
-#   expect_equal(result, "Value: {nonexistent_var}")
-# })
 
 test_that("simple_glue() respects .envir parameter", {
   x <- "outer"
@@ -109,7 +105,10 @@ test_that("stop2() handles multiple interpolations", {
 
 test_that("stop2() handles expression interpolation", {
   df <- data.frame(a = 1:3)
-  expect_error(stop2("Expected 5 rows, got {nrow(df)}"), "Expected 5 rows, got 3")
+  expect_error(
+    stop2("Expected 5 rows, got {nrow(df)}"),
+    "Expected 5 rows, got 3"
+  )
 })
 
 test_that("stop2() handles edge cases in interpolation", {

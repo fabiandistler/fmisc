@@ -28,14 +28,15 @@ Tries to use \code{cli::cli_abort()} for rich formatting, falls back to
 \details{
 This function implements a fallback mechanism for error handling:
 \itemize{
-\item{If \pkg{cli} is available, uses \code{\link[cli]{cli_abort}} for rich,
-formatted error messages with color, styling support, and native string
-interpolation.}
+\item{If \pkg{cli} is available, uses \code{\link[cli]{cli_abort}}
+for rich, formatted error messages with color, styling support, and
+native string interpolation.}
 \item{If \pkg{cli} is not available but \pkg{rlang} is, uses
 \code{\link[rlang]{abort}} for structured error objects with better
 error handling capabilities.}
-\item{If neither package is available, falls back to base R's \code{\link[base]{stop}}
-with \code{call. = FALSE} to follow tidyverse style conventions.}
+\item{If neither package is available, falls back to base R's
+\code{\link[base]{stop}} with \code{call. = FALSE} to follow tidyverse
+style conventions.}
 }
 
 String interpolation with \code{{variable}} syntax is always supported:
@@ -51,7 +52,7 @@ or cli's special formatting syntax.}
 }
 }
 \examples{
-\donttest{
+\dontrun{
 # Basic usage
 stop2("Something went wrong")
 
@@ -74,5 +75,6 @@ stop2("Invalid input", class = "invalid_input_error")
 
 }
 \seealso{
-\code{\link[cli]{cli_abort}}, \code{\link[rlang]{abort}}, \code{\link[base]{stop}}
+\code{\link[cli]{cli_abort}}, \code{\link[rlang]{abort}},
+\code{\link[base]{stop}}
 }
