@@ -1,11 +1,13 @@
 Package: fmisc
-Title: Chunking Algorithm for RAM Management
+Title: Miscellaneous R Utilities
 Version: 0.1.0
 Authors@R:
     person("Fabian", "Distler", , "fabian.distler@example.com", role = c("aut", "cre"))
-Description: Provides chunking algorithms that manage RAM usage by writing chunks
-    of data to disk. Allows processing large datasets that don't fit in memory by
-    automatically splitting data into chunks and managing temporary disk storage.
+Description: Provides utility functions for R development including chunking
+    algorithms for RAM management and package development utilities. The chunking
+    functionality manages RAM usage by writing chunks of data to disk, allowing
+    processing of large datasets that don't fit in memory. The package development
+    utilities include Makefile templates, error handling helpers, and workflow tools.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -14,8 +16,12 @@ Depends: R (>= 3.5.0)
 LinkingTo: Rcpp
 Imports:
     Rcpp (>= 1.0.0),
-    tools,
-    utils
+    utils,
+    cli,
+    rlang
 SystemRequirements: C++11
 Suggests:
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    usethis,
+    glue
+Config/testthat/edition: 3
