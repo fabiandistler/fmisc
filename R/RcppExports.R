@@ -69,3 +69,4 @@ ram_threshold_exceeded <- function(max_ram_mb) {
 get_system_info <- function() {
     .Call(`_fmisc_get_system_info`)
 }
+

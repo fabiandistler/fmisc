@@ -1,16 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(gh pr view:*)",
-      "Bash(R CMD check:*)",
-      "mcp__sequential-thinking__sequentialthinking",
-      "mcp__r-btw__btw_tool_git_status",
-      "mcp__r-btw__btw_tool_git_diff",
-      "mcp__r-btw__btw_tool_git_log",
-      "mcp__serena__get_current_config",
-      "mcp__r-btw__btw_tool_files_list_files",
-      "mcp__r-btw__btw_tool_files_read_text_file",
-      "Bash(Rscript -e \"devtools::test()\":*)"
+      "Bash(R --quiet --no-save --no-restore -e \"devtools::test()\":*)"
     ],
     "deny": [],
     "ask": []

@@ -3,6 +3,7 @@
 #' Returns the current RAM usage in MB for the R session.
 #'
 #' @return Numeric value representing RAM usage in MB
+#' @importFrom utils memory.size object.size
 #' @export
 #' @examples
 #' \dontrun{
@@ -167,7 +168,11 @@ process_with_chunks <- function(data,
       # Write accumulated results to disk
       if (length(results_list) > 0) {
         chunk_file <- file.path(chunk_dir, sprintf("chunk_%04d.rds", length(disk_chunks) + 1))
-        combined_results <- do.call(combine_fn, results_list)
+        if (length(results_list) == 1) {
+          combined_results <- results_list[[1]]
+        } else {
+          combined_results <- Reduce(combine_fn, results_list)
+        }
         saveRDS(combined_results, chunk_file, compress = TRUE)
         disk_chunks <- c(disk_chunks, chunk_file)
         results_list <- list()
@@ -194,7 +199,11 @@ process_with_chunks <- function(data,
 
   # First, combine any remaining in-memory results
   if (length(results_list) > 0) {
-    in_memory_result <- do.call(combine_fn, results_list)
+    if (length(results_list) == 1) {
+      in_memory_result <- results_list[[1]]
+    } else {
+      in_memory_result <- Reduce(combine_fn, results_list)
+    }
     final_result <- in_memory_result
   }
 
@@ -268,14 +277,24 @@ chunk_processor <- function(max_ram_mb = 1000, temp_dir = tempdir(), verbose = T
 
       # Combine in-memory chunks
       if (length(chunks) > 0) {
-        result <- do.call(combine_fn, chunks)
+        if (length(chunks) == 1) {
+          result <- chunks[[1]]
+        } else {
+          result <- Reduce(combine_fn, chunks)
+        }
       }
 
       # Combine disk chunks
       if (length(disk_chunks) > 0) {
         for (chunk_file in disk_chunks) {
           disk_data <- readRDS(chunk_file)
-          disk_combined <- do.call(combine_fn, disk_data)
+          if (is.data.frame(disk_data) || is.matrix(disk_data) || is.vector(disk_data)) {
+            disk_combined <- disk_data
+          } else if (length(disk_data) == 1) {
+            disk_combined <- disk_data[[1]]
+          } else {
+            disk_combined <- Reduce(combine_fn, disk_data)
+          }
           if (is.null(result)) {
             result <- disk_combined
           } else {

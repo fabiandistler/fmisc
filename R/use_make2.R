@@ -17,6 +17,7 @@
 #'
 #' @return Invisibly returns the path to the created Makefile.
 #'
+#' @importFrom utils file.edit
 #' @export
 #'
 #' @examples

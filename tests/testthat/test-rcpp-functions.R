@@ -150,14 +150,14 @@ test_that("calculate_optimal_chunk_size handles different target fractions", {
   skip_if_not_installed("Rcpp")
 
   chunk_size_10 <- calculate_optimal_chunk_size(
-    data_size_mb = 100,
+    data_size_mb = 1000,
     total_rows = 1000000,
     max_ram_mb = 1000,
     target_fraction = 0.1
   )
 
   chunk_size_20 <- calculate_optimal_chunk_size(
-    data_size_mb = 100,
+    data_size_mb = 1000,
     total_rows = 1000000,
     max_ram_mb = 1000,
     target_fraction = 0.2
