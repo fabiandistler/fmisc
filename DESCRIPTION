@@ -18,7 +18,8 @@ Imports:
     Rcpp (>= 1.0.0),
     utils,
     cli,
-    rlang
+    rlang,
+    data.table
 SystemRequirements: C++11
 Suggests:
     testthat (>= 3.0.0),
