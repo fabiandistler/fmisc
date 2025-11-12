@@ -1,8 +1,29 @@
-# Smart Parallel Framework for R
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# fmisc
+
+<!-- badges: start -->
+
+<!-- badges: end -->
+
+Various utilities for software development in R.
+
+## Installation
+
+You can install the development version of fmisc from
+[GitHub](https://github.com/) with:
+
+``` r
+# install.packages("pak")
+pak::pak("fabiandistler/fmisc")
+```
+
+## Smart Parallel Framework
 
 Intelligent R parallelization that automatically selects the best parallel computing framework based on your operating system and available packages.
 
-## Features
+### Features
 
 - **Automatic OS Detection**: Detects whether you're on Unix-like (Linux/macOS) or Windows
 - **Smart Backend Selection**: Automatically chooses the best parallelization method:
@@ -12,40 +33,25 @@ Intelligent R parallelization that automatically selects the best parallel compu
 - **Unified Interface**: Simple API regardless of underlying backend
 - **Resource Management**: Automatic cleanup of cluster resources
 
-## Supported Backends
+### Supported Backends
 
 The function supports these R parallelization frameworks (in order of preference):
 
-### Unix-like Systems (Linux, macOS)
+#### Unix-like Systems (Linux, macOS)
 1. **furrr** - Future-based parallelization (most flexible)
 2. **doMC** - Fork-based multicore (fast, low overhead)
 3. **mclapply** - Built-in parallel package with fork
 4. **doParallel** - Socket-based (cross-platform compatible)
 
-### Windows
+#### Windows
 1. **furrr** - Future-based parallelization (most flexible)
 2. **doParallel** - Socket-based clusters (Windows compatible)
 3. **parLapply** - Built-in parallel package with sockets
 4. **foreach** - Sequential fallback
 
-## Installation
+### Usage
 
-The `parallel` package is included with base R. For enhanced functionality, install additional packages:
-
-```r
-# Recommended packages
-install.packages("foreach")
-install.packages("doParallel")
-install.packages("future")
-install.packages("furrr")
-
-# Unix/Linux/macOS only
-install.packages("doMC")
-```
-
-## Usage
-
-### Quick Start
+#### Quick Start
 
 ```r
 source("smart_parallel.R")
@@ -57,23 +63,23 @@ print_parallel_info()
 result <- smart_parallel_apply(1:100, function(x) x^2)
 ```
 
-### Basic Examples
+#### Basic Examples
 
-#### Example 1: Automatic Configuration
+##### Automatic Configuration
 
 ```r
 # The function auto-detects the best backend and core count
 result <- smart_parallel_apply(1:1000, sqrt)
 ```
 
-#### Example 2: Specify Core Count
+##### Specify Core Count
 
 ```r
 # Use specific number of cores
 result <- smart_parallel_apply(1:1000, log, n_cores = 4)
 ```
 
-#### Example 3: Reuse Configuration
+##### Reuse Configuration
 
 ```r
 # Setup once, use multiple times (more efficient)
@@ -87,7 +93,7 @@ result3 <- smart_parallel_apply(1:1000, function(x) x^3, setup = setup)
 stop_parallel(setup)
 ```
 
-#### Example 4: Custom Functions with Arguments
+##### Custom Functions with Arguments
 
 ```r
 custom_function <- function(x, multiplier, offset) {
@@ -103,19 +109,7 @@ result <- smart_parallel_apply(
 )
 ```
 
-#### Example 5: Check Available Backends
-
-```r
-# Get detailed information about your environment
-info <- detect_parallel_backend()
-print(info$backend)          # Current recommended backend
-print(info$available_cores)  # Number of CPU cores
-print(info$packages)         # Which packages are installed
-```
-
-## API Reference
-
-### Main Functions
+### API Reference
 
 #### `detect_parallel_backend()`
 
@@ -158,7 +152,7 @@ Universal parallel apply function that works across all backends.
 
 Prints detailed information about your parallel computing environment.
 
-## How It Works
+### How It Works
 
 1. **OS Detection**: Uses `.Platform$OS.type` to determine the operating system
 2. **Package Detection**: Checks which parallelization packages are installed
@@ -167,21 +161,14 @@ Prints detailed information about your parallel computing environment.
 5. **Execution**: Runs your code using the best available method
 6. **Cleanup**: Automatically manages cluster resources
 
-## Performance Tips
+### Performance Tips
 
 1. **Reuse Setup**: If running multiple parallel operations, create one setup and reuse it
 2. **Right-size Cores**: Don't always use all cores; leave 1-2 for system responsiveness
 3. **Task Granularity**: Parallel overhead matters; use for tasks that take >0.1s each
 4. **Windows Overhead**: Socket-based parallelization (Windows) has more overhead than fork-based (Unix)
 
-## Error Handling
-
-The function includes automatic fallback:
-- If parallel execution fails, it automatically falls back to sequential `lapply()`
-- Warnings are issued when fallback occurs
-- Sequential processing is guaranteed to work even if no parallel packages exist
-
-## Requirements
+### Requirements
 
 - R ≥ 3.0.0
 - `parallel` package (included with R)
