@@ -140,7 +140,20 @@ setup_parallel <- function(n_cores = NULL, backend = NULL, verbose = TRUE) {
   }
 
   # Use specified backend or auto-detected one
-  selected_backend <- if (!is.null(backend)) backend else info$backend
+  if (!is.null(backend)) {
+    valid_backends <- c("mclapply", "parLapply", "doParallel",
+                        "doMC", "furrr", "foreach", "sequential")
+    if (!backend %in% valid_backends) {
+      stop(
+        "Invalid backend: '", backend, "'. Must be one of: ",
+        paste(valid_backends, collapse = ", "),
+        call. = FALSE
+      )
+    }
+    selected_backend <- backend
+  } else {
+    selected_backend <- info$backend
+  }
 
   cluster <- NULL
 
@@ -212,12 +225,32 @@ setup_parallel <- function(n_cores = NULL, backend = NULL, verbose = TRUE) {
 #' stop_parallel(setup)
 #' }
 stop_parallel <- function(setup) {
-  if (!is.null(setup$cluster)) {
-    parallel::stopCluster(setup$cluster)
+  # Validate setup parameter
+  if (!is.list(setup)) {
+    stop("setup must be a list returned by setup_parallel()", call. = FALSE)
+  }
+  if (!all(c("backend", "cluster") %in% names(setup))) {
+    stop("setup must have 'backend' and 'cluster' elements", call. = FALSE)
   }
 
-  if (setup$backend == "furrr") {
-    future::plan(future::sequential)
+  # Clean up cluster if it exists
+  if (!is.null(setup$cluster)) {
+    tryCatch(
+      parallel::stopCluster(setup$cluster),
+      error = function(e) {
+        warning("Failed to stop cluster: ", e$message, call. = FALSE)
+      }
+    )
+  }
+
+  # Reset future plan if using furrr
+  if (!is.null(setup$backend) && setup$backend == "furrr") {
+    tryCatch(
+      future::plan(future::sequential),
+      error = function(e) {
+        warning("Failed to reset future plan: ", e$message, call. = FALSE)
+      }
+    )
   }
 
   invisible(NULL)
@@ -264,6 +297,12 @@ smart_parallel_apply <- function(X, FUN, n_cores = NULL, ..., setup = NULL) {
   if (is.null(setup)) {
     setup <- setup_parallel(n_cores = n_cores, verbose = FALSE)
     cleanup <- TRUE
+    # Ensure cleanup happens even if there's an error
+    on.exit({
+      if (cleanup) {
+        stop_parallel(setup)
+      }
+    }, add = TRUE)
   }
 
   # Execute based on backend
@@ -272,11 +311,21 @@ smart_parallel_apply <- function(X, FUN, n_cores = NULL, ..., setup = NULL) {
       parallel::mclapply(X, FUN, ..., mc.cores = setup$n_cores)
 
     } else if (setup$backend == "parLapply") {
+      # On Windows, we need to export variables to cluster nodes
+      if (.Platform$OS.type == "windows") {
+        # Export all variables from parent environment
+        parallel::clusterExport(
+          setup$cluster,
+          varlist = ls(envir = parent.frame()),
+          envir = parent.frame()
+        )
+      }
       parallel::parLapply(setup$cluster, X, FUN, ...)
 
     } else if (setup$backend %in% c("doMC", "doParallel", "foreach")) {
       i <- NULL  # Avoid R CMD check NOTE
-      foreach::foreach(i = X, .combine = c) %dopar% {
+      # Use .combine = list to ensure consistent return type
+      foreach::foreach(i = X, .combine = list, .multicombine = TRUE) %dopar% {
         FUN(i, ...)
       }
 
@@ -291,11 +340,6 @@ smart_parallel_apply <- function(X, FUN, n_cores = NULL, ..., setup = NULL) {
     warning(sprintf("Parallel execution failed, falling back to sequential: %s", e$message))
     lapply(X, FUN, ...)
   })
-
-  # Cleanup if we created the setup
-  if (cleanup) {
-    stop_parallel(setup)
-  }
 
   result
 }
