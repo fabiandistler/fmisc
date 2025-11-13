@@ -10,8 +10,10 @@ test_that("detect_parallel_backend returns valid structure", {
   expect_type(info$packages, "list")
 
   # Check valid backend
-  valid_backends <- c("mclapply", "parLapply", "doParallel",
-                      "doMC", "furrr", "foreach", "sequential")
+  valid_backends <- c(
+    "mclapply", "parLapply", "doParallel",
+    "doMC", "furrr", "foreach", "sequential"
+  )
   expect_true(info$backend %in% valid_backends)
 
   # Check OS type
