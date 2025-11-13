@@ -32,7 +32,7 @@ detect_parallel_backend <- function() {
   # Get number of available cores (handle NA case)
   available_cores <- parallel::detectCores(logical = TRUE)
   if (is.na(available_cores)) {
-    available_cores <- 1  # Safe fallback
+    available_cores <- 1 # Safe fallback
     warning("Could not detect CPU cores, defaulting to 1")
   }
 
@@ -141,8 +141,10 @@ setup_parallel <- function(n_cores = NULL, backend = NULL, verbose = TRUE) {
 
   # Use specified backend or auto-detected one
   if (!is.null(backend)) {
-    valid_backends <- c("mclapply", "parLapply", "doParallel",
-                        "doMC", "furrr", "foreach", "sequential")
+    valid_backends <- c(
+      "mclapply", "parLapply", "doParallel",
+      "doMC", "furrr", "foreach", "sequential"
+    )
     if (!backend %in% valid_backends) {
       stop(
         "Invalid backend: '", backend, "'. Must be one of: ",
@@ -163,38 +165,32 @@ setup_parallel <- function(n_cores = NULL, backend = NULL, verbose = TRUE) {
       message(sprintf("Using mclapply with %d cores (fork-based parallelization)", n_cores))
     }
     options(mc.cores = n_cores)
-
   } else if (selected_backend == "parLapply") {
     if (verbose) {
       message(sprintf("Using parLapply with %d cores (socket-based parallelization)", n_cores))
     }
     cluster <- parallel::makeCluster(n_cores, type = "PSOCK")
-
   } else if (selected_backend == "doMC") {
     if (verbose) {
       message(sprintf("Using doMC with %d cores (fork-based parallelization)", n_cores))
     }
     doMC::registerDoMC(cores = n_cores)
-
   } else if (selected_backend == "doParallel") {
     if (verbose) {
       message(sprintf("Using doParallel with %d cores (socket-based parallelization)", n_cores))
     }
     cluster <- parallel::makeCluster(n_cores)
     doParallel::registerDoParallel(cluster)
-
   } else if (selected_backend == "furrr") {
     if (verbose) {
       message(sprintf("Using furrr with %d cores (future-based parallelization)", n_cores))
     }
     future::plan(future::multisession, workers = n_cores)
-
   } else if (selected_backend == "foreach") {
     if (verbose) {
       message(sprintf("Using foreach with %d cores (sequential fallback)", n_cores))
     }
     foreach::registerDoSEQ()
-
   } else {
     if (verbose) {
       message("No parallel backend available, using sequential processing")
@@ -298,48 +294,50 @@ smart_parallel_apply <- function(X, FUN, n_cores = NULL, ..., setup = NULL) {
     setup <- setup_parallel(n_cores = n_cores, verbose = FALSE)
     cleanup <- TRUE
     # Ensure cleanup happens even if there's an error
-    on.exit({
-      if (cleanup) {
-        stop_parallel(setup)
-      }
-    }, add = TRUE)
+    on.exit(
+      {
+        if (cleanup) {
+          stop_parallel(setup)
+        }
+      },
+      add = TRUE
+    )
   }
 
   # Execute based on backend
-  result <- tryCatch({
-    if (setup$backend == "mclapply") {
-      parallel::mclapply(X, FUN, ..., mc.cores = setup$n_cores)
-
-    } else if (setup$backend == "parLapply") {
-      # On Windows, we need to export variables to cluster nodes
-      if (.Platform$OS.type == "windows") {
-        # Export all variables from parent environment
-        parallel::clusterExport(
-          setup$cluster,
-          varlist = ls(envir = parent.frame()),
-          envir = parent.frame()
-        )
+  result <- tryCatch(
+    {
+      if (setup$backend == "mclapply") {
+        parallel::mclapply(X, FUN, ..., mc.cores = setup$n_cores)
+      } else if (setup$backend == "parLapply") {
+        # On Windows, we need to export variables to cluster nodes
+        if (.Platform$OS.type == "windows") {
+          # Export all variables from parent environment
+          parallel::clusterExport(
+            setup$cluster,
+            varlist = ls(envir = parent.frame()),
+            envir = parent.frame()
+          )
+        }
+        parallel::parLapply(setup$cluster, X, FUN, ...)
+      } else if (setup$backend %in% c("doMC", "doParallel", "foreach")) {
+        i <- NULL # Avoid R CMD check NOTE
+        # Use .combine = list to ensure consistent return type
+        foreach::foreach(i = X, .combine = list, .multicombine = TRUE) %dopar% {
+          FUN(i, ...)
+        }
+      } else if (setup$backend == "furrr") {
+        furrr::future_map(X, FUN, ...)
+      } else {
+        # Sequential fallback
+        lapply(X, FUN, ...)
       }
-      parallel::parLapply(setup$cluster, X, FUN, ...)
-
-    } else if (setup$backend %in% c("doMC", "doParallel", "foreach")) {
-      i <- NULL  # Avoid R CMD check NOTE
-      # Use .combine = list to ensure consistent return type
-      foreach::foreach(i = X, .combine = list, .multicombine = TRUE) %dopar% {
-        FUN(i, ...)
-      }
-
-    } else if (setup$backend == "furrr") {
-      furrr::future_map(X, FUN, ...)
-
-    } else {
-      # Sequential fallback
+    },
+    error = function(e) {
+      warning(sprintf("Parallel execution failed, falling back to sequential: %s", e$message))
       lapply(X, FUN, ...)
     }
-  }, error = function(e) {
-    warning(sprintf("Parallel execution failed, falling back to sequential: %s", e$message))
-    lapply(X, FUN, ...)
-  })
+  )
 
   result
 }
