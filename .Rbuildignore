@@ -5,3 +5,5 @@
 ^\.claude$
 ^\.serena$
 ^README\.Rmd$
+^dev$
+^\.github$

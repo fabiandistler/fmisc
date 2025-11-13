@@ -9,6 +9,8 @@ Description: Provides utility functions for R development including chunking
     processing of large datasets that don't fit in memory. The package development
     utilities include Makefile templates, error handling helpers, and workflow tools.
 License: MIT + file LICENSE
+URL: https://github.com/fabiandistler/fmisc
+BugReports: https://github.com/fabiandistler/fmisc/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

@@ -10,10 +10,10 @@ PKGNAME = `sed -n "s/Package: *\([^ ]*\)/\1/p" DESCRIPTION`
 PKGVERS = `sed -n "s/Version: *\([^ ]*\)/\1/p" DESCRIPTION`
 
 # R command
-R := R --quiet --no-save --no-restore
+R = R --quiet --no-save --no-restore
 
 # Build directory
-BUILD_DIR := .
+BUILD_DIR = .
 
 .PHONY: help all install build check test document clean deps lint style site coverage
 

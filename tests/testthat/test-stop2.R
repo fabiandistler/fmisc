@@ -50,28 +50,28 @@ test_that("stop2() uses correct environment for interpolation", {
 test_that("simple_glue() helper works correctly", {
   x <- 5
   result <- simple_glue("Value: {x}")
-  expect_equal(result, "Value: 5")
+  expect_identical(result, "Value: 5")
 
   y <- 10
   result <- simple_glue("{x} and {y}")
-  expect_equal(result, "5 and 10")
+  expect_identical(result, "5 and 10")
 
   result <- simple_glue("No braces here")
-  expect_equal(result, "No braces here")
+  expect_identical(result, "No braces here")
 
   z <- c(1, 2, 3)
   result <- simple_glue("Vector: {z}")
-  expect_equal(result, "Vector: 1, 2, 3")
+  expect_identical(result, "Vector: 1, 2, 3")
 })
 
 test_that("simple_glue() handles expressions", {
   df <- data.frame(a = 1:5)
   result <- simple_glue("Rows: {nrow(df)}")
-  expect_equal(result, "Rows: 5")
+  expect_identical(result, "Rows: 5")
 
   x <- 10
   result <- simple_glue("Double: {x * 2}")
-  expect_equal(result, "Double: 20")
+  expect_identical(result, "Double: 20")
 })
 
 
@@ -81,7 +81,7 @@ test_that("simple_glue() respects .envir parameter", {
   env$x <- "inner"
 
   result <- simple_glue("Value: {x}", .envir = env)
-  expect_equal(result, "Value: inner")
+  expect_identical(result, "Value: inner")
 })
 
 test_that("stop2() interpolation works consistently across backends", {

@@ -8,6 +8,14 @@
 \description{
 Provides utility functions for R development including chunking algorithms for RAM management and package development utilities. The chunking functionality manages RAM usage by writing chunks of data to disk, allowing processing of large datasets that don't fit in memory. The package development utilities include Makefile templates, error handling helpers, and workflow tools.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/fabiandistler/fmisc}
+  \item Report bugs at \url{https://github.com/fabiandistler/fmisc/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Fabian Distler \email{fabian.distler@example.com}
 
