@@ -3,12 +3,14 @@ Title: Miscellaneous R Package Development Utilities
 Version: 0.0.0.9000
 Authors@R:
     person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: Provides utility functions for R package development, including
-    a comprehensive Makefile template with targets for building, checking,
-    testing, documentation, and code quality tasks. Also includes a smart
-    parallel computing framework that automatically selects the best
+Description: Provides utility functions for R package development,
+    including a comprehensive Makefile template with targets for building,
+    checking, testing, documentation, and code quality tasks. Also includes
+    a smart parallel computing framework that automatically selects the best
     parallelization backend based on operating system and available packages.
 License: MIT + file LICENSE
+URL: https://github.com/fabiandistler/fmisc
+BugReports: https://github.com/fabiandistler/fmisc/issues
 Depends:
     R (>= 3.5.0)
 Imports:

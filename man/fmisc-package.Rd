@@ -8,6 +8,14 @@
 \description{
 Provides utility functions for R package development, including a comprehensive Makefile template with targets for building, checking, testing, documentation, and code quality tasks.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/fabiandistler/fmisc}
+  \item Report bugs at \url{https://github.com/fabiandistler/fmisc/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: First Last \email{first.last@example.com}
 

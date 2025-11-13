@@ -1,49 +1,3 @@
-simple_glue <- function(message, .envir = parent.frame()) {
-  if (!grepl("\\{[^}]+\\}", message)) {
-    return(message)
-  }
-
-  pattern <- "\\{([^}]+)\\}"
-
-  repeat {
-    match <- regexec(pattern, message)
-    if (match[[1]][1] == -1) break
-
-    expr_start <- match[[1]][2]
-    expr_length <- attr(match[[1]], "match.length")[2]
-    expr <- substr(message, expr_start, expr_start + expr_length - 1)
-
-    value <- tryCatch(
-      {
-        result <- eval(parse(text = expr), envir = .envir)
-
-        if (length(result) > 1) {
-          paste(as.character(result), collapse = ", ")
-        } else if (length(result) == 0) {
-          "NULL"
-        } else {
-          as.character(result)
-        }
-      },
-      error = function(e) {
-        paste0("{", expr, "}")
-      }
-    )
-
-    full_start <- match[[1]][1]
-    full_length <- attr(match[[1]], "match.length")[1]
-    before <- if (full_start > 1) substr(message, 1, full_start - 1) else ""
-    after <- if (full_start + full_length <= nchar(message)) {
-      substr(message, full_start + full_length, nchar(message))
-    } else {
-      ""
-    }
-    message <- paste0(before, value, after)
-  }
-
-  return(message)
-}
-
 #' Stop with Better Error Messages
 #'
 #' A helper function that uses the best available error handling method.
@@ -139,4 +93,50 @@ stop2 <- function(message,
   }
 
   stop(message, call. = FALSE, ...)
+}
+
+simple_glue <- function(message, .envir = parent.frame()) {
+  if (!grepl("\\{[^}]+\\}", message)) {
+    return(message)
+  }
+
+  pattern <- "\\{([^}]+)\\}"
+
+  repeat {
+    match <- regexec(pattern, message)
+    if (match[[1]][1] == -1) break
+
+    expr_start <- match[[1]][2]
+    expr_length <- attr(match[[1]], "match.length")[2]
+    expr <- substr(message, expr_start, expr_start + expr_length - 1)
+
+    value <- tryCatch(
+      {
+        result <- eval(parse(text = expr), envir = .envir)
+
+        if (length(result) > 1) {
+          paste(as.character(result), collapse = ", ")
+        } else if (length(result) == 0) {
+          "NULL"
+        } else {
+          as.character(result)
+        }
+      },
+      error = function(e) {
+        paste0("{", expr, "}")
+      }
+    )
+
+    full_start <- match[[1]][1]
+    full_length <- attr(match[[1]], "match.length")[1]
+    before <- if (full_start > 1) substr(message, 1, full_start - 1) else ""
+    after <- if (full_start + full_length <= nchar(message)) {
+      substr(message, full_start + full_length, nchar(message))
+    } else {
+      ""
+    }
+    message <- paste0(before, value, after)
+  }
+
+  return(message)
 }

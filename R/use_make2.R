@@ -70,7 +70,7 @@ use_make2 <- function(open = interactive()) {
 
   # Open file if requested
   if (open) {
-    file.edit(dest_path)
+    utils::file.edit(dest_path)
   }
 
   invisible(dest_path)

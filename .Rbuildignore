@@ -6,3 +6,5 @@
 ^\.serena$
 ^README\.md$
 ^README\.Rmd$
+^dev$
+^\.github$
