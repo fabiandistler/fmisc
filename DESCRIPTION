@@ -7,9 +7,9 @@ Description: Provides utility functions for R package development,
     including a comprehensive Makefile template with targets for building,
     checking, testing, documentation, and code quality tasks.
 License: MIT + file LICENSE
-Imports: 
+Imports:
+    cli
 Suggests:
-    cli,
     glue,
     rlang,
     testthat (>= 3.0.0)
