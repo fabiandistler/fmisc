@@ -7,6 +7,8 @@ Description: Provides utility functions for R package development,
     including a comprehensive Makefile template with targets for building,
     checking, testing, documentation, and code quality tasks.
 License: MIT + file LICENSE
+URL: https://github.com/fabiandistler/fmisc
+BugReports: https://github.com/fabiandistler/fmisc/issues
 Imports:
     cli
 Suggests:
@@ -17,5 +19,3 @@ Config/testthat/edition: 3
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
-URL: https://github.com/fabiandistler/fmisc
-BugReports: https://github.com/fabiandistler/fmisc/issues
