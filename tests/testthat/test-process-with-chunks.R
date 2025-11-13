@@ -151,7 +151,7 @@ test_that("process_with_chunks handles empty results gracefully", {
     data = df,
     process_fn = function(chunk) {
       # Filter that might return empty chunks
-      chunk[chunk$x > 1000, ]  # Always empty
+      chunk[chunk$x > 1000, ] # Always empty
     },
     chunk_size = 25,
     verbose = FALSE

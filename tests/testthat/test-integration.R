@@ -183,20 +183,23 @@ test_that("full workflow: error handling in process function", {
   df <- data.frame(x = 1:100)
 
   # Process function that handles errors gracefully
-  result <- tryCatch({
-    process_with_chunks(
-      data = df,
-      process_fn = function(chunk) {
-        # This will work for most chunks
-        chunk$y <- chunk$x * 2
-        chunk
-      },
-      chunk_size = 20,
-      verbose = FALSE
-    )
-  }, error = function(e) {
-    NULL
-  })
+  result <- tryCatch(
+    {
+      process_with_chunks(
+        data = df,
+        process_fn = function(chunk) {
+          # This will work for most chunks
+          chunk$y <- chunk$x * 2
+          chunk
+        },
+        chunk_size = 20,
+        verbose = FALSE
+      )
+    },
+    error = function(e) {
+      NULL
+    }
+  )
 
   expect_false(is.null(result))
   expect_equal(nrow(result), 100)
@@ -250,7 +253,7 @@ test_that("full workflow: RAM threshold management", {
       chunk$z <- chunk$x + chunk$y
       chunk
     },
-    max_ram_mb = 1,  # Very low to force disk writing
+    max_ram_mb = 1, # Very low to force disk writing
     chunk_size = 50,
     verbose = FALSE
   )

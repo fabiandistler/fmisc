@@ -18,7 +18,7 @@ get_ram_usage <- function() {
     # Unix-like systems: parse /proc or use gc()
     gc_info <- gc(reset = TRUE)
     # Sum of used memory from Ncells and Vcells in MB
-    used_mb <- sum(gc_info[, 2]) * 8 / (1024^2)  # Convert to MB
+    used_mb <- sum(gc_info[, 2]) * 8 / (1024^2) # Convert to MB
     return(used_mb)
   }
 }
@@ -108,7 +108,6 @@ process_with_chunks <- function(data,
                                 temp_dir = tempdir(),
                                 combine_fn = rbind,
                                 verbose = TRUE) {
-
   # Calculate optimal chunk size if not provided
   if (is.null(chunk_size)) {
     data_size_mb <- as.numeric(object.size(data)) / (1024^2)
@@ -149,8 +148,10 @@ process_with_chunks <- function(data,
     # Check RAM before processing
     current_ram <- get_ram_usage()
     if (verbose && chunk_num %% 10 == 0) {
-      message(sprintf("Processing chunk %d/%d (RAM: %.2f MB)",
-                     chunk_num, iterator$total_chunks, current_ram))
+      message(sprintf(
+        "Processing chunk %d/%d (RAM: %.2f MB)",
+        chunk_num, iterator$total_chunks, current_ram
+      ))
     }
 
     # Process the chunk
@@ -271,7 +272,6 @@ chunk_processor <- function(max_ram_mb = 1000, temp_dir = tempdir(), verbose = T
         gc()
       }
     },
-
     get_results = function(combine_fn = rbind) {
       result <- NULL
 
@@ -305,7 +305,6 @@ chunk_processor <- function(max_ram_mb = 1000, temp_dir = tempdir(), verbose = T
 
       return(result)
     },
-
     cleanup = function() {
       chunks <<- list()
       if (length(disk_chunks) > 0) {
@@ -313,7 +312,6 @@ chunk_processor <- function(max_ram_mb = 1000, temp_dir = tempdir(), verbose = T
         disk_chunks <<- character()
       }
     },
-
     get_ram_usage = function() {
       get_ram_usage()
     }

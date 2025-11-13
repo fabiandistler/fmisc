@@ -49,7 +49,7 @@ test_that("chunk_iterator works with vectors", {
   iterator$get_next()
   iterator$get_next()
   chunk4 <- iterator$get_next()
-  expect_equal(length(chunk4), 10)  # Last chunk has remainder
+  expect_equal(length(chunk4), 10) # Last chunk has remainder
   expect_equal(chunk4, 91:100)
 })
 
@@ -79,7 +79,7 @@ test_that("chunk_iterator handles uneven chunk sizes", {
   expect_equal(nrow(chunks[[1]]), 25)
   expect_equal(nrow(chunks[[2]]), 25)
   expect_equal(nrow(chunks[[3]]), 25)
-  expect_equal(nrow(chunks[[4]]), 22)  # Remainder
+  expect_equal(nrow(chunks[[4]]), 22) # Remainder
 })
 
 test_that("chunk_iterator reset works", {
