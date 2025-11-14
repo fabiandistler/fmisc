@@ -104,17 +104,19 @@ detect_parallel_backend <- function() {
 #'
 #' @examples
 #' \donttest{
-#' # Auto-detect and setup
-#' setup <- setup_parallel()
-#' stop_parallel(setup)
+#' if (FALSE) {
+#'   # Auto-detect and setup
+#'   setup <- setup_parallel()
+#'   stop_parallel(setup)
 #'
-#' # Use specific number of cores
-#' setup <- setup_parallel(n_cores = 2)
-#' stop_parallel(setup)
+#'   # Use specific number of cores
+#'   setup <- setup_parallel(n_cores = 2)
+#'   stop_parallel(setup)
 #'
-#' # Force specific backend
-#' setup <- setup_parallel(backend = "doParallel")
-#' stop_parallel(setup)
+#'   # Force specific backend
+#'   setup <- setup_parallel(backend = "doParallel")
+#'   stop_parallel(setup)
+#' }
 #' }
 setup_parallel <- function(n_cores = NULL, backend = NULL, verbose = TRUE) {
   info <- detect_parallel_backend()
