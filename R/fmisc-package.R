@@ -17,7 +17,6 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-<<<<<<< HEAD
 #' @importFrom data.table :=
 #' @importFrom data.table .BY
 #' @importFrom data.table .EACHI
@@ -27,8 +26,6 @@
 #' @importFrom data.table .NGRP
 #' @importFrom data.table .SD
 #' @importFrom data.table data.table
-=======
 #' @importFrom foreach %dopar%
->>>>>>> origin/main
 ## usethis namespace: end
 NULL

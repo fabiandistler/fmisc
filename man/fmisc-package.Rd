@@ -6,8 +6,27 @@
 \alias{fmisc-package}
 \title{fmisc: Miscellaneous R Utilities}
 \description{
-Provides utility functions for R development including chunking algorithms for RAM management and package development utilities. The chunking functionality manages RAM usage by writing chunks of data to disk, allowing processing of large datasets that don't fit in memory. The package development utilities include Makefile templates, error handling helpers, and workflow tools.
+Provides utility functions for R package development.
 }
+\section{Smart Parallel Computing}{
+
+The fmisc package includes a comprehensive parallel computing framework
+that automatically selects the best backend based on your operating system
+and available packages.
+
+Key functions:
+\itemize{
+\item \code{\link[=detect_parallel_backend]{detect_parallel_backend()}} - Detect available parallelization options
+\item \code{\link[=setup_parallel]{setup_parallel()}} - Configure parallel computing
+\item \code{\link[=smart_parallel_apply]{smart_parallel_apply()}} - Universal parallel apply function
+\item \code{\link[=stop_parallel]{stop_parallel()}} - Clean up parallel resources
+\item \code{\link[=print_parallel_info]{print_parallel_info()}} - Display environment capabilities
+}
+
+The framework supports multiple backends including mclapply, parLapply,
+doParallel, doMC, furrr, and future, with intelligent OS-aware selection.
+}
+
 \seealso{
 Useful links:
 \itemize{
