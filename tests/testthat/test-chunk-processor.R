@@ -32,7 +32,7 @@ test_that("chunk_processor get_results combines chunks", {
 
   result <- processor$get_results()
 
-  expect_equal(nrow(result), 50)
+  expect_equal(nrow(result), 30)
   expect_equal(result$x, c(1:10, 21:30, 41:50))
   expect_equal(result$y, c(11:20, 31:40, 51:60))
 })

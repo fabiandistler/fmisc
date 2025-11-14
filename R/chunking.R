@@ -40,7 +40,7 @@ get_ram_usage <- function() {
 create_chunk_iterator <- function(data, chunk_size) {
   if (is.data.frame(data) || is.matrix(data)) {
     total_rows <- nrow(data)
-  } else if (is.vector(data)) {
+  } else if (is.vector(data) && !is.list(data)) {
     total_rows <- length(data)
   } else {
     stop("Data must be a data.frame, matrix, or vector")
@@ -275,20 +275,13 @@ chunk_processor <- function(max_ram_mb = 1000, temp_dir = tempdir(), verbose = T
     get_results = function(combine_fn = rbind) {
       result <- NULL
 
-      # Combine in-memory chunks
-      if (length(chunks) > 0) {
-        if (length(chunks) == 1) {
-          result <- chunks[[1]]
-        } else {
-          result <- Reduce(combine_fn, chunks)
-        }
-      }
-
-      # Combine disk chunks
+      # Combine disk chunks first (they are older)
       if (length(disk_chunks) > 0) {
         for (chunk_file in disk_chunks) {
           disk_data <- readRDS(chunk_file)
-          if (is.data.frame(disk_data) || is.matrix(disk_data) || is.vector(disk_data)) {
+          if (is.data.frame(disk_data) || is.matrix(disk_data)) {
+            disk_combined <- disk_data
+          } else if (!is.list(disk_data)) {
             disk_combined <- disk_data
           } else if (length(disk_data) == 1) {
             disk_combined <- disk_data[[1]]
@@ -300,6 +293,20 @@ chunk_processor <- function(max_ram_mb = 1000, temp_dir = tempdir(), verbose = T
           } else {
             result <- combine_fn(result, disk_combined)
           }
+        }
+      }
+
+      # Then combine in-memory chunks
+      if (length(chunks) > 0) {
+        if (length(chunks) == 1) {
+          in_memory_result <- chunks[[1]]
+        } else {
+          in_memory_result <- Reduce(combine_fn, chunks)
+        }
+        if (is.null(result)) {
+          result <- in_memory_result
+        } else {
+          result <- combine_fn(result, in_memory_result)
         }
       }
 
