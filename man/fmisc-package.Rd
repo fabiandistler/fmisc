@@ -4,7 +4,7 @@
 \name{fmisc-package}
 \alias{fmisc}
 \alias{fmisc-package}
-\title{fmisc: Miscellaneous R Package Development Utilities}
+\title{fmisc: Miscellaneous R Utilities}
 \description{
 Provides utility functions for R package development.
 }
@@ -36,7 +36,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: First Last \email{first.last@example.com}
+\strong{Maintainer}: Fabian Distler \email{fabian.distler@example.com}
 
 }
 \keyword{internal}
