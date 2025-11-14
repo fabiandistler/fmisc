@@ -6,7 +6,7 @@
 \alias{fmisc-package}
 \title{fmisc: Miscellaneous R Package Development Utilities}
 \description{
-Provides utility functions for R package development, including a comprehensive Makefile template with targets for building, checking, testing, documentation, and code quality tasks. Also includes a smart parallel computing framework that automatically selects the best parallelization backend based on operating system and available packages.
+Provides utility functions for R package development.
 }
 \section{Smart Parallel Computing}{
 
