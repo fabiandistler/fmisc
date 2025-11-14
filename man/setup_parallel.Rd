@@ -42,10 +42,10 @@ stop_parallel(setup)
 }
 }
 \seealso{
-\code{\link{detect_parallel_backend}}, \code{\link{stop_parallel}},
-\code{\link{smart_parallel_apply}}
+\code{\link[=detect_parallel_backend]{detect_parallel_backend()}}, \code{\link[=stop_parallel]{stop_parallel()}},
+\code{\link[=smart_parallel_apply]{smart_parallel_apply()}}
 
-Other parallel:
+Other parallel: 
 \code{\link{detect_parallel_backend}()},
 \code{\link{print_parallel_info}()},
 \code{\link{smart_parallel_apply}()},

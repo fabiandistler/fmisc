@@ -7,7 +7,7 @@
 stop_parallel(setup)
 }
 \arguments{
-\item{setup}{The setup object returned by \code{\link{setup_parallel}}}
+\item{setup}{The setup object returned by \code{\link[=setup_parallel]{setup_parallel()}}}
 }
 \description{
 Stop parallel backend and clean up resources
@@ -20,9 +20,9 @@ stop_parallel(setup)
 }
 }
 \seealso{
-\code{\link{setup_parallel}}, \code{\link{smart_parallel_apply}}
+\code{\link[=setup_parallel]{setup_parallel()}}, \code{\link[=smart_parallel_apply]{smart_parallel_apply()}}
 
-Other parallel:
+Other parallel: 
 \code{\link{detect_parallel_backend}()},
 \code{\link{print_parallel_info}()},
 \code{\link{setup_parallel}()},

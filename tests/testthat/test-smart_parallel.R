@@ -20,15 +20,16 @@ test_that("detect_parallel_backend returns valid structure", {
   expect_true(info$os_type %in% c("unix", "windows"))
 
   # Check cores
-  expect_true(info$available_cores >= 1)
+  expect_gte(info$available_cores, 1)
 })
 
 test_that("detect_parallel_backend handles NA cores", {
   # Mock detectCores to return NA
   with_mocked_bindings(
     {
-      info <- detect_parallel_backend()
-      expect_equal(info$available_cores, 1)
+      info <- detect_parallel_backend() |> suppressWarnings()
+      expect_identical(info$available_cores, 1)
+      expect_warning(detect_parallel_backend())
     },
     detectCores = function(...) NA_integer_,
     .package = "parallel"
@@ -109,7 +110,7 @@ test_that("smart_parallel_apply works with simple input", {
 
   expect_type(result, "list")
   expect_length(result, 5)
-  expect_equal(unlist(result), c(1, 4, 9, 16, 25))
+  expect_identical(unlist(result), c(1, 4, 9, 16, 25))
 })
 
 test_that("smart_parallel_apply works with additional arguments", {
@@ -117,13 +118,13 @@ test_that("smart_parallel_apply works with additional arguments", {
 
   expect_type(result, "list")
   expect_length(result, 3)
-  expect_equal(unlist(result), c(1, 8, 27))
+  expect_identical(unlist(result), c(1, 8, 27))
 })
 
 test_that("smart_parallel_apply cleans up on error", {
   # This should not leak resources even though it errors
   expect_warning(
-    smart_parallel_apply(1:3, function(x) stop("error")),
+    smart_parallel_apply(substitute(stop()), function(x) eval(x)), # To throw error in TryCatch
     "Parallel execution failed"
   )
 })

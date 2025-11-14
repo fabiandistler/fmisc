@@ -10,18 +10,21 @@ Provides utility functions for R package development, including a comprehensive 
 }
 \section{Smart Parallel Computing}{
 
-The fmisc package includes a comprehensive parallel computing framework that automatically selects the best backend based on your operating system and available packages.
+The fmisc package includes a comprehensive parallel computing framework
+that automatically selects the best backend based on your operating system
+and available packages.
 
 Key functions:
 \itemize{
-\item \code{\link{detect_parallel_backend}} - Detect available parallelization options
-\item \code{\link{setup_parallel}} - Configure parallel computing
-\item \code{\link{smart_parallel_apply}} - Universal parallel apply function
-\item \code{\link{stop_parallel}} - Clean up parallel resources
-\item \code{\link{print_parallel_info}} - Display environment capabilities
+\item \code{\link[=detect_parallel_backend]{detect_parallel_backend()}} - Detect available parallelization options
+\item \code{\link[=setup_parallel]{setup_parallel()}} - Configure parallel computing
+\item \code{\link[=smart_parallel_apply]{smart_parallel_apply()}} - Universal parallel apply function
+\item \code{\link[=stop_parallel]{stop_parallel()}} - Clean up parallel resources
+\item \code{\link[=print_parallel_info]{print_parallel_info()}} - Display environment capabilities
 }
 
-The framework supports multiple backends including mclapply, parLapply, doParallel, doMC, furrr, and future, with intelligent OS-aware selection.
+The framework supports multiple backends including mclapply, parLapply,
+doParallel, doMC, furrr, and future, with intelligent OS-aware selection.
 }
 
 \seealso{

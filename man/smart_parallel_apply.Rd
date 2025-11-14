@@ -15,7 +15,7 @@ smart_parallel_apply(X, FUN, n_cores = NULL, ..., setup = NULL)
 
 \item{...}{Additional arguments passed to FUN}
 
-\item{setup}{Optional pre-configured setup object from \code{\link{setup_parallel}}.
+\item{setup}{Optional pre-configured setup object from \code{\link[=setup_parallel]{setup_parallel()}}.
 If provided, n_cores is ignored. Reusing setup is more efficient for
 multiple operations.}
 }
@@ -43,9 +43,9 @@ stop_parallel(setup)
 }
 }
 \seealso{
-\code{\link{setup_parallel}}, \code{\link{detect_parallel_backend}}
+\code{\link[=setup_parallel]{setup_parallel()}}, \code{\link[=detect_parallel_backend]{detect_parallel_backend()}}
 
-Other parallel:
+Other parallel: 
 \code{\link{detect_parallel_backend}()},
 \code{\link{print_parallel_info}()},
 \code{\link{setup_parallel}()},

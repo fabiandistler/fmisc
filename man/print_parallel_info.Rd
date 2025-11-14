@@ -17,9 +17,9 @@ including available CPU cores, recommended backend, and installed packages.
 print_parallel_info()
 }
 \seealso{
-\code{\link{detect_parallel_backend}}
+\code{\link[=detect_parallel_backend]{detect_parallel_backend()}}
 
-Other parallel:
+Other parallel: 
 \code{\link{detect_parallel_backend}()},
 \code{\link{setup_parallel}()},
 \code{\link{smart_parallel_apply}()},

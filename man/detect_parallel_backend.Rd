@@ -2,7 +2,7 @@
 % Please edit documentation in R/smart_parallel.R
 \name{detect_parallel_backend}
 \alias{detect_parallel_backend}
-\title{Detect the best parallelization backend for the current environment}
+\title{Smart Parallel Framework Selector}
 \usage{
 detect_parallel_backend()
 }
@@ -16,7 +16,8 @@ A list containing backend information:
 \item{packages}{List of available parallel packages}
 }
 \description{
-Detect the best parallelization backend for the current environment
+This module provides intelligent selection and setup of R parallelization
+frameworks based on OS capabilities and available packages.
 }
 \examples{
 # Detect available backend
@@ -25,12 +26,27 @@ print(info$backend)
 print(info$available_cores)
 }
 \seealso{
-\code{\link{setup_parallel}}, \code{\link{smart_parallel_apply}}
+\code{\link[=setup_parallel]{setup_parallel()}}, \code{\link[=smart_parallel_apply]{smart_parallel_apply()}}
 
-Other parallel:
+Other parallel: 
+\code{\link{print_parallel_info}()},
+\code{\link{setup_parallel}()},
+\code{\link{smart_parallel_apply}()},
+\code{\link{stop_parallel}()}
+
+Other parallel: 
 \code{\link{print_parallel_info}()},
 \code{\link{setup_parallel}()},
 \code{\link{smart_parallel_apply}()},
 \code{\link{stop_parallel}()}
 }
 \concept{parallel}
+\keyword{Detect}
+\keyword{backend}
+\keyword{best}
+\keyword{current}
+\keyword{environment}
+\keyword{for}
+\keyword{internal}
+\keyword{parallelization}
+\keyword{the}
