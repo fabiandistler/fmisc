@@ -11,12 +11,12 @@ Depends:
     R (>= 3.5.0)
 Imports:
     cli,
+    foreach,
     parallel,
     rlang
 Suggests:
     doMC,
     doParallel,
-    foreach,
     furrr,
     future,
     glue,
