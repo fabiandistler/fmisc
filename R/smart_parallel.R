@@ -366,7 +366,7 @@ print_parallel_info <- function() {
   message("\nAvailable Packages:")
 
   for (pkg in names(info$packages)) {
-    status <- if (info$packages[[pkg]]) "OK" else "Nope"
+    status <- if (info$packages[[pkg]]) "OK" else "X"
     message(sprintf("  %s %s", status, pkg))
   }
 
