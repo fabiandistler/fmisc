@@ -15,6 +15,7 @@
 # Tipp: Titel und Beschreibung brauchen keine @title/@description Tags
 # Tipp: Backticks für Code: `na.rm`, `TRUE`, `NULL`
 # Tipp: Cross-reference mit [function_name()] für Links
+# TODO {sinew}
 
 #' Kurzer Titel (eine Zeile, kein Punkt am Ende)
 #'
@@ -45,6 +46,7 @@
 #'   - Bei Side-Effects: "Gibt `x` unsichtbar zurück (für Pipe-Nutzung)"
 #'
 #' @export
+#' TODO: add nord,keyword internal, and .prefix for internals (helper pkg)
 #' @examples
 #' # Einfaches Beispiel
 #' my_function(1:10)
@@ -58,7 +60,7 @@ my_function <- function(x,
                         pattern,
                         ...,
                         na.rm = FALSE,
-                        verbose = TRUE) {
+                        verbose = TRUE) { # TODO supressmessage sollte reichen?
   # --- ARGUMENT ORDERING CHECKLIST (design.tidyverse.org) -----------------------
   # [ ] 1. DATEN-Argumente zuerst (x, y, data) - required, bestimmen Output-Shape
   # [ ] 2. DESKRIPTOR-Argumente (pattern, by) - beschreiben die Operation
@@ -72,7 +74,7 @@ my_function <- function(x,
   # vor Args mit Default kommen - NICHT die data/descriptor/details Kategorisierung!
 
   # --- ARGUMENT VALIDATION ------------------------------------------------------
-  # Tipp: cli::cli_abort() statt stop() für bessere Fehlermeldungen
+  # Tipp: cli::cli_abort() statt stop() für bessere Fehlermeldungen TODO: checkmate
   # Tipp: Fehlermeldungen: "must be" wenn Ursache klar, "can't" wenn unklar
   # Tipp: Argument-Name in Backticks: `x`
 
@@ -138,6 +140,8 @@ my_function <- function(x,
       "Using detected pattern: {.val {pattern}}"
     )
   }
+
+  # TODO trycatch
 
   # --- FUNCTION BODY ------------------------------------------------------------
   # Tipp: Comments erklären WARUM, nicht WAS
@@ -258,18 +262,5 @@ stop_not_found <- function(path, call = rlang::caller_env()) {
 # [ ] @examples: Lauffähige Beispiele
 # [ ] Backticks für Code in Dokumentation
 # [ ] @inheritParams für geteilte Parameter
-#
-# ==============================================================================
-# WAS LINTR BEREITS PRÜFT (hier nicht im Template):
-# ==============================================================================
-# - Spacing um Operatoren und nach Kommas
-# - Zeilenlänge (80 chars)
-# - <- statt = für Assignment
-# - Einrückung (2 spaces)
-# - Keine ; am Zeilenende
-# - TRUE/FALSE statt T/F
-# - Keine trailing whitespace
-# - function_argument_linter: Args ohne Default vor Args mit Default
-#   (aber NICHT die data/descriptor/details Kategorisierung!)
 #
 # ==============================================================================
