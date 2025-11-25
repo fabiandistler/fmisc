@@ -2,56 +2,56 @@
 # R Function Template - Best Practices (Tidyverse Style & Design)
 # ==============================================================================
 #
-# Dieses Template enthält Best Practices, die NICHT automatisch von lintr/styler
-# erkannt werden. Lösche, was du nicht brauchst.
+# This template contains best practices that are NOT automatically detected by
+# lintr/styler. Delete what you don't need.
 #
-# Quellen:
+# Sources:
 #   - https://style.tidyverse.org/
 #   - https://design.tidyverse.org/
 #
 # ==============================================================================
 
 # --- ROXYGEN DOCUMENTATION ----------------------------------------------------
-# Tipp: Titel und Beschreibung brauchen keine @title/@description Tags
-# Tipp: Backticks für Code: `na.rm`, `TRUE`, `NULL`
-# Tipp: Cross-reference mit [function_name()] für Links
-# Tipp: Mit {sinew} kann man das roxygen2 Skelett automatisch erstellen.
+# Tip: Title and description don't need @title/@description tags
+# Tip: Backticks for code: `na.rm`, `TRUE`, `NULL`
+# Tip: Cross-reference with [function_name()] for links
+# Tip: With {sinew} you can automatically create the roxygen2 skeleton.
 
-#' Kurzer Titel (eine Zeile, kein Punkt am Ende)
+#' Short title (one line, no period at the end)
 #'
-#' Längere Beschreibung in einem oder mehreren Absätzen.
-#' Erklärt WAS die Funktion macht, nicht WIE (das gehört in Details).
+#' Longer description in one or more paragraphs.
+#' Explains WHAT the function does, not HOW (that belongs in Details).
 #'
 #' @details
-#' Technische Details zur Implementierung.
-#' Verwende für Aufzählungen:
-#' * Punkt 1
-#' * Punkt 2
+#' Technical details about the implementation.
+#' Use for lists:
+#' * Item 1
+#' * Item 2
 #'
-#' @section Spezielle Hinweise:
-#' Für längere thematische Abschnitte.
+#' @section Special Notes:
+#' For longer thematic sections.
 #'
-#' @param x [DATEN-Argument] Beschreibung. Daten-Argumente kommen ZUERST.
-#'   Mehrzeilige Beschreibung mit 2 zusätzlichen Spaces einrücken. Sollte keinen
-#'   Namen haben um partial matching zu vermeiden.
-#' @param pattern [DESKRIPTOR-Argument] Beschreibung. Deskriptoren sind meist
-#'   required und beschreiben wesentliche Details der Operation.
-#' @param ... Dots zwischen Daten/Deskriptoren und Details platzieren.
-#'   Zwingt User, Detail-Argumente mit vollem Namen zu benennen.
-#' @param na.rm [DETAIL-Argument] Beschreibung. Details sind optional,
-#'   haben Defaults und kontrollieren Feinheiten. Default: `FALSE`.
-#' @param verbose [DETAIL-Argument] Beschreibung. Default: `TRUE`.
+#' @param x [DATA argument] Description. Data arguments come FIRST.
+#'   Multi-line description indented with 2 additional spaces. Should not have
+#'   a name to avoid partial matching.
+#' @param pattern [DESCRIPTOR argument] Description. Descriptors are usually
+#'   required and describe essential details of the operation.
+#' @param ... Place dots between data/descriptors and details.
+#'   Forces users to name detail arguments with full names.
+#' @param na.rm [DETAIL argument] Description. Details are optional,
+#'   have defaults and control fine points. Default: `FALSE`.
+#' @param verbose [DETAIL argument] Description. Default: `TRUE`.
 #'
-#' @return Beschreibe den Rückgabetyp und die Struktur.
-#'   - Bei Transformationen: "Ein [Typ] der gleichen Länge wie `x`"
-#'   - Bei Side-Effects: "Gibt `x` unsichtbar zurück (für Pipe-Nutzung)"
+#' @return Describe the return type and structure.
+#'   - For transformations: "A [type] of the same length as `x`"
+#'   - For side-effects: "Returns `x` invisibly (for pipe usage)"
 #'
 #' @export
 #' @examples
-#' # Einfaches Beispiel
+#' # Simple example
 #' my_function(1:10)
 #'
-#' # Mit optionalen Argumenten
+#' # With optional arguments
 #' my_function(1:10, na.rm = TRUE)
 #'
 #' @seealso [related_function()], [other_function()]
@@ -62,79 +62,79 @@ my_function <- function(x,
                         na.rm = FALSE,
                         verbose = TRUE) {
   # --- ARGUMENT ORDERING CHECKLIST (design.tidyverse.org) -----------------------
-  # [ ] 1. DATEN-Argumente zuerst (x, y, data) - required, bestimmen Output-Shape
-  # [ ] 2. DESKRIPTOR-Argumente (pattern, by) - beschreiben die Operation
-  # [ ] 3. ... (falls verwendet) - zwischen required und optional
-  # [ ] 4. DETAIL-Argumente am Ende (na.rm, verbose) - optional mit Defaults
+  # [ ] 1. DATA arguments first (x, y, data) - required, determine output shape
+  # [ ] 2. DESCRIPTOR arguments (pattern, by) - describe the operation
+  # [ ] 3. ... (if used) - between required and optional
+  # [ ] 4. DETAIL arguments at the end (na.rm, verbose) - optional with defaults
   #
-  # Faustregel: Required ohne Default -> Optional mit Default
-  # Wichtigkeit: Absteigend von links nach rechts
+  # Rule of thumb: Required without default -> Optional with default
+  # Importance: Descending from left to right
   #
-  # HINWEIS: lintr's function_argument_linter() prüft nur ob Args ohne Default
-  # vor Args mit Default kommen - NICHT die data/descriptor/details Kategorisierung!
+  # NOTE: lintr's function_argument_linter() only checks if args without default
+  # come before args with default - NOT the data/descriptor/details categorization!
 
   # --- ARGUMENT VALIDATION ------------------------------------------------------
-  # Tipp: cli::cli_abort() statt stop() für bessere Fehlermeldungen
-  # Tipp: Fehlermeldungen: "must be" wenn Ursache klar, "can't" wenn unklar
-  # Tipp: Argument-Name in Backticks: `x`
+  # Tip: cli::cli_abort() instead of stop() for better error messages
+  # Tip: Error messages: "must be" when cause is clear, "can't" when unclear
+  # Tip: Argument name in backticks: `x`
 
-  # Option A: Einfache Validierung mit stopifnot (für interne Funktionen)
+  # Option A: Simple validation with stopifnot (for internal functions)
   stopifnot(
     is.numeric(x),
     length(na.rm) == 1L,
     is.logical(na.rm)
   )
 
-  # Option B: Informative Fehlermeldungen mit cli (für exportierte Funktionen)
-  # Struktur: Problem-Statement + Context (x) + Hinweis (i)
+  # Option B: Informative error messages with cli (for exported functions)
+  # Structure: Problem statement + Context (x) + Hint (i)
   if (!is.numeric(x)) {
     cli::cli_abort(
       c(
-        # Problem-Statement: "must be" wenn klar, "can't" wenn unklar
+        # Problem statement: "must be" when clear, "can't" when unclear
         "{.arg x} must be a numeric vector.",
-        # Context mit x-Bullet
+        # Context with x-bullet
         "x" = "You provided a {.cls {class(x)}} vector.",
-        # Optional: Hinweis mit i-Bullet
+        # Optional: Hint with i-bullet
         "i" = "Convert with {.fn as.numeric} if needed."
       ),
       call = rlang::caller_env()
     )
   }
 
-  # Option C: rlang Type-Checks (kompakt)
+  # Option C: rlang type checks (compact)
   rlang::check_required(x)
   x <- rlang::arg_match(x, c("option1", "option2"))
 
   # Option D: {checkmate}
 
   # --- DOTS HANDLING ------------------------------------------------------------
-  # Wenn ... verwendet wird: IMMER prüfen ob alle dots verwendet wurden
-  # Das verhindert stille Fehler bei Tippfehlern in Argument-Namen
+  # When ... is used: ALWAYS check if all dots were used
+  # This prevents silent errors from typos in argument names
 
   rlang::check_dots_used()
-  # ODER für Funktionen die ... gar nicht verwenden sollen:
+  # OR for functions that should not use ... at all:
   rlang::check_dots_empty()
-  # ODER wenn ... nur unbenannte Werte haben soll (wie sum()):
+  # OR when ... should only have unnamed values (like sum()):
   rlang::check_dots_unnamed()
 
-  # --- NULL-PATTERN FÜR OPTIONALE ARGUMENTE -------------------------------------
-  # Verwende NULL als Default für komplexe Berechnungen
-  # NICHT: function(x, n = nrow(x)) - das ist ein "magical default"
-  # BESSER: function(x, n = NULL) mit Berechnung im Body
-  # %||% ist der Null-Coalescing-Operator aus rlang
+  # --- NULL PATTERN FOR OPTIONAL ARGUMENTS --------------------------------------
+  # Use NULL as default for complex calculations
+  # NOT: function(x, n = nrow(x)) - this is a "magical default"
+  # BETTER: function(x, n = NULL) with calculation in body
+  # %||% is the null-coalescing operator from rlang
 
-  # Komplexe Default-Berechnung
+  # Complex default calculation
   computed_default <- na.rm %||% determine_na_handling(x)
 
-  # VERMEIDE "magical defaults" - Defaults die anders funktionieren wenn
-  # explizit übergeben vs. weggelassen:
-  # - Keine Defaults die von internen Variablen abhängen
-  # - Kein missing() verwenden
-  # - Keine unexportierten Funktionen als Default
+  # AVOID "magical defaults" - Defaults that behave differently when
+  # explicitly passed vs. omitted:
+  # - No defaults that depend on internal variables
+  # - Don't use missing()
+  # - No unexported functions as default
 
-  # --- PROGRESS/MESSAGES FÜR WICHTIGE DEFAULTS ----------------------------------
-  # Wenn ein Default "geraten" wird, den User informieren
-  # Wichtig bei Deskriptor-Argumenten mit Defaults (z.B. by in left_join)
+  # --- PROGRESS/MESSAGES FOR IMPORTANT DEFAULTS ---------------------------------
+  # If a default is "guessed", inform the user
+  # Important for descriptor arguments with defaults (e.g. by in left_join)
 
   if (verbose && is.null(pattern)) {
     pattern <- detect_pattern(x)
@@ -144,25 +144,25 @@ my_function <- function(x,
   }
 
   # --- FUNCTION BODY ------------------------------------------------------------
-  # Tipp: Comments erklären WARUM, nicht WAS
-  # Tipp: return() nur für Early Returns, nicht am Ende
-  # Tipp: tryCatch() für Robustheit nutzen
+  # Tip: Comments explain WHY, not WHAT
+  # Tip: return() only for early returns, not at the end
+  # Tip: Use tryCatch() for robustness
 
-  # Early return Beispiel - hier ist return() angebracht
+  # Early return example - return() is appropriate here
   if (length(x) == 0L) {
     return(x)
   }
 
-  # Normale Berechnung
+  # Normal calculation
   result <- x + 1
 
-  # Letzter Ausdruck wird automatisch zurückgegeben - KEIN return() nötig
+  # Last expression is automatically returned - NO return() needed
   result
 }
 
 # --- SIDE-EFFECT FUNCTIONS ----------------------------------------------------
-# Funktionen die hauptsächlich Side-Effects haben (print, plot, write)
-# sollten das erste Argument unsichtbar zurückgeben für Pipe-Nutzung
+# Functions that primarily have side-effects (print, plot, write)
+# should return the first argument invisibly for pipe usage
 
 #' Print method for my_class
 #' @export
@@ -173,13 +173,13 @@ print.my_class <- function(x, ...) {
 }
 
 # --- OPTIONS OBJECT PATTERN ---------------------------------------------------
-# Bei vielen Detail-Argumenten: Auslagern in separates Options-Objekt
-# Beispiele: glm.control(), readr::locale(), tune::control_resamples()
+# For many detail arguments: Extract into separate options object
+# Examples: glm.control(), readr::locale(), tune::control_resamples()
 
 #' Create options for my_function
 #'
-#' @param opt1 Beschreibung.
-#' @param opt2 Beschreibung.
+#' @param opt1 Description.
+#' @param opt2 Description.
 #' @return A `my_function_opts` object.
 #' @export
 my_function_opts <- function(opt1 = 1, opt2 = 2) {
@@ -192,7 +192,7 @@ my_function_opts <- function(opt1 = 1, opt2 = 2) {
   )
 }
 
-# Nutzung in Hauptfunktion:
+# Usage in main function:
 # my_function <- function(x, ..., opts = my_function_opts()) {
 #   if (!inherits(opts, "mypackage_my_function_opts")) {
 #     cli::cli_abort("{.arg opts} must be created by {.fn my_function_opts}.")
@@ -200,8 +200,8 @@ my_function_opts <- function(opt1 = 1, opt2 = 2) {
 # }
 
 # --- ERROR CONSTRUCTOR PATTERN ------------------------------------------------
-# Für wiederholte Fehler: Custom Error Classes für besseres Testing/Handling
-# Ermöglicht: expect_error(..., class = "mypackage_error_not_found")
+# For repeated errors: Custom error classes for better testing/handling
+# Enables: expect_error(..., class = "mypackage_error_not_found")
 
 #' @noRd
 stop_not_found <- function(path, call = rlang::caller_env()) {
@@ -213,8 +213,8 @@ stop_not_found <- function(path, call = rlang::caller_env()) {
   )
 }
 
-# --- INTERNE/PRIVATE FUNKTIONEN -----------------------------------------------
-# Dokumentiere mit @noRd um .Rd Generierung zu verhindern
+# --- INTERNAL/PRIVATE FUNCTIONS -----------------------------------------------
+# Document with @noRd to prevent .Rd generation
 
 #' Helper function for internal use
 #'
@@ -229,39 +229,39 @@ stop_not_found <- function(path, call = rlang::caller_env()) {
 # DESIGN PRINCIPLES CHECKLIST
 # ==============================================================================
 #
-# ARGUMENT DESIGN (NICHT von lintr geprüft):
-# [ ] Argument-Reihenfolge: data -> descriptors -> ... -> details
-# [ ] Required Args haben KEINEN Default
-# [ ] Optional Args haben einen Default
-# [ ] Defaults sind kurz und verständlich (nicht: x = complex_calculation())
-# [ ] NULL für komplexe Default-Berechnungen im Body
-# [ ] Keine "magischen" Defaults (Default != explizit übergebener Wert)
-# [ ] Keine missing() Verwendung
-# [ ] Keine internen Variablen in Defaults
-# [ ] Wichtige Auto-Defaults werden dem User mitgeteilt
+# ARGUMENT DESIGN (NOT checked by lintr):
+# [ ] Argument order: data -> descriptors -> ... -> details
+# [ ] Required args have NO default
+# [ ] Optional args have a default
+# [ ] Defaults are short and understandable (not: x = complex_calculation())
+# [ ] NULL for complex default calculations in body
+# [ ] No "magical" defaults (default != explicitly passed value)
+# [ ] No missing() usage
+# [ ] No internal variables in defaults
+# [ ] Important auto-defaults are communicated to the user
 #
-# ERROR HANDLING (NICHT von lintr geprüft):
-# [ ] cli::cli_abort() statt stop()
-# [ ] Fehlermeldungen: Problem + Kontext (x) + ggf. Hinweis (i)
-# [ ] "must be" wenn Ursache klar, "can't" wenn unklar
-# [ ] Error-Konstruktoren für wiederholte Fehler
-# [ ] call = rlang::caller_env() für korrekte Fehlerlokalisierung
+# ERROR HANDLING (NOT checked by lintr):
+# [ ] cli::cli_abort() instead of stop()
+# [ ] Error messages: Problem + Context (x) + optional Hint (i)
+# [ ] "must be" when cause is clear, "can't" when unclear
+# [ ] Error constructors for repeated errors
+# [ ] call = rlang::caller_env() for correct error localization
 #
-# DOTS HANDLING (NICHT von lintr geprüft):
-# [ ] ... zwischen data/descriptors und details
-# [ ] rlang::check_dots_used() oder check_dots_empty()
+# DOTS HANDLING (NOT checked by lintr):
+# [ ] ... between data/descriptors and details
+# [ ] rlang::check_dots_used() or check_dots_empty()
 #
-# FUNCTION OUTPUT (NICHT von lintr geprüft):
-# [ ] return() nur für Early Returns
-# [ ] Side-Effect-Funktionen: invisible(x) zurückgeben
-# [ ] Output-Shape folgt Input-Shape (für Pipe-Kompatibilität)
+# FUNCTION OUTPUT (NOT checked by lintr):
+# [ ] return() only for early returns
+# [ ] Side-effect functions: return invisible(x)
+# [ ] Output shape follows input shape (for pipe compatibility)
 #
-# DOCUMENTATION (teilweise von lintr geprüft):
-# [ ] Titel: Eine Zeile, kein Punkt
-# [ ] @param: Typ und Bedeutung, Default erwähnen wenn wichtig
-# [ ] @return: Typ und Struktur
-# [ ] @examples: Lauffähige Beispiele
-# [ ] Backticks für Code in Dokumentation
-# [ ] @inheritParams für geteilte Parameter
+# DOCUMENTATION (partially checked by lintr):
+# [ ] Title: One line, no period
+# [ ] @param: Type and meaning, mention default if important
+# [ ] @return: Type and structure
+# [ ] @examples: Runnable examples
+# [ ] Backticks for code in documentation
+# [ ] @inheritParams for shared parameters
 #
 # ==============================================================================
