@@ -32,7 +32,8 @@
 #' Für längere thematische Abschnitte.
 #'
 #' @param x [DATEN-Argument] Beschreibung. Daten-Argumente kommen ZUERST.
-#'   Mehrzeilige Beschreibung mit 2 zusätzlichen Spaces einrücken.
+#'   Mehrzeilige Beschreibung mit 2 zusätzlichen Spaces einrücken. Sollte keinen
+#'   Namen haben um partial matching zu vermeiden.
 #' @param pattern [DESKRIPTOR-Argument] Beschreibung. Deskriptoren sind meist
 #'   required und beschreiben wesentliche Details der Operation.
 #' @param ... Dots zwischen Daten/Deskriptoren und Details platzieren.
