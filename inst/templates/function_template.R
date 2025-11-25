@@ -15,7 +15,7 @@
 # Tipp: Titel und Beschreibung brauchen keine @title/@description Tags
 # Tipp: Backticks für Code: `na.rm`, `TRUE`, `NULL`
 # Tipp: Cross-reference mit [function_name()] für Links
-# TODO {sinew}
+# Tipp: Mit {sinew} kann man das roxygen2 Skelett automatisch erstellen.
 
 #' Kurzer Titel (eine Zeile, kein Punkt am Ende)
 #'
@@ -47,7 +47,6 @@
 #'   - Bei Side-Effects: "Gibt `x` unsichtbar zurück (für Pipe-Nutzung)"
 #'
 #' @export
-#' TODO: add nord,keyword internal, and .prefix for internals (helper pkg)
 #' @examples
 #' # Einfaches Beispiel
 #' my_function(1:10)
@@ -61,7 +60,7 @@ my_function <- function(x,
                         pattern,
                         ...,
                         na.rm = FALSE,
-                        verbose = TRUE) { # TODO supressmessage sollte reichen?
+                        verbose = TRUE) {
   # --- ARGUMENT ORDERING CHECKLIST (design.tidyverse.org) -----------------------
   # [ ] 1. DATEN-Argumente zuerst (x, y, data) - required, bestimmen Output-Shape
   # [ ] 2. DESKRIPTOR-Argumente (pattern, by) - beschreiben die Operation
@@ -75,7 +74,7 @@ my_function <- function(x,
   # vor Args mit Default kommen - NICHT die data/descriptor/details Kategorisierung!
 
   # --- ARGUMENT VALIDATION ------------------------------------------------------
-  # Tipp: cli::cli_abort() statt stop() für bessere Fehlermeldungen TODO: checkmate
+  # Tipp: cli::cli_abort() statt stop() für bessere Fehlermeldungen
   # Tipp: Fehlermeldungen: "must be" wenn Ursache klar, "can't" wenn unklar
   # Tipp: Argument-Name in Backticks: `x`
 
@@ -105,6 +104,8 @@ my_function <- function(x,
   # Option C: rlang Type-Checks (kompakt)
   rlang::check_required(x)
   x <- rlang::arg_match(x, c("option1", "option2"))
+
+  # Option D: {checkmate}
 
   # --- DOTS HANDLING ------------------------------------------------------------
   # Wenn ... verwendet wird: IMMER prüfen ob alle dots verwendet wurden
@@ -142,11 +143,10 @@ my_function <- function(x,
     )
   }
 
-  # TODO trycatch
-
   # --- FUNCTION BODY ------------------------------------------------------------
   # Tipp: Comments erklären WARUM, nicht WAS
   # Tipp: return() nur für Early Returns, nicht am Ende
+  # Tipp: tryCatch() für Robustheit nutzen
 
   # Early return Beispiel - hier ist return() angebracht
   if (length(x) == 0L) {
