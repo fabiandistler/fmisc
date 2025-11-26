@@ -1,0 +1,9 @@
+id: deprecated-sample-n
+language: r
+severity: warning
+rule:
+  any:
+    - pattern: sample_n($DATA, size = $N)
+    - pattern: sample_n($DATA, $N)
+message: "sample_n() is superseded. Use slice_sample() instead: slice_sample(~~DATA, n = ~~N)"
+fix: slice_sample(~~DATA, n = ~~N)

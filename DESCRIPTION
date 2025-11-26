@@ -3,7 +3,9 @@ Title: Miscellaneous R Utilities
 Version: 0.1.0
 Authors@R:
     person("Fabian", "Distler", , "fabian.distler@example.com", role = c("aut", "cre"))
-Description: Provides utility functions for R package development.
+Description: Provides utility functions for R package development, including
+    smart parallel processing, chunking algorithms, and custom linting rules
+    for both lintr and flir packages.
 License: MIT + file LICENSE
 URL: https://github.com/fabiandistler/fmisc
 BugReports: https://github.com/fabiandistler/fmisc/issues
@@ -18,12 +20,15 @@ Imports:
     furrr,
     future,
     glue,
+    lintr (>= 3.0.0),
     parallel,
     Rcpp,
     rlang,
     usethis,
-    utils
+    utils,
+    xml2
 Suggests:
+    flir,
     testthat (>= 3.0.0)
 LinkingTo: 
     Rcpp

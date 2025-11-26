@@ -8,7 +8,7 @@
 [![R-CMD-check](https://github.com/fabiandistler/fmisc/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/fabiandistler/fmisc/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-Various utilities for software development in R.
+Various utilities for software development in R, including smart parallel processing, chunking algorithms, and custom linting rules.
 
 ## Installation
 
@@ -55,3 +55,52 @@ use_make2()
 # make test     - run tests
 # make help     - see all available targets
 ```
+
+## Code Quality Tools
+
+### Custom Linting Rules
+
+`fmisc` provides custom linting rules for both **lintr** and **flir** packages:
+
+#### Using lintr Custom Linters
+
+``` r
+library(lintr)
+library(fmisc)
+
+# Use individual linters
+lint("my_script.R", linters = todo_fixme_linter())
+
+# Combine with default linters
+lint("my_script.R", linters = c(
+  linters_with_defaults(),
+  todo_fixme_linter(),
+  deprecated_function_linter()
+))
+```
+
+Available linters:
+- `todo_fixme_linter()`: Identifies TODO, FIXME, XXX, and HACK comments
+- `deprecated_function_linter()`: Detects deprecated R functions (e.g., `sapply()`, `require()`)
+
+#### Using flir Custom Rules
+
+``` r
+library(flir)
+
+# Set up flir in your project
+setup_flir()
+
+# Edit flir/config.yml and add:
+# from-package:
+#   - fmisc
+
+# Check and fix your code
+lint_dir()
+fix_dir()
+```
+
+Available flir rules:
+- Replace `T`/`F` with `TRUE`/`FALSE`
+- Update `sample_n()`/`sample_frac()` to `slice_sample()`
+- Replace `1:length(x)` with `seq_along(x)`
