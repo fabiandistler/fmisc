@@ -1,0 +1,61 @@
+INFO  2025-11-12 21:15:40,715 serena.cli:health_check:573 - Starting health check for project: /home/fabian/dev/r-projects/fmisc
+INFO  2025-11-12 21:15:40,715 serena.cli:health_check:577 - Creating SerenaAgent with disabled dashboard...
+INFO  2025-11-12 21:15:40,718 serena.agent:__init__:130 - Will record tool usage statistics with token count estimator: CHAR_COUNT.
+INFO  2025-11-12 21:15:40,988 serena.agent:__init__:134 - Starting Serena server (version=0.1.4-903daf04-dirty, process id=69910, parent process id=69874)
+INFO  2025-11-12 21:15:40,989 serena.agent:__init__:135 - Configuration file: None
+INFO  2025-11-12 21:15:40,989 serena.agent:__init__:136 - Available projects: 
+INFO  2025-11-12 21:15:40,990 serena.agent:__init__:137 - Loaded tools (38): read_file, create_text_file, list_dir, find_file, replace_regex, delete_lines, replace_lines, insert_at_line, search_for_pattern, restart_language_server, get_symbols_overview, find_symbol, find_referencing_symbols, replace_symbol_body, insert_after_symbol, insert_before_symbol, rename_symbol, write_memory, read_memory, list_memories, delete_memory, edit_memory, execute_shell_command, activate_project, remove_project, switch_modes, get_current_config, check_onboarding_performed, onboarding, think_about_collected_information, think_about_task_adherence, think_about_whether_you_are_done, summarize_changes, prepare_for_new_conversation, initial_instructions, jet_brains_find_symbol, jet_brains_find_referencing_symbols, jet_brains_get_symbols_overview
+INFO  2025-11-12 21:15:40,991 serena.config.serena_config:apply:110 - SerenaAgentContext[name='desktop-app'] included 1 tools: switch_modes
+INFO  2025-11-12 21:15:40,993 serena.agent:__init__:151 - Number of exposed tools: 29
+INFO  2025-11-12 21:15:41,048 serena.agent:_update_active_tools:382 - Active tools (29): activate_project, check_onboarding_performed, create_text_file, delete_memory, edit_memory, execute_shell_command, find_file, find_referencing_symbols, find_symbol, get_current_config, get_symbols_overview, initial_instructions, insert_after_symbol, insert_before_symbol, list_dir, list_memories, onboarding, prepare_for_new_conversation, read_file, read_memory, rename_symbol, replace_regex, replace_symbol_body, search_for_pattern, switch_modes, think_about_collected_information, think_about_task_adherence, think_about_whether_you_are_done, write_memory
+INFO  2025-11-12 21:15:41,061 serena.util.file_system:start:360 - Loading of .gitignore files starting ...
+INFO  2025-11-12 21:15:41,062 serena.util.file_system:_load_gitignore_files:148 - Processing .gitignore file: /home/fabian/dev/r-projects/fmisc/.gitignore
+INFO  2025-11-12 21:15:41,063 serena.util.file_system:_load_gitignore_files:148 - Processing .gitignore file: /home/fabian/dev/r-projects/fmisc/.serena/.gitignore
+INFO  2025-11-12 21:15:41,067 serena.util.file_system:stop:367 - Loading of .gitignore files completed in 0.005 seconds
+INFO  2025-11-12 21:15:41,068 serena.agent:load_project_from_path_or_name:449 - Added new project fmisc for path /home/fabian/dev/r-projects/fmisc
+INFO  2025-11-12 21:15:41,068 serena.agent:_activate_project:419 - Activating fmisc at /home/fabian/dev/r-projects/fmisc
+INFO  2025-11-12 21:15:41,069 serena.agent:_update_active_tools:382 - Active tools (29): activate_project, check_onboarding_performed, create_text_file, delete_memory, edit_memory, execute_shell_command, find_file, find_referencing_symbols, find_symbol, get_current_config, get_symbols_overview, initial_instructions, insert_after_symbol, insert_before_symbol, list_dir, list_memories, onboarding, prepare_for_new_conversation, read_file, read_memory, rename_symbol, replace_regex, replace_symbol_body, search_for_pattern, switch_modes, think_about_collected_information, think_about_task_adherence, think_about_whether_you_are_done, write_memory
+INFO  2025-11-12 21:15:41,069 serena.task_executor:issue_task:192 - Scheduling Task-1:init_language_server_manager
+INFO  2025-11-12 21:15:41,070 serena.cli:health_check:580 - SerenaAgent created successfully
+INFO  2025-11-12 21:15:41,070 serena.cli:health_check:583 - Searching for analyzable files...
+INFO  2025-11-12 21:15:41,079 serena.cli:health_check:592 - Found analyzable file: README.Rmd
+INFO  2025-11-12 21:15:41,079 serena.cli:health_check:610 - Testing GetSymbolsOverviewTool on file: README.Rmd
+INFO  2025-11-12 21:15:41,079 serena.task_executor:issue_task:192 - Scheduling Task-2:<lambda>
+INFO  2025-11-12 21:15:41,095 serena.task_executor:_process_task_queue:123 - Starting execution of Task-1:init_language_server_manager
+INFO  2025-11-12 21:15:41,096 serena.task_executor:start:360 - Task-1:init_language_server_manager starting ...
+INFO  2025-11-12 21:15:41,096 serena.agent:start:360 - Language server initialization starting ...
+INFO  2025-11-12 21:15:41,097 serena.project:create_language_server_manager:384 - Creating language server manager for /home/fabian/dev/r-projects/fmisc
+INFO  2025-11-12 21:15:41,098 sensai.util.logging:start:360 - Language server startup (language=r) starting ...
+INFO  2025-11-12 21:15:41,099 serena.ls_manager:create_language_server:44 - Creating language server instance for /home/fabian/dev/r-projects/fmisc, language=r.
+INFO  2025-11-12 21:15:42,401 solidlsp:load_cache:1597 - Loading document symbols cache from /home/fabian/dev/r-projects/fmisc/.serena/cache/r/document_symbols_cache_v23-06-25.pkl
+INFO  2025-11-12 21:15:42,402 solidlsp:load_cache:1601 - Loaded 10 document symbols from cache.
+INFO  2025-11-12 21:15:42,403 solidlsp:start:1689 - Starting language server with language r for /home/fabian/dev/r-projects/fmisc
+INFO  2025-11-12 21:15:42,404 solidlsp:_start_server:149 - Starting R Language Server process
+INFO  2025-11-12 21:15:42,404 solidlsp.ls_handler:start:193 - Starting language server process via command: R --vanilla --quiet --slave -e "options(languageserver.debug_mode = FALSE); languageserver::run()"
+INFO  2025-11-12 21:15:42,406 solidlsp:_start_server:153 - Sending initialize request to R Language Server
+INFO  2025-11-12 21:15:46,227 solidlsp:_start_server:164 - R LSP completion provider available
+INFO  2025-11-12 21:15:46,228 solidlsp:_start_server:166 - R LSP definition provider available
+INFO  2025-11-12 21:15:46,229 sensai.util.logging:stop:367 - Language server startup (language=r) completed in 5.131 seconds
+INFO  2025-11-12 21:15:46,229 serena.agent:stop:367 - Language server initialization completed in 5.133 seconds
+INFO  2025-11-12 21:15:46,229 serena.task_executor:stop:367 - Task-1:init_language_server_manager completed in 5.134 seconds
+INFO  2025-11-12 21:15:46,229 serena.task_executor:_process_task_queue:123 - Starting execution of Task-2:<lambda>
+INFO  2025-11-12 21:15:46,231 serena.task_executor:start:360 - Task-2:<lambda> starting ...
+ERROR 2025-11-12 21:17:28,409 sensai.util.logging:__exit__:410 - Exception within FileLoggerContext
+Traceback (most recent call last):
+  File "/home/fabian/.cache/uv/archive-v0/SFOnDADIMYqazVHU6eUT_/lib/python3.11/site-packages/serena/cli.py", line 611, in health_check
+    overview_result = agent.execute_task(lambda: overview_tool.apply(target_file))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fabian/.cache/uv/archive-v0/SFOnDADIMYqazVHU6eUT_/lib/python3.11/site-packages/serena/agent.py", line 410, in execute_task
+    return self._task_executor.execute_task(task, name=name, logged=logged, timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fabian/.cache/uv/archive-v0/SFOnDADIMYqazVHU6eUT_/lib/python3.11/site-packages/serena/task_executor.py", line 209, in execute_task
+    return task_obj.result()
+           ^^^^^^^^^^^^^^^^^
+  File "/home/fabian/.cache/uv/archive-v0/SFOnDADIMYqazVHU6eUT_/lib/python3.11/site-packages/serena/task_executor.py", line 85, in result
+    return self.future.result(timeout=timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/fabian/.local/share/uv/python/cpython-3.11.13-linux-x86_64-gnu/lib/python3.11/concurrent/futures/_base.py", line 451, in result
+    self._condition.wait(timeout)
+  File "/home/fabian/.local/share/uv/python/cpython-3.11.13-linux-x86_64-gnu/lib/python3.11/threading.py", line 327, in wait
+    waiter.acquire()
+KeyboardInterrupt
