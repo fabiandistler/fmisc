@@ -1,6 +1,6 @@
 Package: fmisc
 Title: Miscellaneous R Utilities
-Version: 0.1.0.9000
+Version: 0.1.0.9001
 Authors@R:
     person("Fabian", "Distler", , "fabian.distler@example.com", role = c("aut", "cre"))
 Description: Provides utility functions for R package development.
@@ -12,18 +12,18 @@ Depends:
 Imports:
     cli,
     data.table,
-    doMC,
-    doParallel,
     foreach,
-    furrr,
-    future,
-    glue,
-    parallel,
     Rcpp,
-    rlang,
     usethis,
     utils
 Suggests:
+    rlang,
+    glue,
+    future,
+    doParallel,
+    furrr,
+    parallel,
+    doMC,
     testthat (>= 3.0.0)
 LinkingTo: 
     Rcpp

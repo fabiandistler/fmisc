@@ -2,7 +2,7 @@
 % Please edit documentation in R/smart_parallel.R
 \name{smart_parallel_apply}
 \alias{smart_parallel_apply}
-\title{Universal parallel apply function}
+\title{Smart Parallel Framework Selector}
 \usage{
 smart_parallel_apply(X, FUN, n_cores = NULL, ..., setup = NULL)
 }
@@ -23,15 +23,14 @@ multiple operations.}
 A list of results
 }
 \description{
-Applies a function to elements of a vector/list using the best available
-parallel backend automatically. This function automatically detects the best
-parallelization method for your system and applies FUN to each element of X.
+This module provides intelligent selection and setup of R parallelization
+frameworks based on OS capabilities and available packages.
 }
 \examples{
+\donttest{
 # Simple parallel computation
 result <- smart_parallel_apply(1:10, function(x) x^2)
 
-\donttest{
 # With additional arguments
 result <- smart_parallel_apply(1:10, function(x, p) x^p, p = 3)
 
@@ -50,5 +49,42 @@ Other parallel:
 \code{\link{print_parallel_info}()},
 \code{\link{setup_parallel}()},
 \code{\link{stop_parallel}()}
+
+Other parallel: 
+\code{\link{detect_parallel_backend}()},
+\code{\link{print_parallel_info}()},
+\code{\link{setup_parallel}()},
+\code{\link{stop_parallel}()}
 }
 \concept{parallel}
+\keyword{Applies}
+\keyword{FUN}
+\keyword{This}
+\keyword{Universal}
+\keyword{X.}
+\keyword{a}
+\keyword{and}
+\keyword{applies}
+\keyword{apply}
+\keyword{automatically}
+\keyword{automatically.}
+\keyword{available}
+\keyword{backend}
+\keyword{best}
+\keyword{detects}
+\keyword{each}
+\keyword{element}
+\keyword{elements}
+\keyword{for}
+\keyword{function}
+\keyword{internal}
+\keyword{method}
+\keyword{of}
+\keyword{parallel}
+\keyword{parallelization}
+\keyword{system}
+\keyword{the}
+\keyword{to}
+\keyword{using}
+\keyword{vector/list}
+\keyword{your}
