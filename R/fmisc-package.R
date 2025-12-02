@@ -1,31 +1,28 @@
-#' @section Smart Parallel Computing:
-#' The fmisc package includes a comprehensive parallel computing framework
-#' that automatically selects the best backend based on your operating system
-#' and available packages.
+#' fmisc: Custom Linting Rules for R Code
 #'
-#' Key functions:
-#' * [detect_parallel_backend()] - Detect available parallelization options
-#' * [setup_parallel()] - Configure parallel computing
-#' * [smart_parallel_apply()] - Universal parallel apply function
-#' * [stop_parallel()] - Clean up parallel resources
-#' * [print_parallel_info()] - Display environment capabilities
+#' @description
+#' The fmisc package provides custom linting rules for both lintr and flir
+#' packages. It includes ready-to-use linter functions that integrate with
+#' lintr and YAML-based rules for flir automatic code fixing.
 #'
-#' The framework supports multiple backends including mclapply, parLapply,
-#' doParallel, doMC, furrr, and future, with intelligent OS-aware selection.
+#' @section lintr Custom Linters:
+#' The package exports several custom linters:
+#' \itemize{
+#'   \item \code{\link{todo_fixme_linter}}: Detects TODO/FIXME comments
+#'   \item \code{\link{deprecated_function_linter}}: Identifies deprecated functions
+#' }
 #'
+#' @section flir Custom Rules:
+#' Custom rules are available in the package installation directory and can
+#' be accessed via \code{\link{get_flir_rules}}. To use them, add fmisc to
+#' the \code{from-package} field in your project's \code{flir/config.yml}.
+#'
+#' @docType package
+#' @name fmisc-package
+#' @aliases fmisc
 #' @keywords internal
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @importFrom data.table :=
-#' @importFrom data.table .BY
-#' @importFrom data.table .EACHI
-#' @importFrom data.table .GRP
-#' @importFrom data.table .I
-#' @importFrom data.table .N
-#' @importFrom data.table .NGRP
-#' @importFrom data.table .SD
-#' @importFrom data.table data.table
-#' @importFrom foreach %dopar%
 ## usethis namespace: end
 NULL

@@ -47,9 +47,3 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
-.Rproj.user
-
-# Compiled files
-*.o
-*.so
-*.dll

@@ -1,0 +1,7 @@
+id: use-seq-along
+language: r
+severity: warning
+rule:
+  pattern: 1:length($VAR)
+message: "Use seq_along(~~VAR) instead of 1:length(~~VAR) to handle empty vectors safely"
+fix: seq_along(~~VAR)

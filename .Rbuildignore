@@ -1,10 +1,7 @@
-^fmisc\.Rproj$
+^.*\.Rproj$
 ^\.Rproj\.user$
-^Makefile$
-^LICENSE\.md$
-^\.claude$
-^\.serena$
-^README\.Rmd$
-^dev$
 ^\.github$
-^TEST_VALIDATION\.md$
+^README\.Rmd$
+^LICENSE\.md$
+^\.git$
+^\.gitignore$
