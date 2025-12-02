@@ -6,6 +6,98 @@
 #' @family parallel
 #' @keywords internal
 
+
+#' Universal parallel apply function
+#'
+#' Applies a function to elements of a vector/list using the best available
+#' parallel backend automatically. This function automatically detects the best
+#' parallelization method for your system and applies FUN to each element of X.
+#'
+#' @param X A vector or list to iterate over
+#' @param FUN Function to apply to each element
+#' @param n_cores Number of cores to use (NULL for auto-detection)
+#' @param ... Additional arguments passed to FUN
+#' @param setup Optional pre-configured setup object from [setup_parallel()].
+#'   If provided, n_cores is ignored. Reusing setup is more efficient for
+#'   multiple operations.
+#'
+#' @return A list of results
+#'
+#' @seealso [setup_parallel()], [detect_parallel_backend()]
+#' @family parallel
+#' @export
+#'
+#' @examples
+#' \donttest{
+#' # Simple parallel computation
+#' result <- smart_parallel_apply(1:10, function(x) x^2)
+#'
+#' # With additional arguments
+#' result <- smart_parallel_apply(1:10, function(x, p) x^p, p = 3)
+#'
+#' # Reusing setup for multiple operations (more efficient)
+#' setup <- setup_parallel(n_cores = 2)
+#' result1 <- smart_parallel_apply(1:100, sqrt, setup = setup)
+#' result2 <- smart_parallel_apply(1:100, log, setup = setup)
+#' stop_parallel(setup)
+#' }
+smart_parallel_apply <- function(X, FUN, n_cores = NULL, ..., setup = NULL) {
+  # Create setup if not provided
+  cleanup <- FALSE
+  if (is.null(setup)) {
+    setup <- setup_parallel(n_cores = n_cores, verbose = FALSE)
+    cleanup <- TRUE
+    # Ensure cleanup happens even if there's an error
+    on.exit(
+      {
+        if (cleanup) {
+          stop_parallel(setup)
+        }
+      },
+      add = TRUE
+    )
+  }
+
+  # Execute based on backend
+  result <- tryCatch(
+    {
+      if (setup$backend == "mclapply") {
+        parallel::mclapply(X, FUN, ..., mc.cores = setup$n_cores)
+      } else if (setup$backend == "parLapply") {
+        # On Windows, we need to export variables to cluster nodes
+        if (.Platform$OS.type == "windows") {
+          # Export all variables from parent environment
+          parallel::clusterExport(
+            setup$cluster,
+            varlist = ls(envir = parent.frame()),
+            envir = parent.frame()
+          )
+        }
+        parallel::parLapply(setup$cluster, X, FUN, ...)
+      } else if (setup$backend %in% c("doMC", "doParallel", "foreach")) {
+        i <- NULL # Avoid R CMD check NOTE
+        # Use .combine = list to ensure consistent return type
+        foreach::foreach(i = X, .combine = list, .multicombine = TRUE) %dopar% {
+          FUN(i, ...)
+        }
+      } else if (setup$backend == "furrr") {
+        furrr::future_map(X, FUN, ...)
+      } else {
+        # Sequential fallback
+        lapply(X, FUN, ...)
+      }
+    },
+    error = function(e) {
+      warning(sprintf("Parallel execution failed, falling back to sequential: %s", e$message))
+      lapply(X, FUN, ...)
+    }
+  )
+
+  result
+}
+
+
+
 #' Detect the best parallelization backend for the current environment
 #'
 #' @return A list containing backend information:
@@ -252,96 +344,6 @@ stop_parallel <- function(setup) {
   }
 
   invisible(NULL)
-}
-
-
-#' Universal parallel apply function
-#'
-#' Applies a function to elements of a vector/list using the best available
-#' parallel backend automatically. This function automatically detects the best
-#' parallelization method for your system and applies FUN to each element of X.
-#'
-#' @param X A vector or list to iterate over
-#' @param FUN Function to apply to each element
-#' @param n_cores Number of cores to use (NULL for auto-detection)
-#' @param ... Additional arguments passed to FUN
-#' @param setup Optional pre-configured setup object from [setup_parallel()].
-#'   If provided, n_cores is ignored. Reusing setup is more efficient for
-#'   multiple operations.
-#'
-#' @return A list of results
-#'
-#' @seealso [setup_parallel()], [detect_parallel_backend()]
-#' @family parallel
-#' @export
-#'
-#' @examples
-#' # Simple parallel computation
-#' result <- smart_parallel_apply(1:10, function(x) x^2)
-#'
-#' \donttest{
-#' # With additional arguments
-#' result <- smart_parallel_apply(1:10, function(x, p) x^p, p = 3)
-#'
-#' # Reusing setup for multiple operations (more efficient)
-#' setup <- setup_parallel(n_cores = 2)
-#' result1 <- smart_parallel_apply(1:100, sqrt, setup = setup)
-#' result2 <- smart_parallel_apply(1:100, log, setup = setup)
-#' stop_parallel(setup)
-#' }
-smart_parallel_apply <- function(X, FUN, n_cores = NULL, ..., setup = NULL) {
-  # Create setup if not provided
-  cleanup <- FALSE
-  if (is.null(setup)) {
-    setup <- setup_parallel(n_cores = n_cores, verbose = FALSE)
-    cleanup <- TRUE
-    # Ensure cleanup happens even if there's an error
-    on.exit(
-      {
-        if (cleanup) {
-          stop_parallel(setup)
-        }
-      },
-      add = TRUE
-    )
-  }
-
-  # Execute based on backend
-  result <- tryCatch(
-    {
-      if (setup$backend == "mclapply") {
-        parallel::mclapply(X, FUN, ..., mc.cores = setup$n_cores)
-      } else if (setup$backend == "parLapply") {
-        # On Windows, we need to export variables to cluster nodes
-        if (.Platform$OS.type == "windows") {
-          # Export all variables from parent environment
-          parallel::clusterExport(
-            setup$cluster,
-            varlist = ls(envir = parent.frame()),
-            envir = parent.frame()
-          )
-        }
-        parallel::parLapply(setup$cluster, X, FUN, ...)
-      } else if (setup$backend %in% c("doMC", "doParallel", "foreach")) {
-        i <- NULL # Avoid R CMD check NOTE
-        # Use .combine = list to ensure consistent return type
-        foreach::foreach(i = X, .combine = list, .multicombine = TRUE) %dopar% {
-          FUN(i, ...)
-        }
-      } else if (setup$backend == "furrr") {
-        furrr::future_map(X, FUN, ...)
-      } else {
-        # Sequential fallback
-        lapply(X, FUN, ...)
-      }
-    },
-    error = function(e) {
-      warning(sprintf("Parallel execution failed, falling back to sequential: %s", e$message))
-      lapply(X, FUN, ...)
-    }
-  )
-
-  result
 }
 
 
