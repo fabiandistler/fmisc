@@ -12,18 +12,18 @@ Depends:
 Imports:
     cli,
     data.table,
-    doMC,
-    doParallel,
-    foreach,
-    furrr,
-    future,
-    glue,
-    parallel,
     Rcpp,
-    rlang,
     usethis,
     utils
 Suggests:
+    rlang,
+    glue,
+    future,
+    doParallel,
+    foreach,
+    furrr,
+    parallel,
+    doMC,
     testthat (>= 3.0.0)
 LinkingTo: 
     Rcpp
