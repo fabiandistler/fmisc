@@ -12,6 +12,7 @@ Depends:
 Imports:
     cli,
     data.table,
+    foreach,
     Rcpp,
     usethis,
     utils
@@ -20,7 +21,6 @@ Suggests:
     glue,
     future,
     doParallel,
-    foreach,
     furrr,
     parallel,
     doMC,
