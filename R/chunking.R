@@ -1,79 +1,3 @@
-#' Get Current RAM Usage
-#'
-#' Returns the current RAM usage in MB for the R session.
-#'
-#' @return Numeric value representing RAM usage in MB
-#' @importFrom utils memory.size object.size
-#' @export
-#' @examples
-#' \dontrun{
-#' current_ram <- get_ram_usage()
-#' print(paste("Current RAM usage:", current_ram, "MB"))
-#' }
-get_ram_usage <- function() {
-  if (.Platform$OS.type == "windows") {
-    # Windows: use memory.size()
-    return(memory.size())
-  } else {
-    # Unix-like systems: parse /proc or use gc()
-    gc_info <- gc(reset = TRUE)
-    # Sum of used memory from Ncells and Vcells in MB
-    used_mb <- sum(gc_info[, 2]) * 8 / (1024^2) # Convert to MB
-    return(used_mb)
-  }
-}
-
-#' Create Chunk Iterator
-#'
-#' Creates an iterator that splits data into chunks based on a maximum chunk size.
-#'
-#' @param data A data.frame, matrix, or vector to chunk
-#' @param chunk_size Integer specifying the number of rows/elements per chunk
-#' @return A list containing chunk information and an iterator function
-#' @export
-#' @examples
-#' \dontrun{
-#' data <- data.frame(x = 1:1000, y = rnorm(1000))
-#' iterator <- create_chunk_iterator(data, chunk_size = 100)
-#' chunk <- iterator$get_next()
-#' }
-create_chunk_iterator <- function(data, chunk_size) {
-  if (is.data.frame(data) || is.matrix(data)) {
-    total_rows <- nrow(data)
-  } else if (is.vector(data) && !is.list(data)) {
-    total_rows <- length(data)
-  } else {
-    stop("Data must be a data.frame, matrix, or vector")
-  }
-
-  num_chunks <- ceiling(total_rows / chunk_size)
-  current_chunk <- 0
-
-  list(
-    total_chunks = num_chunks,
-    chunk_size = chunk_size,
-    current_chunk = function() current_chunk,
-    has_next = function() current_chunk < num_chunks,
-    get_next = function() {
-      if (current_chunk >= num_chunks) {
-        return(NULL)
-      }
-      current_chunk <<- current_chunk + 1
-      start_idx <- (current_chunk - 1) * chunk_size + 1
-      end_idx <- min(current_chunk * chunk_size, total_rows)
-
-      if (is.data.frame(data) || is.matrix(data)) {
-        return(data[start_idx:end_idx, , drop = FALSE])
-      } else {
-        return(data[start_idx:end_idx])
-      }
-    },
-    reset = function() {
-      current_chunk <<- 0
-    }
-  )
-}
-
 #' Process Data with Automatic Chunking and RAM Management
 #'
 #' Processes data in chunks while monitoring RAM usage. Automatically writes
@@ -231,6 +155,84 @@ process_with_chunks <- function(data,
 
   return(final_result)
 }
+
+
+#' Get Current RAM Usage
+#'
+#' Returns the current RAM usage in MB for the R session.
+#'
+#' @return Numeric value representing RAM usage in MB
+#' @importFrom utils memory.size object.size
+#' @export
+#' @examples
+#' \dontrun{
+#' current_ram <- get_ram_usage()
+#' print(paste("Current RAM usage:", current_ram, "MB"))
+#' }
+get_ram_usage <- function() {
+  if (.Platform$OS.type == "windows") {
+    # Windows: use memory.size()
+    return(memory.size())
+  } else {
+    # Unix-like systems: parse /proc or use gc()
+    gc_info <- gc(reset = TRUE)
+    # Sum of used memory from Ncells and Vcells in MB
+    used_mb <- sum(gc_info[, 2]) * 8 / (1024^2) # Convert to MB
+    return(used_mb)
+  }
+}
+
+#' Create Chunk Iterator
+#'
+#' Creates an iterator that splits data into chunks based on a maximum chunk size.
+#'
+#' @param data A data.frame, matrix, or vector to chunk
+#' @param chunk_size Integer specifying the number of rows/elements per chunk
+#' @return A list containing chunk information and an iterator function
+#' @export
+#' @examples
+#' \dontrun{
+#' data <- data.frame(x = 1:1000, y = rnorm(1000))
+#' iterator <- create_chunk_iterator(data, chunk_size = 100)
+#' chunk <- iterator$get_next()
+#' }
+create_chunk_iterator <- function(data, chunk_size) {
+  if (is.data.frame(data) || is.matrix(data)) {
+    total_rows <- nrow(data)
+  } else if (is.vector(data) && !is.list(data)) {
+    total_rows <- length(data)
+  } else {
+    stop("Data must be a data.frame, matrix, or vector")
+  }
+
+  num_chunks <- ceiling(total_rows / chunk_size)
+  current_chunk <- 0
+
+  list(
+    total_chunks = num_chunks,
+    chunk_size = chunk_size,
+    current_chunk = function() current_chunk,
+    has_next = function() current_chunk < num_chunks,
+    get_next = function() {
+      if (current_chunk >= num_chunks) {
+        return(NULL)
+      }
+      current_chunk <<- current_chunk + 1
+      start_idx <- (current_chunk - 1) * chunk_size + 1
+      end_idx <- min(current_chunk * chunk_size, total_rows)
+
+      if (is.data.frame(data) || is.matrix(data)) {
+        return(data[start_idx:end_idx, , drop = FALSE])
+      } else {
+        return(data[start_idx:end_idx])
+      }
+    },
+    reset = function() {
+      current_chunk <<- 0
+    }
+  )
+}
+
 
 #' Chunk Processor Class
 #'
