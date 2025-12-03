@@ -18,7 +18,7 @@ using namespace Rcpp;
 //' Fast implementation to get current RAM usage in MB.
 //'
 //' @return Numeric value representing RAM usage in MB
-//' @export
+//' @keywords internal
 // [[Rcpp::export]]
 double get_ram_usage_cpp() {
 #ifdef _WIN32
@@ -67,7 +67,7 @@ double get_ram_usage_cpp() {
 //' @param x Numeric vector to chunk
 //' @param chunk_size Size of each chunk
 //' @return List of numeric vectors (chunks)
-//' @export
+//' @keywords internal
 // [[Rcpp::export]]
 List split_vector_chunks(NumericVector x, int chunk_size) {
   int n = x.size();
@@ -96,7 +96,7 @@ List split_vector_chunks(NumericVector x, int chunk_size) {
 //' @param mat Numeric matrix to chunk
 //' @param chunk_size Number of rows per chunk
 //' @return List of numeric matrices (chunks)
-//' @export
+//' @keywords internal
 // [[Rcpp::export]]
 List split_matrix_chunks(NumericMatrix mat, int chunk_size) {
   int nrows = mat.nrow();
@@ -130,7 +130,7 @@ List split_matrix_chunks(NumericMatrix mat, int chunk_size) {
 //' @param max_ram_mb Maximum RAM in MB
 //' @param target_fraction Fraction of max RAM to use per chunk (default 0.1)
 //' @return Optimal chunk size (number of rows)
-//' @export
+//' @keywords internal
 // [[Rcpp::export]]
 int calculate_optimal_chunk_size(double data_size_mb,
                                  int total_rows,
@@ -154,7 +154,7 @@ int calculate_optimal_chunk_size(double data_size_mb,
 //'
 //' @param max_ram_mb Maximum RAM threshold in MB
 //' @return Boolean indicating if RAM threshold is exceeded
-//' @export
+//' @keywords internal
 // [[Rcpp::export]]
 bool ram_threshold_exceeded(double max_ram_mb) {
   double current_ram = get_ram_usage_cpp();
@@ -166,7 +166,7 @@ bool ram_threshold_exceeded(double max_ram_mb) {
 //' Returns system information including total and available RAM.
 //'
 //' @return List with system memory information
-//' @export
+//' @keywords internal
 // [[Rcpp::export]]
 List get_system_info() {
 #ifdef _WIN32

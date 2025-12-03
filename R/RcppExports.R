@@ -6,7 +6,7 @@
 #' Fast implementation to get current RAM usage in MB.
 #'
 #' @return Numeric value representing RAM usage in MB
-#' @export
+#' @keywords internal
 get_ram_usage_cpp <- function() {
     .Call(`_fmisc_get_ram_usage_cpp`)
 }
@@ -18,7 +18,7 @@ get_ram_usage_cpp <- function() {
 #' @param x Numeric vector to chunk
 #' @param chunk_size Size of each chunk
 #' @return List of numeric vectors (chunks)
-#' @export
+#' @keywords internal
 split_vector_chunks <- function(x, chunk_size) {
     .Call(`_fmisc_split_vector_chunks`, x, chunk_size)
 }
@@ -30,7 +30,7 @@ split_vector_chunks <- function(x, chunk_size) {
 #' @param mat Numeric matrix to chunk
 #' @param chunk_size Number of rows per chunk
 #' @return List of numeric matrices (chunks)
-#' @export
+#' @keywords internal
 split_matrix_chunks <- function(mat, chunk_size) {
     .Call(`_fmisc_split_matrix_chunks`, mat, chunk_size)
 }
@@ -44,7 +44,7 @@ split_matrix_chunks <- function(mat, chunk_size) {
 #' @param max_ram_mb Maximum RAM in MB
 #' @param target_fraction Fraction of max RAM to use per chunk (default 0.1)
 #' @return Optimal chunk size (number of rows)
-#' @export
+#' @keywords internal
 calculate_optimal_chunk_size <- function(data_size_mb, total_rows, max_ram_mb, target_fraction = 0.1) {
     .Call(`_fmisc_calculate_optimal_chunk_size`, data_size_mb, total_rows, max_ram_mb, target_fraction)
 }
@@ -55,7 +55,7 @@ calculate_optimal_chunk_size <- function(data_size_mb, total_rows, max_ram_mb, t
 #'
 #' @param max_ram_mb Maximum RAM threshold in MB
 #' @return Boolean indicating if RAM threshold is exceeded
-#' @export
+#' @keywords internal
 ram_threshold_exceeded <- function(max_ram_mb) {
     .Call(`_fmisc_ram_threshold_exceeded`, max_ram_mb)
 }
@@ -65,7 +65,7 @@ ram_threshold_exceeded <- function(max_ram_mb) {
 #' Returns system information including total and available RAM.
 #'
 #' @return List with system memory information
-#' @export
+#' @keywords internal
 get_system_info <- function() {
     .Call(`_fmisc_get_system_info`)
 }

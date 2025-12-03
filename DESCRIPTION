@@ -1,6 +1,6 @@
 Package: fmisc
 Title: Miscellaneous R Utilities
-Version: 0.1.0.9001
+Version: 0.1.0.9002
 Authors@R:
     person("Fabian", "Distler", , "fabian.distler@example.com", role = c("aut", "cre"))
 Description: Provides utility functions for R package development.

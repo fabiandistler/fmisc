@@ -17,3 +17,4 @@ List of numeric matrices (chunks)
 \description{
 Efficiently splits a matrix into row-wise chunks.
 }
+\keyword{internal}

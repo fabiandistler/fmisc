@@ -1,5 +1,5 @@
 test_that("get_ram_usage returns numeric value", {
-  ram <- get_ram_usage()
+  ram <- get_ram_usage_cpp()
 
   expect_type(ram, "double")
   expect_true(ram > 0)
@@ -19,7 +19,7 @@ test_that("get_ram_usage_cpp returns numeric value", {
 test_that("get_ram_usage and get_ram_usage_cpp return valid values", {
   skip_if_not_installed("Rcpp")
 
-  ram_r <- get_ram_usage()
+  ram_r <- get_ram_usage_cpp()
   ram_cpp <- get_ram_usage_cpp()
 
   # Both should be positive and reasonable
@@ -86,7 +86,7 @@ test_that("ram_threshold_exceeded handles edge cases", {
 
 test_that("RAM usage increases with data allocation", {
   # This test checks if RAM monitoring detects changes
-  initial_ram <- get_ram_usage()
+  initial_ram <- get_ram_usage_cpp()
 
   # Allocate some memory
   large_data <- vector("list", 1000)
@@ -98,7 +98,7 @@ test_that("RAM usage increases with data allocation", {
   sum_val <- sum(unlist(large_data))
   expect_true(is.finite(sum_val))
 
-  after_ram <- get_ram_usage()
+  after_ram <- get_ram_usage_cpp()
 
   # RAM should have increased (or at least not decreased significantly)
   # Using a loose check since gc() behavior can vary
@@ -111,9 +111,9 @@ test_that("RAM usage increases with data allocation", {
 
 test_that("get_ram_usage handles multiple calls", {
   # Multiple calls should work without error
-  ram1 <- get_ram_usage()
-  ram2 <- get_ram_usage()
-  ram3 <- get_ram_usage()
+  ram1 <- get_ram_usage_cpp()
+  ram2 <- get_ram_usage_cpp()
+  ram3 <- get_ram_usage_cpp()
 
   expect_type(ram1, "double")
   expect_type(ram2, "double")
