@@ -27,5 +27,7 @@
 #' @importFrom data.table .SD
 #' @importFrom data.table data.table
 #' @importFrom foreach %dopar%
+#' @importFrom Rcpp sourceCpp
+#' @useDynLib fmisc, .registration = TRUE
 ## usethis namespace: end
 NULL
