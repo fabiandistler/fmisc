@@ -16,6 +16,8 @@ A list containing chunk information and an iterator function
 }
 \description{
 Creates an iterator that splits data into chunks based on a maximum chunk size.
+Uses fast C++ implementations for numeric matrices and vectors, standard R subsetting
+for data frames to preserve row indices and ordering.
 }
 \examples{
 \dontrun{

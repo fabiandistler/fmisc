@@ -152,7 +152,7 @@ test_that("full workflow: optimal chunk size calculation and usage", {
     y = rnorm(1000)
   )
 
-  data_size_mb <- as.numeric(object.size(df)) / (1024^2)
+  data_size_mb <- as.numeric(utils::object.size(df)) / (1024^2)
 
   # Calculate optimal chunk size
   optimal_size <- calculate_optimal_chunk_size(

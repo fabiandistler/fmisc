@@ -10,7 +10,7 @@ get_ram_usage()
 Numeric value representing RAM usage in MB
 }
 \description{
-Returns the current RAM usage in MB for the R session.
+Returns the current RAM usage in MB for the R session using fast C++ implementation.
 }
 \examples{
 \dontrun{

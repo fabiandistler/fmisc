@@ -34,15 +34,14 @@ process_with_chunks <- function(data,
                                 verbose = TRUE) {
   # Calculate optimal chunk size if not provided
   if (is.null(chunk_size)) {
-    data_size_mb <- as.numeric(object.size(data)) / (1024^2)
+    data_size_mb <- as.numeric(utils::object.size(data)) / (1024^2)
     if (is.data.frame(data) || is.matrix(data)) {
       total_rows <- nrow(data)
     } else {
       total_rows <- length(data)
     }
-    # Aim for chunks that use ~10% of max RAM
-    target_chunk_ram <- max_ram_mb * 0.1
-    chunk_size <- max(1, floor(total_rows * target_chunk_ram / data_size_mb))
+    # Use C++ implementation for optimal chunk size calculation
+    chunk_size <- calculate_optimal_chunk_size(data_size_mb, total_rows, max_ram_mb, target_fraction = 0.1)
     if (verbose) {
       message(sprintf("Auto-calculated chunk size: %d rows", chunk_size))
     }
@@ -122,17 +121,7 @@ process_with_chunks <- function(data,
   # Combine all results
   final_result <- NULL
 
-  # First, combine any remaining in-memory results
-  if (length(results_list) > 0) {
-    if (length(results_list) == 1) {
-      in_memory_result <- results_list[[1]]
-    } else {
-      in_memory_result <- Reduce(combine_fn, results_list)
-    }
-    final_result <- in_memory_result
-  }
-
-  # Then, read and combine disk chunks
+  # First, combine disk chunks (in order)
   if (length(disk_chunks) > 0) {
     for (chunk_file in disk_chunks) {
       disk_chunk <- readRDS(chunk_file)
@@ -147,6 +136,20 @@ process_with_chunks <- function(data,
     unlink(chunk_dir, recursive = TRUE)
   }
 
+  # Then, combine any remaining in-memory results (these came after the last disk flush)
+  if (length(results_list) > 0) {
+    if (length(results_list) == 1) {
+      in_memory_result <- results_list[[1]]
+    } else {
+      in_memory_result <- Reduce(combine_fn, results_list)
+    }
+    if (is.null(final_result)) {
+      final_result <- in_memory_result
+    } else {
+      final_result <- combine_fn(final_result, in_memory_result)
+    }
+  }
+
   if (verbose) {
     final_ram <- get_ram_usage()
     message(sprintf("Final RAM usage: %.2f MB", final_ram))
@@ -159,7 +162,7 @@ process_with_chunks <- function(data,
 
 #' Get Current RAM Usage
 #'
-#' Returns the current RAM usage in MB for the R session.
+#' Returns the current RAM usage in MB for the R session using fast C++ implementation.
 #'
 #' @return Numeric value representing RAM usage in MB
 #' @keywords internal
@@ -169,21 +172,14 @@ process_with_chunks <- function(data,
 #' print(paste("Current RAM usage:", current_ram, "MB"))
 #' }
 get_ram_usage <- function() {
-  if (.Platform$OS.type == "windows") {
-    # Windows: use memory.size()
-    return(utils::memory.size())
-  } else {
-    # Unix-like systems: parse /proc or use gc()
-    gc_info <- gc(reset = TRUE)
-    # Sum of used memory from Ncells and Vcells in MB
-    used_mb <- sum(gc_info[, 2]) * 8 / (1024^2) # Convert to MB
-    return(used_mb)
-  }
+  get_ram_usage_cpp()
 }
 
 #' Create Chunk Iterator
 #'
 #' Creates an iterator that splits data into chunks based on a maximum chunk size.
+#' Uses fast C++ implementations for numeric matrices and vectors, standard R subsetting
+#' for data frames to preserve row indices and ordering.
 #'
 #' @param data A data.frame, data.table, matrix, or vector to chunk
 #' @param chunk_size Integer specifying the number of rows/elements per chunk
@@ -207,6 +203,15 @@ create_chunk_iterator <- function(data, chunk_size) {
   num_chunks <- ceiling(total_rows / chunk_size)
   current_chunk <- 0
 
+  # For numeric matrices only, use C++ chunking (faster for large numeric data)
+  chunks <- NULL
+  if (is.matrix(data) && is.numeric(data)) {
+    chunks <- split_matrix_chunks(data, chunk_size)
+  } else if (is.vector(data) && is.numeric(data) && !is.list(data)) {
+    chunks <- split_vector_chunks(data, chunk_size)
+  }
+  # For data.frames and mixed-type matrices, use standard R subsetting to preserve row order
+
   list(
     total_chunks = num_chunks,
     chunk_size = chunk_size,
@@ -217,6 +222,13 @@ create_chunk_iterator <- function(data, chunk_size) {
         return(NULL)
       }
       current_chunk <<- current_chunk + 1
+
+      # If pre-computed chunks exist (numeric matrices/vectors), use them
+      if (!is.null(chunks)) {
+        return(chunks[[current_chunk]])
+      }
+
+      # Otherwise use standard R subsetting (preserves row order and attributes for data.frames)
       start_idx <- (current_chunk - 1) * chunk_size + 1
       end_idx <- min(current_chunk * chunk_size, total_rows)
 
