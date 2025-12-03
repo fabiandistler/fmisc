@@ -17,3 +17,4 @@ List of numeric vectors (chunks)
 \description{
 Efficiently splits a numeric vector into chunks.
 }
+\keyword{internal}

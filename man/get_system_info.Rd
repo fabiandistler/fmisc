@@ -12,3 +12,4 @@ List with system memory information
 \description{
 Returns system information including total and available RAM.
 }
+\keyword{internal}

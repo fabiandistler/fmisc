@@ -15,3 +15,4 @@ Boolean indicating if RAM threshold is exceeded
 \description{
 Monitors RAM usage and returns true if threshold is exceeded.
 }
+\keyword{internal}

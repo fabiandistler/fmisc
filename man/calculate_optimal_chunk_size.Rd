@@ -26,3 +26,4 @@ Optimal chunk size (number of rows)
 \description{
 Calculates optimal chunk size based on data size and RAM limits.
 }
+\keyword{internal}

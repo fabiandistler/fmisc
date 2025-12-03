@@ -56,7 +56,7 @@ process_with_chunks <- function(data,
 
   results_list <- list()
   disk_chunks <- character()
-  initial_ram <- get_ram_usage()
+  initial_ram <- get_ram_usage_cpp()
 
   if (verbose) {
     message(sprintf("Starting processing with %d chunks", iterator$total_chunks))
@@ -69,7 +69,7 @@ process_with_chunks <- function(data,
     chunk_data <- iterator$get_next()
 
     # Check RAM before processing
-    current_ram <- get_ram_usage()
+    current_ram <- get_ram_usage_cpp()
     if (verbose && chunk_num %% 10 == 0) {
       message(sprintf(
         "Processing chunk %d/%d (RAM: %.2f MB)",
@@ -81,7 +81,7 @@ process_with_chunks <- function(data,
     processed_chunk <- process_fn(chunk_data)
 
     # Check RAM after processing
-    current_ram <- get_ram_usage()
+    current_ram <- get_ram_usage_cpp()
 
     # If RAM usage is too high, write to disk
     if (current_ram > max_ram_mb || length(results_list) > 50) {
@@ -105,7 +105,7 @@ process_with_chunks <- function(data,
         gc()
 
         if (verbose) {
-          message(sprintf("Wrote chunk to disk. New RAM usage: %.2f MB", get_ram_usage()))
+          message(sprintf("Wrote chunk to disk. New RAM usage: %.2f MB", get_ram_usage_cpp()))
         }
       }
     }
@@ -151,7 +151,7 @@ process_with_chunks <- function(data,
   }
 
   if (verbose) {
-    final_ram <- get_ram_usage()
+    final_ram <- get_ram_usage_cpp()
     message(sprintf("Final RAM usage: %.2f MB", final_ram))
     message("Done!")
   }
@@ -159,21 +159,6 @@ process_with_chunks <- function(data,
   return(final_result)
 }
 
-
-#' Get Current RAM Usage
-#'
-#' Returns the current RAM usage in MB for the R session using fast C++ implementation.
-#'
-#' @return Numeric value representing RAM usage in MB
-#' @keywords internal
-#' @examples
-#' \dontrun{
-#' current_ram <- get_ram_usage()
-#' print(paste("Current RAM usage:", current_ram, "MB"))
-#' }
-get_ram_usage <- function() {
-  get_ram_usage_cpp()
-}
 
 #' Create Chunk Iterator
 #'
@@ -272,7 +257,7 @@ chunk_processor <- function(max_ram_mb = 1000, temp_dir = tempdir(), verbose = T
       chunks[[length(chunks) + 1]] <<- chunk_data
 
       # Check if we need to flush to disk
-      current_ram <- get_ram_usage()
+      current_ram <- get_ram_usage_cpp()
       if (current_ram > max_ram_mb || length(chunks) > 50) {
         if (verbose) {
           message(sprintf("Flushing to disk (RAM: %.2f MB)", current_ram))
@@ -332,8 +317,8 @@ chunk_processor <- function(max_ram_mb = 1000, temp_dir = tempdir(), verbose = T
         disk_chunks <<- character()
       }
     },
-    get_ram_usage = function() {
-      get_ram_usage()
+    get_ram_usage_cpp = function() {
+      get_ram_usage_cpp()
     }
   )
 }

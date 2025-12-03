@@ -12,3 +12,4 @@ Numeric value representing RAM usage in MB
 \description{
 Fast implementation to get current RAM usage in MB.
 }
+\keyword{internal}

@@ -5,7 +5,7 @@ test_that("chunk_processor initializes correctly", {
   expect_true("add_chunk" %in% names(processor))
   expect_true("get_results" %in% names(processor))
   expect_true("cleanup" %in% names(processor))
-  expect_true("get_ram_usage" %in% names(processor))
+  expect_true("get_ram_usage_cpp" %in% names(processor))
 })
 
 test_that("chunk_processor add_chunk works", {
