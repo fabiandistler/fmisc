@@ -2,7 +2,6 @@
 
 export(calculate_optimal_chunk_size)
 export(chunk_processor)
-export(create_chunk_iterator)
 export(detect_parallel_backend)
 export(get_ram_usage_cpp)
 export(get_system_info)

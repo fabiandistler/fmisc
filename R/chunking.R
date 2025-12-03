@@ -185,10 +185,10 @@ get_ram_usage <- function() {
 #'
 #' Creates an iterator that splits data into chunks based on a maximum chunk size.
 #'
-#' @param data A data.frame, matrix, or vector to chunk
+#' @param data A data.frame, data.table, matrix, or vector to chunk
 #' @param chunk_size Integer specifying the number of rows/elements per chunk
 #' @return A list containing chunk information and an iterator function
-#' @export
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' data <- data.frame(x = 1:1000, y = rnorm(1000))
@@ -196,7 +196,7 @@ get_ram_usage <- function() {
 #' chunk <- iterator$get_next()
 #' }
 create_chunk_iterator <- function(data, chunk_size) {
-  if (is.data.frame(data) || is.matrix(data)) {
+  if (is.data.frame(data) || data.table::is.data.table(data) || is.matrix(data)) {
     total_rows <- nrow(data)
   } else if (is.vector(data) && !is.list(data)) {
     total_rows <- length(data)
@@ -220,7 +220,7 @@ create_chunk_iterator <- function(data, chunk_size) {
       start_idx <- (current_chunk - 1) * chunk_size + 1
       end_idx <- min(current_chunk * chunk_size, total_rows)
 
-      if (is.data.frame(data) || is.matrix(data)) {
+      if (is.data.frame(data) || data.table::is.data.table(data) || is.matrix(data)) {
         return(data[start_idx:end_idx, , drop = FALSE])
       } else {
         return(data[start_idx:end_idx])

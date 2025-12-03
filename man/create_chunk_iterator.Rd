@@ -7,7 +7,7 @@
 create_chunk_iterator(data, chunk_size)
 }
 \arguments{
-\item{data}{A data.frame, matrix, or vector to chunk}
+\item{data}{A data.frame, data.table, matrix, or vector to chunk}
 
 \item{chunk_size}{Integer specifying the number of rows/elements per chunk}
 }
@@ -24,3 +24,4 @@ iterator <- create_chunk_iterator(data, chunk_size = 100)
 chunk <- iterator$get_next()
 }
 }
+\keyword{internal}
