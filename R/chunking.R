@@ -162,8 +162,7 @@ process_with_chunks <- function(data,
 #' Returns the current RAM usage in MB for the R session.
 #'
 #' @return Numeric value representing RAM usage in MB
-#' @importFrom utils memory.size object.size
-#' @export
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' current_ram <- get_ram_usage()
@@ -172,7 +171,7 @@ process_with_chunks <- function(data,
 get_ram_usage <- function() {
   if (.Platform$OS.type == "windows") {
     # Windows: use memory.size()
-    return(memory.size())
+    return(utils::memory.size())
   } else {
     # Unix-like systems: parse /proc or use gc()
     gc_info <- gc(reset = TRUE)

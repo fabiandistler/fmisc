@@ -18,3 +18,4 @@ current_ram <- get_ram_usage()
 print(paste("Current RAM usage:", current_ram, "MB"))
 }
 }
+\keyword{internal}
