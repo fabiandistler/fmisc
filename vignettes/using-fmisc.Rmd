@@ -225,12 +225,12 @@ x <- numeric(0)
 
 # Unsafe: will iterate once with i = 1, then i = 0
 for (i in 1:length(x)) {
-  print(i)  # Prints: 1, 0
+  print(i) # Prints: 1, 0
 }
 
 # Safe: will not iterate at all
 for (i in seq_along(x)) {
-  print(i)  # Nothing printed
+  print(i) # Nothing printed
 }
 ```
 

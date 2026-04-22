@@ -25,7 +25,7 @@ test_that("flir rules are valid YAML", {
   for (yaml_file in yaml_files) {
     expect_error(
       yaml::read_yaml(yaml_file),
-      NA,  # Expect no error
+      NA, # Expect no error
       info = paste("Failed to parse:", basename(yaml_file))
     )
 
