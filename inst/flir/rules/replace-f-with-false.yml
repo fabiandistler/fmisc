@@ -2,9 +2,7 @@ id: replace-f-with-false
 language: r
 severity: warning
 rule:
-  any:
-    - pattern: F
-    - pattern: "FALSE"
+  pattern: F
   inside:
     not:
       kind: string_content

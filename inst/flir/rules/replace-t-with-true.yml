@@ -2,9 +2,7 @@ id: replace-t-with-true
 language: r
 severity: warning
 rule:
-  any:
-    - pattern: T
-    - pattern: "TRUE"
+  pattern: T
   inside:
     not:
       kind: string_content

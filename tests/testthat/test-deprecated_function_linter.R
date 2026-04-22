@@ -9,7 +9,7 @@ test_that("deprecated_function_linter detects sapply", {
 
   expect_lint(
     "result <- sapply(data, function(x) mean(x))",
-    "vapply",
+    "Avoid sapply",
     linter
   )
 })
@@ -20,6 +20,22 @@ test_that("deprecated_function_linter detects require", {
   expect_lint(
     "require(dplyr)",
     "Use library() instead of require()",
+    linter
+  )
+})
+
+test_that("deprecated_function_linter detects library", {
+  linter <- deprecated_function_linter()
+
+  expect_lint(
+    "library(dplyr)",
+    "Package dependencies should be declared in DESCRIPTION",
+    linter
+  )
+
+  expect_lint(
+    "suppressPackageStartupMessages(library(dplyr))",
+    NULL,
     linter
   )
 })
