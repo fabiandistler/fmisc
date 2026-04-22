@@ -12,13 +12,6 @@ stop_parallel(setup)
 \description{
 Stop parallel backend and clean up resources
 }
-\examples{
-\donttest{
-setup <- setup_parallel(n_cores = 2)
-# ... do parallel work ...
-stop_parallel(setup)
-}
-}
 \seealso{
 \code{\link[=setup_parallel]{setup_parallel()}}, \code{\link[=smart_parallel_apply]{smart_parallel_apply()}}
 
@@ -29,3 +22,4 @@ Other parallel:
 \code{\link{smart_parallel_apply}()}
 }
 \concept{parallel}
+\keyword{internal}

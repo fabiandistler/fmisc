@@ -18,12 +18,6 @@ A list containing backend information:
 \description{
 Detect the best parallelization backend for the current environment
 }
-\examples{
-# Detect available backend
-info <- detect_parallel_backend()
-print(info$backend)
-print(info$available_cores)
-}
 \seealso{
 \code{\link[=setup_parallel]{setup_parallel()}}, \code{\link[=smart_parallel_apply]{smart_parallel_apply()}}
 
@@ -34,3 +28,4 @@ Other parallel:
 \code{\link{stop_parallel}()}
 }
 \concept{parallel}
+\keyword{internal}

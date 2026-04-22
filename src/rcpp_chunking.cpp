@@ -6,6 +6,11 @@
 #ifdef _WIN32
 #include <windows.h>
 #include <psapi.h>
+#elif defined(__APPLE__)
+#include <unistd.h>
+#include <sys/resource.h>
+#include <sys/sysctl.h>
+#include <mach/mach.h>
 #else
 #include <unistd.h>
 #include <sys/resource.h>
@@ -179,8 +184,27 @@ List get_system_info() {
     Named("available_ram_mb") = memInfo.ullAvailPhys / (1024.0 * 1024.0),
     Named("used_ram_mb") = get_ram_usage_cpp()
   );
+#elif defined(__APPLE__)
+  int64_t mem_size = 0;
+  size_t len = sizeof(mem_size);
+  sysctlbyname("hw.memsize", &mem_size, &len, NULL, 0);
+  double total_ram_mb = mem_size / (1024.0 * 1024.0);
+
+  mach_port_t host = mach_host_self();
+  vm_size_t page_size_vm;
+  host_page_size(host, &page_size_vm);
+  vm_statistics64_data_t vm_stats;
+  mach_msg_type_number_t count = HOST_VM_INFO64_COUNT;
+  host_statistics64(host, HOST_VM_INFO64, (host_info64_t)&vm_stats, &count);
+  double avail_ram_mb = (vm_stats.free_count + vm_stats.inactive_count) *
+    page_size_vm / (1024.0 * 1024.0);
+
+  return List::create(
+    Named("total_ram_mb") = total_ram_mb,
+    Named("available_ram_mb") = avail_ram_mb,
+    Named("used_ram_mb") = get_ram_usage_cpp()
+  );
 #else
-  // Unix/Linux implementation
   long pages = sysconf(_SC_PHYS_PAGES);
   long page_size = sysconf(_SC_PAGE_SIZE);
   double total_ram_mb = (pages * page_size) / (1024.0 * 1024.0);

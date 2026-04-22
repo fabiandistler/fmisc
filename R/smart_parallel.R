@@ -17,9 +17,9 @@
 #' @param FUN Function to apply to each element
 #' @param n_cores Number of cores to use (NULL for auto-detection)
 #' @param ... Additional arguments passed to FUN
-#' @param setup Optional pre-configured setup object from [setup_parallel()].
-#'   If provided, n_cores is ignored. Reusing setup is more efficient for
-#'   multiple operations.
+#' @param setup Advanced: Optional pre-configured setup object from [setup_parallel()].
+#'   If provided, n_cores is ignored. Most users should omit this parameter.
+#'   Reusing setup is more efficient for multiple operations.
 #'
 #' @return A list of results
 #'
@@ -34,12 +34,6 @@
 #'
 #' # With additional arguments
 #' result <- smart_parallel_apply(1:10, function(x, p) x^p, p = 3)
-#'
-#' # Reusing setup for multiple operations (more efficient)
-#' setup <- setup_parallel(n_cores = 2)
-#' result1 <- smart_parallel_apply(1:100, sqrt, setup = setup)
-#' result2 <- smart_parallel_apply(1:100, log, setup = setup)
-#' stop_parallel(setup)
 #' }
 smart_parallel_apply <- function(X, FUN, n_cores = NULL, ..., setup = NULL) {
   # Create setup if not provided
@@ -97,7 +91,6 @@ smart_parallel_apply <- function(X, FUN, n_cores = NULL, ..., setup = NULL) {
 }
 
 
-
 #' Detect the best parallelization backend for the current environment
 #'
 #' @return A list containing backend information:
@@ -110,13 +103,7 @@ smart_parallel_apply <- function(X, FUN, n_cores = NULL, ..., setup = NULL) {
 #'
 #' @seealso [setup_parallel()], [smart_parallel_apply()]
 #' @family parallel
-#' @export
-#'
-#' @examples
-#' # Detect available backend
-#' info <- detect_parallel_backend()
-#' print(info$backend)
-#' print(info$available_cores)
+#' @keywords internal
 detect_parallel_backend <- function() {
   # Detect OS type
   os_type <- .Platform$OS.type
@@ -192,24 +179,7 @@ detect_parallel_backend <- function() {
 #' @seealso [detect_parallel_backend()], [stop_parallel()],
 #'   [smart_parallel_apply()]
 #' @family parallel
-#' @export
-#'
-#' @examples
-#' \donttest{
-#' if (FALSE) {
-#'   # Auto-detect and setup
-#'   setup <- setup_parallel()
-#'   stop_parallel(setup)
-#'
-#'   # Use specific number of cores
-#'   setup <- setup_parallel(n_cores = 2)
-#'   stop_parallel(setup)
-#'
-#'   # Force specific backend
-#'   setup <- setup_parallel(backend = "doParallel")
-#'   stop_parallel(setup)
-#' }
-#' }
+#' @keywords internal
 setup_parallel <- function(n_cores = NULL, backend = NULL, verbose = TRUE) {
   info <- detect_parallel_backend()
 
@@ -306,14 +276,7 @@ setup_parallel <- function(n_cores = NULL, backend = NULL, verbose = TRUE) {
 #'
 #' @seealso [setup_parallel()], [smart_parallel_apply()]
 #' @family parallel
-#' @export
-#'
-#' @examples
-#' \donttest{
-#' setup <- setup_parallel(n_cores = 2)
-#' # ... do parallel work ...
-#' stop_parallel(setup)
-#' }
+#' @keywords internal
 stop_parallel <- function(setup) {
   # Validate setup parameter
   if (!is.list(setup)) {
@@ -356,10 +319,7 @@ stop_parallel <- function(setup) {
 #'
 #' @seealso [detect_parallel_backend()]
 #' @family parallel
-#' @export
-#'
-#' @examples
-#' print_parallel_info()
+#' @keywords internal
 print_parallel_info <- function() {
   info <- detect_parallel_backend()
 
