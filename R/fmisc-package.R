@@ -3,12 +3,8 @@
 #' that automatically selects the best backend based on your operating system
 #' and available packages.
 #'
-#' Key functions:
-#' * [detect_parallel_backend()] - Detect available parallelization options
-#' * [setup_parallel()] - Configure parallel computing
-#' * [smart_parallel_apply()] - Universal parallel apply function
-#' * [stop_parallel()] - Clean up parallel resources
-#' * [print_parallel_info()] - Display environment capabilities
+#' Key function:
+#' * [smart_parallel_apply()] - Universal parallel apply with automatic backend detection
 #'
 #' The framework supports multiple backends including mclapply, parLapply,
 #' doParallel, doMC, furrr, and future, with intelligent OS-aware selection.

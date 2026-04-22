@@ -13,9 +13,6 @@ Invisibly returns the backend detection information
 Displays detailed information about your parallel computing environment,
 including available CPU cores, recommended backend, and installed packages.
 }
-\examples{
-print_parallel_info()
-}
 \seealso{
 \code{\link[=detect_parallel_backend]{detect_parallel_backend()}}
 
@@ -26,3 +23,4 @@ Other parallel:
 \code{\link{stop_parallel}()}
 }
 \concept{parallel}
+\keyword{internal}

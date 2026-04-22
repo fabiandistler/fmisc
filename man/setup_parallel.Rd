@@ -26,23 +26,6 @@ A list with cluster object (if applicable) and backend information:
 \description{
 Setup parallel backend with automatic configuration
 }
-\examples{
-\donttest{
-if (FALSE) {
-  # Auto-detect and setup
-  setup <- setup_parallel()
-  stop_parallel(setup)
-
-  # Use specific number of cores
-  setup <- setup_parallel(n_cores = 2)
-  stop_parallel(setup)
-
-  # Force specific backend
-  setup <- setup_parallel(backend = "doParallel")
-  stop_parallel(setup)
-}
-}
-}
 \seealso{
 \code{\link[=detect_parallel_backend]{detect_parallel_backend()}}, \code{\link[=stop_parallel]{stop_parallel()}},
 \code{\link[=smart_parallel_apply]{smart_parallel_apply()}}
@@ -54,3 +37,4 @@ Other parallel:
 \code{\link{stop_parallel}()}
 }
 \concept{parallel}
+\keyword{internal}

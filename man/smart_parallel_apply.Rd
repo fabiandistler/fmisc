@@ -15,9 +15,9 @@ smart_parallel_apply(X, FUN, n_cores = NULL, ..., setup = NULL)
 
 \item{...}{Additional arguments passed to FUN}
 
-\item{setup}{Optional pre-configured setup object from \code{\link[=setup_parallel]{setup_parallel()}}.
-If provided, n_cores is ignored. Reusing setup is more efficient for
-multiple operations.}
+\item{setup}{Advanced: Optional pre-configured setup object from \code{\link[=setup_parallel]{setup_parallel()}}.
+If provided, n_cores is ignored. Most users should omit this parameter.
+Reusing setup is more efficient for multiple operations.}
 }
 \value{
 A list of results
@@ -33,12 +33,6 @@ result <- smart_parallel_apply(1:10, function(x) x^2)
 
 # With additional arguments
 result <- smart_parallel_apply(1:10, function(x, p) x^p, p = 3)
-
-# Reusing setup for multiple operations (more efficient)
-setup <- setup_parallel(n_cores = 2)
-result1 <- smart_parallel_apply(1:100, sqrt, setup = setup)
-result2 <- smart_parallel_apply(1:100, log, setup = setup)
-stop_parallel(setup)
 }
 }
 \seealso{
