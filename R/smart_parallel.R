@@ -91,7 +91,6 @@ smart_parallel_apply <- function(X, FUN, n_cores = NULL, ..., setup = NULL) {
 }
 
 
-
 #' Detect the best parallelization backend for the current environment
 #'
 #' @return A list containing backend information:
