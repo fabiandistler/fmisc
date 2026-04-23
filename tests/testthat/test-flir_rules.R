@@ -10,10 +10,8 @@ test_that("flir rules directory contains YAML files", {
   yaml_files <- list.files(rules_path, pattern = "\\.yml$")
 
   expect_true(length(yaml_files) > 0)
-  expect_true("replace-t-with-true.yml" %in% yaml_files)
-  expect_true("replace-f-with-false.yml" %in% yaml_files)
   expect_true("deprecated-sample-n.yml" %in% yaml_files)
-  expect_true("use-seq-along.yml" %in% yaml_files)
+  expect_true("deprecated-sample-frac.yml" %in% yaml_files)
 })
 
 test_that("flir rules are valid YAML", {

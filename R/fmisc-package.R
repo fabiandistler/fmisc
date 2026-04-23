@@ -10,14 +10,8 @@
 #' doParallel, doMC, furrr, and future, with intelligent OS-aware selection.
 #'
 #' @section Custom Linting Rules:
-#' The package provides custom linting rules for both lintr and flir packages.
-#'
-#' lintr linters:
-#' * [todo_fixme_linter()] - Detects TODO/FIXME comments
-#' * [deprecated_function_linter()] - Identifies deprecated functions
-#'
-#' flir rules are available in the package installation directory and can
-#' be accessed via [get_flir_rules()].
+#' The package provides custom flir rules available in the package installation
+#' directory and can be accessed via [get_flir_rules()].
 #'
 #' @keywords internal
 "_PACKAGE"

@@ -13,11 +13,9 @@ Imports:
     cli,
     data.table,
     foreach,
-    lintr (>= 3.0.0),
     Rcpp,
     usethis,
-    utils,
-    xml2
+    utils
 Suggests:
     flir,
     rlang,

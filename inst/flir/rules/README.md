@@ -4,20 +4,11 @@ This directory contains custom flir rules for the fmisc package. These rules can
 
 ## Available Rules
 
-### `replace-t-with-true.yml`
-Replaces `T` with `TRUE` for better code clarity and to avoid confusion with variables named T.
-
-### `replace-f-with-false.yml`
-Replaces `F` with `FALSE` for better code clarity and to avoid confusion with variables named F.
-
 ### `deprecated-sample-n.yml`
 Replaces deprecated `sample_n()` with modern `slice_sample()` from dplyr.
 
 ### `deprecated-sample-frac.yml`
 Replaces deprecated `sample_frac()` with modern `slice_sample()` from dplyr.
-
-### `use-seq-along.yml`
-Replaces `1:length(x)` with safer `seq_along(x)` that handles empty vectors correctly.
 
 ## Usage
 

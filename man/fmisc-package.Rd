@@ -23,6 +23,12 @@ The framework supports multiple backends including mclapply, parLapply,
 doParallel, doMC, furrr, and future, with intelligent OS-aware selection.
 }
 
+\section{Custom Linting Rules}{
+
+The package provides custom flir rules available in the package installation
+directory and can be accessed via \code{\link[=get_flir_rules]{get_flir_rules()}}.
+}
+
 \seealso{
 Useful links:
 \itemize{
