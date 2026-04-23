@@ -1,0 +1,9 @@
+id: deprecated-sample-frac
+language: r
+severity: warning
+rule:
+  any:
+    - pattern: sample_frac($DATA, size = $FRAC)
+    - pattern: sample_frac($DATA, $FRAC)
+message: "sample_frac() is superseded. Use slice_sample() instead: slice_sample(~~DATA, prop = ~~FRAC)"
+fix: slice_sample(~~DATA, prop = ~~FRAC)

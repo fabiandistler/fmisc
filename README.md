@@ -55,3 +55,35 @@ use_make2()
 # make test     - run tests
 # make help     - see all available targets
 ```
+
+## Linting
+
+### lintr Custom Linters
+
+``` r
+library(lintr)
+library(fmisc)
+
+lint("my_script.R", linters = c(
+  linters_with_defaults(),
+  todo_fixme_linter(),
+  deprecated_function_linter()
+))
+```
+
+Available linters:
+
+- `todo_fixme_linter()`: Detects TODO/FIXME/XXX/HACK comments
+- `deprecated_function_linter()`: Flags deprecated functions (e.g. `sapply()`, `require()`)
+
+### flir Custom Rules
+
+Rules are bundled in the package. To use them, add fmisc to the
+`from-package` field in your project's `flir/config.yml`:
+
+``` r
+get_flir_rules()
+```
+
+Available rules: `replace-t-with-true`, `replace-f-with-false`,
+`deprecated-sample-n`, `deprecated-sample-frac`, `use-seq-along`.
