@@ -1,2 +1,0 @@
-README.Rmd
-Request timed out (timeout=10.0)
