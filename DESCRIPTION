@@ -18,6 +18,8 @@ Imports:
     utils
 Suggests:
     flir,
+    knitr,
+    rmarkdown,
     rlang,
     glue,
     future,
@@ -25,7 +27,9 @@ Suggests:
     furrr,
     parallel,
     doMC,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    yaml
+VignetteBuilder: knitr
 LinkingTo:
     Rcpp
 Config/testthat/edition: 3
