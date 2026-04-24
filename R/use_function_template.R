@@ -39,42 +39,21 @@
 #' use_function_template("my_function", open = FALSE)
 #' }
 use_function_template <- function(name, open = interactive()) {
-  # Check if we're in a package project
-  if (!file.exists("DESCRIPTION")) {
-    cli::cli_abort(
-      c(
-        "Could not find DESCRIPTION file.",
-        "x" = "You must be in an R package directory to use this function.",
-        "i" = "Use {.fn usethis::create_package} to create a new package."
-      )
-    )
-  }
-
-  # Ensure R/ directory exists
-  if (!dir.exists("R")) {
-    cli::cli_abort(
-      c(
-        "R/ directory not found.",
-        "x" = "This doesn't appear to be a valid R package structure."
-      )
-    )
-  }
-
   # Sanitize the name (remove .R extension if provided)
   name <- sub("\\.R$", "", name)
 
-  # Construct the save path
-  save_as <- file.path("R", paste0(name, ".R"))
-
-  # Check if file already exists
-  if (file.exists(save_as)) {
+  if (!grepl("^[a-zA-Z.][a-zA-Z0-9_.]*$", name) || grepl("[/\\\\]", name)) {
     cli::cli_abort(
       c(
-        "File {.file {save_as}} already exists.",
-        "i" = "Choose a different name or delete the existing file first."
+        "{.arg name} must be a valid R identifier.",
+        "x" = "{.val {name}} contains invalid characters.",
+        "i" = "Use only letters, digits, dots, and underscores."
       )
     )
   }
+
+  # Construct the save path
+  save_as <- file.path("R", paste0(name, ".R"))
 
   # Use the template
   result <- usethis::use_template(
