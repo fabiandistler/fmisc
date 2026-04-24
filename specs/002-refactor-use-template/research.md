@@ -16,14 +16,27 @@
 |---|---|---|---|
 | DESCRIPTION present | `cli_abort` with custom message | Implicit — usethis requires an active project and raises its own error | Redundant — remove |
 | `R/` directory exists | `cli_abort` with custom message | usethis creates parent directories as needed | Redundant — remove |
-| File already exists | `cli_abort` — hard error | `write_over()` prompts interactively; silently no-ops in non-interactive mode | Different behavior — keep the hard error |
+| File already exists | `cli_abort` — hard error | `write_over()` prompts interactively; silently no-ops in non-interactive mode | Remove — delegate to usethis per FR-004 |
 
-The file-existence check is intentionally stricter than usethis: silently skipping or prompting is wrong for a developer scaffolding tool where the user should never be surprised by an overwrite. Keeping the explicit `cli_abort` preserves that intent.
+Although `usethis::use_template()`'s `write_over()` only prompts / no-ops rather than raising a hard error, FR-004 (updated 2026-04-24) explicitly requires that the file-exists check "MUST NOT be duplicated with a custom pre-check." Delegating to usethis is the chosen behavior.
 
 **Alternatives considered**:
 
-- Remove all three checks and rely entirely on usethis — rejected because the file-existence behavior would change from a hard error to a quiet no-op in non-interactive contexts (e.g., CI, batch scripts).
-- Keep all three checks — rejected because the DESCRIPTION and R/ checks duplicate usethis error handling with no user-visible benefit; they add lines that need maintenance.
+- Keep the hard file-exists check — rejected: preserves stricter CI behavior but contradicts FR-004 as written and the general clarification to rely on usethis error propagation.
+- Remove all three checks and rely entirely on usethis — **accepted**: DESCRIPTION, R/, and file-exists checks all removed; usethis owns all precondition errors.
+
+### FR-008: Name validation
+
+**Decision**: After stripping the `.R` extension, validate that `name` contains only characters valid in an R identifier and no path separators. If invalid, `cli_abort` before calling `usethis::use_template()`.
+
+**Rationale**: usethis does not validate `save_as` for identifier safety — it would pass a path like `R/../../etc/foo.R` to `file.create()`. This check is not redundant; it is new behavior explicitly required by FR-008.
+
+**Validation rule**: `name` must match `^[a-zA-Z.][a-zA-Z0-9_.]*$` and must not contain `/` or `\`. This accepts all valid R identifiers and rejects path traversal sequences and names beginning with digits.
+
+**Alternatives considered**:
+
+- Rely on usethis to reject bad paths — rejected: usethis does not validate `save_as`; path-traversal inputs would silently create files outside `R/`.
+- Use `make.names()` for sanitization — rejected: auto-coercing an invalid name would hide user mistakes; failing fast with a clear error is safer.
 
 ### `.R` extension stripping
 

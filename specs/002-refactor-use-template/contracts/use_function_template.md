@@ -28,11 +28,14 @@ Invisibly returns the result of `usethis::use_template()` (a logical scalar — 
 
 ## Errors
 
-| Condition | Error message |
-|---|---|
-| Target file already exists | "File `R/<name>.R` already exists." |
+| Condition | Raised by | Error |
+|---|---|---|
+| `name` contains path separators or non-identifier characters | `use_function_template()` | `cli_abort` with clear message (FR-008) |
+| No active usethis project / DESCRIPTION missing | `usethis::use_template()` | Propagated as-is |
+| `R/` directory missing | `usethis::use_template()` | Propagated as-is |
+| Target file already exists | `usethis::use_template()` | Prompts interactively; no-ops in non-interactive mode |
 
-All other error conditions (no active project, missing R/ dir) are delegated to `usethis::use_template()`.
+All precondition checks except FR-008 name validation are delegated to `usethis::use_template()`.
 
 ## Behavior Notes
 
