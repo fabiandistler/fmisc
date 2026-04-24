@@ -19,7 +19,7 @@
 
 **Purpose**: Create the shared test file that both user stories will populate.
 
-- [ ] T001 Create test file `tests/testthat/test-use_function_template.R` with empty `test_that()` scaffolding
+- [x] T001 Create test file `tests/testthat/test-use_function_template.R` with empty `test_that()` scaffolding
 
 ---
 
@@ -33,14 +33,14 @@
 
 > **Write these tests FIRST and ensure they FAIL before implementation**
 
-- [ ] T002 [US1] Write test: happy path — `use_function_template("my_func", open = FALSE)` in a temp package creates `R/my_func.R` in `tests/testthat/test-use_function_template.R`
-- [ ] T003 [US1] Write test: `.R` extension stripped — `use_function_template("my_func.R", open = FALSE)` creates `R/my_func.R` (not `R/my_func.R.R`) in `tests/testthat/test-use_function_template.R`
+- [x] T002 [US1] Write test: happy path — `use_function_template("my_func", open = FALSE)` in a temp package creates `R/my_func.R` in `tests/testthat/test-use_function_template.R`
+- [x] T003 [US1] Write test: `.R` extension stripped — `use_function_template("my_func.R", open = FALSE)` creates `R/my_func.R` (not `R/my_func.R.R`) in `tests/testthat/test-use_function_template.R`
 
 ### Implementation for User Story 1
 
-- [ ] T004 [US1] Remove DESCRIPTION-file check block (lines 42–51) from `R/use_function_template.R`
-- [ ] T005 [US1] Remove R/-directory check block (lines 53–61) from `R/use_function_template.R`
-- [ ] T006 [US1] Run `devtools::test(filter = "use_function_template")` and confirm T002 and T003 pass
+- [x] T004 [US1] Remove DESCRIPTION-file check block (lines 42–51) from `R/use_function_template.R`
+- [x] T005 [US1] Remove R/-directory check block (lines 53–61) from `R/use_function_template.R`
+- [x] T006 [US1] Run `devtools::test(filter = "use_function_template")` and confirm T002 and T003 pass
 
 **Checkpoint**: `use_function_template("test_func", open = FALSE)` works end-to-end in a fresh temporary package.
 
@@ -56,15 +56,15 @@
 
 > **Write these tests FIRST and ensure they FAIL before implementation**
 
-- [ ] T007 [US2] Write test: FR-008 — `name` with path separator (e.g., `"../../etc/bad"`) raises `cli_abort` with message matching `"must be a valid R identifier"` in `tests/testthat/test-use_function_template.R`
-- [ ] T008 [US2] Write test: FR-008 — `name` starting with a digit (e.g., `"123bad"`) raises `cli_abort` in `tests/testthat/test-use_function_template.R`
-- [ ] T009 [US2] Write test: FR-008 — `name` with a space (e.g., `"bad name"`) raises `cli_abort` in `tests/testthat/test-use_function_template.R`
+- [x] T007 [US2] Write test: FR-008 — `name` with path separator (e.g., `"../../etc/bad"`) raises `cli_abort` with message matching `"must be a valid R identifier"` in `tests/testthat/test-use_function_template.R`
+- [x] T008 [US2] Write test: FR-008 — `name` starting with a digit (e.g., `"123bad"`) raises `cli_abort` in `tests/testthat/test-use_function_template.R`
+- [x] T009 [US2] Write test: FR-008 — `name` with a space (e.g., `"bad name"`) raises `cli_abort` in `tests/testthat/test-use_function_template.R`
 
 ### Implementation for User Story 2
 
-- [ ] T010 [US2] Remove file-exists check block (lines 68–77) from `R/use_function_template.R` (file-overwrite behavior delegated to `usethis::use_template()` per FR-004)
-- [ ] T011 [US2] Add FR-008 name validation block after the `sub("\\.R$", "", name)` line and before `save_as` construction in `R/use_function_template.R` using the exact regex and `cli_abort` call from plan.md implementation notes
-- [ ] T012 [US2] Run `devtools::test(filter = "use_function_template")` and confirm T007–T009 pass and T002–T003 still pass
+- [x] T010 [US2] Remove file-exists check block (lines 68–77) from `R/use_function_template.R` (file-overwrite behavior delegated to `usethis::use_template()` per FR-004)
+- [x] T011 [US2] Add FR-008 name validation block after the `sub("\\.R$", "", name)` line and before `save_as` construction in `R/use_function_template.R` using the exact regex and `cli_abort` call from plan.md implementation notes
+- [x] T012 [US2] Run `devtools::test(filter = "use_function_template")` and confirm T007–T009 pass and T002–T003 still pass
 
 **Checkpoint**: Invalid name inputs are rejected before usethis is called; valid inputs succeed; all 5 new tests pass.
 
@@ -74,9 +74,9 @@
 
 **Purpose**: Full-package quality gates required by the constitution before merging.
 
-- [ ] T013 [P] Run `devtools::check()` from package root and verify 0 errors, ≤ 3 pre-existing warnings
-- [ ] T014 [P] Run `lintr::lint("R/use_function_template.R")` and confirm no new violations
-- [ ] T015 Run `styler::style_file("R/use_function_template.R")` and verify no styling changes are needed
+- [x] T013 [P] Run `devtools::check()` from package root and verify 0 errors, ≤ 3 pre-existing warnings
+- [x] T014 [P] Run `lintr::lint("R/use_function_template.R")` and confirm no new violations
+- [x] T015 Run `styler::style_file("R/use_function_template.R")` and verify no styling changes are needed
 
 ---
 
