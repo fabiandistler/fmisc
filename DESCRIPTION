@@ -14,11 +14,13 @@ Imports:
     data.table,
     foreach,
     Rcpp,
+    stats,
     usethis,
     utils
 Suggests:
     flir,
     knitr,
+    memoise,
     rmarkdown,
     rlang,
     glue,
