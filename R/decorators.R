@@ -103,11 +103,11 @@ with_retry <- function(f,
       }
       if (attempt == max_tries) {
         orig_classes <- setdiff(class(cnd), c("error", "condition", "simpleError"))
+        # Pre-format the original message and pass via variable substitution
+        # so cli's glue parser does not choke on braces in conditionMessage.
+        inner_msg <- conditionMessage(cnd)
         stop2(
-          sprintf(
-            "Retry exhausted after %d attempts: %s",
-            max_tries, conditionMessage(cnd)
-          ),
+          "Retry exhausted after {max_tries} attempts: {inner_msg}",
           class = c("fmisc_retry_exhausted", orig_classes)
         )
       }
@@ -181,14 +181,14 @@ with_timing <- function(f,
       elapsed <- proc.time()[["elapsed"]] - start
       if (elapsed >= .threshold && !identical(.report, "attribute")) {
         if (identical(.report, "message")) {
+          # Bind values locally and pass to cli via `{var}` substitution so
+          # braces in `fn_label` (e.g. deparse'd anonymous functions) don't
+          # break cli's glue parser.
+          elapsed_str <- sprintf("%.3f", elapsed)
           if (identical(status, "ok")) {
-            cli::cli_alert_info(sprintf(
-              "%s took %.3fs", fn_label, elapsed
-            ))
+            cli::cli_alert_info("{fn_label} took {elapsed_str}s")
           } else {
-            cli::cli_alert_warning(sprintf(
-              "%s failed after %.3fs", fn_label, elapsed
-            ))
+            cli::cli_alert_warning("{fn_label} failed after {elapsed_str}s")
           }
         } else if (identical(.report, "callback")) {
           tryCatch(
@@ -251,26 +251,26 @@ with_logging <- function(f,
   fn_label <- if (!is.null(.name)) .name else deparse(substitute(f))[1]
 
   default_logger <- function(event, data) {
+    # Bind values locally so cli's `{var}` substitution picks them up as
+    # literal text. Avoids glue parsing of braces in deparsed args/results.
+    name <- data$name
     if (identical(event, "call")) {
-      if (nzchar(data$args_str)) {
-        cli::cli_alert_info(sprintf(
-          "call %s(%s)", data$name, data$args_str
-        ))
+      args_str <- data$args_str
+      if (nzchar(args_str)) {
+        cli::cli_alert_info("call {name}({args_str})")
       } else {
-        cli::cli_alert_info(sprintf("call %s()", data$name))
+        cli::cli_alert_info("call {name}()")
       }
     } else if (identical(event, "success")) {
-      if (nzchar(data$result_str)) {
-        cli::cli_alert_success(sprintf(
-          "%s -> %s", data$name, data$result_str
-        ))
+      result_str <- data$result_str
+      if (nzchar(result_str)) {
+        cli::cli_alert_success("{name} -> {result_str}")
       } else {
-        cli::cli_alert_success(sprintf("%s ok", data$name))
+        cli::cli_alert_success("{name} ok")
       }
     } else if (identical(event, "error")) {
-      cli::cli_alert_danger(sprintf(
-        "%s failed: %s", data$name, data$message
-      ))
+      err_msg <- data$message
+      cli::cli_alert_danger("{name} failed: {err_msg}")
     }
   }
   logger <- if (is.null(.logger)) default_logger else .logger
