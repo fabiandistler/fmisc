@@ -38,7 +38,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Fabian Distler \email{fabian.distler@example.com}
+\strong{Maintainer}: Fabian Distler \email{fdistlermpi@gmail.com}
 
 }
 \keyword{internal}

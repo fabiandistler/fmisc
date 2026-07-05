@@ -29,7 +29,7 @@ All changes to main require: (1) feature branch off main, (2) new tests, (3) ful
 
 All PRs must satisfy:
 
-1. **Test Suite**: All 272+ tests PASS with `devtools::test()`.
+1. **Test Suite**: The full test suite PASSES with `devtools::test()` (no failures, no new skips).
 2. **Check**: `devtools::check()` returns 0 errors, <= 3 pre-existing warnings/notes.
 3. **Style**: Tidyverse style guide compliance verified.
 4. **Documentation**: All exported functions documented; vignettes up-to-date if applicable.
@@ -42,8 +42,8 @@ Feature freeze on release branches. Version follows MAJOR.MINOR.PATCH semver.
 This constitution supersedes informal practices. Amendments require:
 - Ratification: approval from project maintainer
 - Documentation: clear statement of what changed and why
-- Migration: update CLAUDE.md and this document
+- Migration: update this document
 
-The constitution is the authoritative source for development practices. All PRs and reviews must verify compliance. Use [CLAUDE.md](../../CLAUDE.md) for runtime development guidance. Non-compliance must be justified and documented.
+The constitution is the authoritative source for development practices. All PRs and reviews must verify compliance. Non-compliance must be justified and documented.
 
 **Version**: 1.0.0 | **Ratified**: 2026-04-23 | **Last Amended**: 2026-04-23

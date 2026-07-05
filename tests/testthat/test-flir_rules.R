@@ -14,6 +14,18 @@ test_that("flir rules directory contains YAML files", {
   expect_true("deprecated-sample-frac.yml" %in% yaml_files)
 })
 
+test_that("bundled flir rules match the documented set", {
+  # Guards against doc drift: README and vignette list exactly these rules.
+  # When adding or removing a rule, update README.Rmd and the vignette too.
+  rules_path <- get_flir_rules()
+  yaml_files <- list.files(rules_path, pattern = "\\.yml$")
+
+  expect_setequal(
+    yaml_files,
+    c("deprecated-sample-frac.yml", "deprecated-sample-n.yml")
+  )
+})
+
 test_that("flir rules are valid YAML", {
   skip_if_not_installed("yaml")
 

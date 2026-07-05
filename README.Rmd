@@ -66,3 +66,30 @@ use_make2()
 # make help     - see all available targets
 ```
 
+## Linting
+
+### flir Custom Rules
+
+fmisc bundles custom rules for [flir](https://flir.etiennebacher.com/).
+To use them, add fmisc to the `from-package` field in your project's
+`flir/config.yml`:
+
+```yaml
+from-package:
+  - fmisc
+```
+
+You can also get the path to the bundled rules directly:
+
+```r
+get_flir_rules()
+```
+
+Available rules:
+
+- `deprecated-sample-n`: replaces dplyr's deprecated `sample_n()` with `slice_sample(n = )`
+- `deprecated-sample-frac`: replaces dplyr's deprecated `sample_frac()` with `slice_sample(prop = )`
+
+See `vignette("using-fmisc")` for details, including how to write your own
+rules.
+

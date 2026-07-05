@@ -4,11 +4,16 @@
 \alias{use_make2}
 \title{Add a comprehensive Makefile for R package development}
 \usage{
-use_make2(open = interactive())
+use_make2(open = interactive(), overwrite = FALSE)
 }
 \arguments{
 \item{open}{Whether to open the newly created Makefile for editing.
 Default is \code{TRUE} in interactive sessions.}
+
+\item{overwrite}{Whether to overwrite an existing Makefile. If \code{FALSE}
+(the default) and a Makefile already exists, you are asked for
+confirmation in interactive sessions; non-interactive sessions error
+instead of silently replacing the file.}
 }
 \value{
 Invisibly returns the path to the created Makefile.
@@ -32,5 +37,8 @@ use_make2()
 
 # Create without opening
 use_make2(open = FALSE)
+
+# Replace an existing Makefile without prompting
+use_make2(overwrite = TRUE)
 }
 }

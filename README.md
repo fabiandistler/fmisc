@@ -36,7 +36,7 @@ use_function_template("my_function")
 The template includes:
 
 - Roxygen2 documentation patterns
-- Argument ordering checklist (data → descriptors → ... → details)
+- Argument ordering checklist (data → descriptors → … → details)
 - Multiple validation options (stopifnot, cli, rlang, checkmate)
 - Dots handling patterns
 - Error handling with custom error constructors
@@ -58,32 +58,29 @@ use_make2()
 
 ## Linting
 
-### lintr Custom Linters
-
-``` r
-library(lintr)
-library(fmisc)
-
-lint("my_script.R", linters = c(
-  linters_with_defaults(),
-  todo_fixme_linter(),
-  deprecated_function_linter()
-))
-```
-
-Available linters:
-
-- `todo_fixme_linter()`: Detects TODO/FIXME/XXX/HACK comments
-- `deprecated_function_linter()`: Flags deprecated functions (e.g. `sapply()`, `require()`)
-
 ### flir Custom Rules
 
-Rules are bundled in the package. To use them, add fmisc to the
-`from-package` field in your project's `flir/config.yml`:
+fmisc bundles custom rules for [flir](https://flir.etiennebacher.com/).
+To use them, add fmisc to the `from-package` field in your project’s
+`flir/config.yml`:
+
+``` yaml
+from-package:
+  - fmisc
+```
+
+You can also get the path to the bundled rules directly:
 
 ``` r
 get_flir_rules()
 ```
 
-Available rules: `replace-t-with-true`, `replace-f-with-false`,
-`deprecated-sample-n`, `deprecated-sample-frac`, `use-seq-along`.
+Available rules:
+
+- `deprecated-sample-n`: replaces dplyr’s deprecated `sample_n()` with
+  `slice_sample(n = )`
+- `deprecated-sample-frac`: replaces dplyr’s deprecated `sample_frac()`
+  with `slice_sample(prop = )`
+
+See `vignette("using-fmisc")` for details, including how to write your
+own rules.

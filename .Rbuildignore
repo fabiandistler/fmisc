@@ -3,8 +3,7 @@
 ^Makefile$
 ^LICENSE\.md$
 ^\.claude$
-^\.serena$
+^\.specify$
 ^README\.Rmd$
 ^dev$
 ^\.github$
-^TEST_VALIDATION\.md$
