@@ -145,7 +145,10 @@ with_retry <- function(f,
 #' @export
 #' @examples
 #' \donttest{
-#' g <- with_timing(function(x) { Sys.sleep(0.05); x }, .threshold = 0)
+#' g <- with_timing(function(x) {
+#'   Sys.sleep(0.05)
+#'   x
+#' }, .threshold = 0)
 #' g(42)
 #' }
 with_timing <- function(f,
@@ -348,9 +351,14 @@ with_logging <- function(f,
 #' @examples
 #' \donttest{
 #' calls <- 0
-#' slow <- function(x) { calls <<- calls + 1; x * 2 }
+#' slow <- function(x) {
+#'   calls <<- calls + 1
+#'   x * 2
+#' }
 #' fast <- with_cache(slow)
-#' fast(21); fast(21); calls
+#' fast(21)
+#' fast(21)
+#' calls
 #' }
 with_cache <- function(f,
                        ...,
@@ -469,7 +477,8 @@ cache_clear <- function(f) {
   clear <- attr(f, "cache_clear")
   if (is.null(clear)) {
     stop2("`f` is not a cached function (wrap it with `with_cache()` first)",
-          class = "fmisc_decorator_error")
+      class = "fmisc_decorator_error"
+    )
   }
   clear()
 }
@@ -480,7 +489,8 @@ cache_info <- function(f) {
   info <- attr(f, "cache_info")
   if (is.null(info)) {
     stop2("`f` is not a cached function (wrap it with `with_cache()` first)",
-          class = "fmisc_decorator_error")
+      class = "fmisc_decorator_error"
+    )
   }
   info()
 }
@@ -506,7 +516,9 @@ cache_info <- function(f) {
 #' @examples
 #' \dontrun{
 #' g <- with_rate_limit(function(x) x, n = 2, period = 1)
-#' g(1); g(2); g(3)  # third call sleeps until the window rolls
+#' g(1)
+#' g(2)
+#' g(3) # third call sleeps until the window rolls
 #' }
 with_rate_limit <- function(f, n, period = 1, ..., .wait = TRUE) {
   if (!is.function(f)) {
@@ -575,11 +587,14 @@ decorate <- function(f, ...) {
     stop2("`f` must be a function", class = "fmisc_decorator_error")
   }
   decs <- list(...)
-  if (length(decs) == 0) return(f)
+  if (length(decs) == 0) {
+    return(f)
+  }
   for (d in decs) {
     if (!is.function(d)) {
       stop2("Each decorator must be a unary function taking `f`",
-            class = "fmisc_decorator_error")
+        class = "fmisc_decorator_error"
+      )
     }
   }
   Reduce(function(g, d) d(g), decs, f)

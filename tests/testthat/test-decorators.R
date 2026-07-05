@@ -240,6 +240,8 @@ test_that("is_decorated and undecorate roundtrip through one layer", {
 
 test_that("pipe composition preserves is_decorated", {
   f <- function(x) x
-  g <- f |> with_retry(max_tries = 1, backoff = 0) |> with_timing(.report = "attribute")
+  g <- f |>
+    with_retry(max_tries = 1, backoff = 0) |>
+    with_timing(.report = "attribute")
   expect_true(is_decorated(g))
 })

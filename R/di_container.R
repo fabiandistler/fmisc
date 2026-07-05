@@ -55,8 +55,10 @@ NULL
 #' \donttest{
 #' con <- di_container()
 #' con$register("greeting", "hello")
-#' con$register("service", function(greeting) function(who) {
-#'   paste(greeting, who)
+#' con$register("service", function(greeting) {
+#'   function(who) {
+#'     paste(greeting, who)
+#'   }
 #' })
 #' svc <- con$resolve("service")
 #' svc("world")
@@ -64,7 +66,8 @@ NULL
 di_container <- function(parent = NULL) {
   if (!is.null(parent) && !inherits(parent, "fmisc_di_container")) {
     stop2("`parent` must be `NULL` or an `fmisc_di_container`",
-          class = "fmisc_di_error")
+      class = "fmisc_di_error"
+    )
   }
 
   registry <- new.env(parent = emptyenv())
@@ -72,11 +75,15 @@ di_container <- function(parent = NULL) {
 
   parent_internals <- if (is.null(parent)) NULL else attr(parent, ".fmisc_di_internals")
 
-  self <- NULL  # bound below; captured by closures
+  self <- NULL # bound below; captured by closures
 
   .has <- function(name) {
-    if (exists(name, envir = registry, inherits = FALSE)) return(TRUE)
-    if (!is.null(parent_internals)) return(parent_internals$has(name))
+    if (exists(name, envir = registry, inherits = FALSE)) {
+      return(TRUE)
+    }
+    if (!is.null(parent_internals)) {
+      return(parent_internals$has(name))
+    }
     FALSE
   }
 
@@ -84,7 +91,8 @@ di_container <- function(parent = NULL) {
     if (name %in% stack) {
       cycle <- paste(c(stack, name), collapse = " -> ")
       stop2(sprintf("Circular dependency: %s", cycle),
-            class = "fmisc_di_cycle")
+        class = "fmisc_di_cycle"
+      )
     }
     if (exists(name, envir = registry, inherits = FALSE)) {
       reg <- get(name, envir = registry, inherits = FALSE)
@@ -92,7 +100,7 @@ di_container <- function(parent = NULL) {
         return(reg$provider)
       }
       if (identical(reg$lifecycle, "singleton") &&
-            exists(name, envir = cache, inherits = FALSE)) {
+        exists(name, envir = cache, inherits = FALSE)) {
         return(get(name, envir = cache, inherits = FALSE))
       }
       instance <- .instantiate(name, reg, stack)
@@ -105,7 +113,8 @@ di_container <- function(parent = NULL) {
       return(parent_internals$resolve(name, stack))
     }
     stop2(sprintf("Service '%s' is not registered", name),
-          class = "fmisc_di_missing")
+      class = "fmisc_di_missing"
+    )
   }
 
   .instantiate <- function(name, reg, stack) {
@@ -165,9 +174,10 @@ di_container <- function(parent = NULL) {
       }
       if (!is.null(.deps)) {
         if (!is.character(.deps) || is.null(names(.deps)) ||
-              any(!nzchar(names(.deps)))) {
+          any(!nzchar(names(.deps)))) {
           stop2("`.deps` must be a named character vector",
-                class = "fmisc_di_error")
+            class = "fmisc_di_error"
+          )
         }
       }
       assign(name, list(
@@ -177,18 +187,15 @@ di_container <- function(parent = NULL) {
       ), envir = registry)
       invisible(self)
     },
-
     resolve = function(name) {
       if (!is.character(name) || length(name) != 1 || !nzchar(name)) {
         stop2("`name` must be a non-empty string", class = "fmisc_di_error")
       }
       .resolve(name, character(0))
     },
-
     has = function(name) {
       .has(name)
     },
-
     names = function() {
       local_names <- ls(envir = registry)
       if (!is.null(parent)) {
@@ -198,7 +205,6 @@ di_container <- function(parent = NULL) {
         local_names
       }
     },
-
     unregister = function(name) {
       if (exists(name, envir = registry, inherits = FALSE)) {
         rm(list = name, envir = registry)
@@ -208,7 +214,6 @@ di_container <- function(parent = NULL) {
       }
       invisible(self)
     },
-
     override = function(name, provider, ...,
                         .lifecycle = NULL,
                         .deps = NULL) {
@@ -263,11 +268,9 @@ di_container <- function(parent = NULL) {
       }
       invisible(restore)
     },
-
     child = function() {
       di_container(parent = self)
     },
-
     inject = function(fn, ...) {
       if (!is.function(fn)) {
         stop2("`fn` must be a function", class = "fmisc_di_error")
@@ -333,7 +336,8 @@ di_container <- function(parent = NULL) {
 with_di_overrides <- function(container, overrides, code) {
   if (!inherits(container, "fmisc_di_container")) {
     stop2("`container` must be an `fmisc_di_container`",
-          class = "fmisc_di_error")
+      class = "fmisc_di_error"
+    )
   }
   if (!is.list(overrides) || (length(overrides) > 0 && is.null(names(overrides)))) {
     stop2("`overrides` must be a named list", class = "fmisc_di_error")
