@@ -23,6 +23,23 @@ The framework supports multiple backends including mclapply, parLapply,
 doParallel, doMC, furrr, and future, with intelligent OS-aware selection.
 }
 
+\section{Function Decorators}{
+
+A composable toolkit of "function operators" for cross-cutting concerns:
+\code{\link[=with_retry]{with_retry()}}, \code{\link[=with_timing]{with_timing()}}, \code{\link[=with_logging]{with_logging()}}, \code{\link[=with_cache]{with_cache()}}, and
+\code{\link[=with_rate_limit]{with_rate_limit()}}. Wrappers stack with the native pipe or via
+\code{\link[=decorate]{decorate()}}, and can be inspected with \code{\link[=is_decorated]{is_decorated()}} and
+\code{\link[=undecorate]{undecorate()}}.
+}
+
+\section{Dependency Injection}{
+
+\code{\link[=di_container]{di_container()}} provides a lightweight, closure-based DI container
+with auto-wiring by formal argument name, singleton/transient/value
+lifecycles, child scopes, and test-time overrides via
+\code{\link[=with_di_overrides]{with_di_overrides()}}.
+}
+
 \section{Custom Linting Rules}{
 
 The package provides custom flir rules available in the package installation
