@@ -139,8 +139,7 @@ test_that("with_cache caches subsequent calls with the same arguments", {
     counter <<- counter + 1
     x * 10
   }
-  # Force env-cache path by setting a finite .max_size
-  g <- with_cache(f, .max_size = 100)
+  g <- with_cache(f)
   expect_equal(g(2), 20)
   expect_equal(g(2), 20)
   expect_equal(counter, 1L)
@@ -148,7 +147,7 @@ test_that("with_cache caches subsequent calls with the same arguments", {
   expect_equal(counter, 2L)
 })
 
-test_that("cache_clear forces recompute; cache_info reports env size", {
+test_that("cache_clear forces recompute; cache_info reports size", {
   counter <- 0
   f <- function(x) {
     counter <<- counter + 1
@@ -158,8 +157,10 @@ test_that("cache_clear forces recompute; cache_info reports env size", {
   g(1)
   g(2)
   info <- cache_info(g)
-  expect_equal(info$backend, "env")
+  expect_equal(info$backend, "cachem")
   expect_equal(info$size, 2L)
+  expect_equal(info$max_n, 100)
+  expect_equal(info$max_age, Inf)
   cache_clear(g)
   g(1)
   expect_equal(counter, 3L)

@@ -14,8 +14,7 @@ cache_info(f)
 }
 \value{
 \code{cache_clear()} returns \code{NULL} invisibly. \code{cache_info()} returns
-a list with \code{backend} (\code{"memoise"} or \code{"env"}), \code{size}, and (for
-\code{"env"}) the character vector of stored keys.
+a list with \code{backend} (\code{"cachem"}), \code{size}, \code{max_n}, and \code{max_age}.
 }
 \description{
 Clear or inspect a cached function's cache
