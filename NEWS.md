@@ -2,6 +2,13 @@
 
 ## New features
 
+* `undecorate()` gains a `depth` argument (default `1`); `depth = Inf`
+  unwraps the full decorator chain. New vignette
+  `vignette("decorators")` compares the decorators against
+  `purrr::insistently()`, `memoise` + `cachem`, and `ratelimitr`, and
+  documents the deliberate skip of burst-tolerant rate limiting (use
+  `httr2::req_throttle()` for HTTP burst needs).
+
 ### Function Decorators (Function-Operator Toolkit)
 
 * New composable "function operators" for cross-cutting concerns. Each `with_*()` takes a function as its first argument and returns a wrapped function with class `"fmisc_decorated"`, making them curry- and pipe-friendly:
