@@ -75,7 +75,61 @@ test_that("with_retry validation errors on bad inputs", {
   expect_error(with_retry("not a function"), class = "fmisc_decorator_error")
   expect_error(with_retry(identity, max_tries = 0), class = "fmisc_decorator_error")
   expect_error(with_retry(identity, backoff = -1), class = "fmisc_decorator_error")
-  expect_error(with_retry(identity, .on_error = "nope"), class = "fmisc_decorator_error")
+  expect_error(with_retry(identity, .on_error = 42), class = "fmisc_decorator_error")
+})
+
+test_that("with_retry .on_error accepts a character vector of condition classes", {
+  counter <- 0
+  boom <- function() {
+    counter <<- counter + 1
+    stop2("server down", class = "http_error_503")
+  }
+  g <- with_retry(boom,
+    max_tries = 3, backoff = 0,
+    .on_error = c("http_error_503", "http_error_502")
+  )
+  expect_error(g(), class = "fmisc_retry_exhausted")
+  expect_equal(counter, 3L)
+
+  counter <- 0
+  h <- with_retry(boom,
+    max_tries = 3, backoff = 0,
+    .on_error = "http_error_404"
+  )
+  expect_error(h(), "server down")
+  expect_equal(counter, 1L)
+})
+
+test_that("with_retry .message toggles retry chatter", {
+  collect_messages <- function(expr) {
+    msgs <- character(0)
+    tryCatch(
+      withCallingHandlers(
+        expr,
+        message = function(m) {
+          msgs <<- c(msgs, conditionMessage(m))
+          invokeRestart("muffleMessage")
+        }
+      ),
+      error = function(e) NULL
+    )
+    msgs
+  }
+
+  messages <- collect_messages(
+    with_retry(
+      function() stop2("transient", class = "my_transient"),
+      max_tries = 3, backoff = 0, .jitter = FALSE, .message = TRUE
+    )()
+  )
+  expect_length(messages, 2L)
+  expect_match(messages[[1]], "attempt 1/3", fixed = TRUE)
+  expect_match(messages[[1]], "transient", fixed = TRUE)
+
+  quiet <- collect_messages(
+    with_retry(function() stop("boom"), max_tries = 3, backoff = 0)()
+  )
+  expect_length(quiet, 0L)
 })
 
 test_that("with_timing attribute mode attaches elapsed and does not print", {

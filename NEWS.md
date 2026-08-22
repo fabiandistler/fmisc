@@ -14,6 +14,10 @@
 
 ## New features
 
+* `with_retry()` gains two conveniences: `.on_error` now also accepts a
+  character vector of condition classes to retry on (e.g.
+  `c("http_error_503")`), mirroring httr2's `is_transient` idiom; and a
+  `.message = TRUE` toggle emits a `message()` before each retry.
 * `undecorate()` gains a `depth` argument (default `1`); `depth = Inf`
   unwraps the full decorator chain. New vignette
   `vignette("decorators")` compares the decorators against

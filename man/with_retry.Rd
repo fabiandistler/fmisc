@@ -12,7 +12,8 @@ with_retry(
   .on_error = NULL,
   .max_delay = Inf,
   .jitter = TRUE,
-  .on_retry = NULL
+  .on_retry = NULL,
+  .message = FALSE
 )
 }
 \arguments{
@@ -28,9 +29,12 @@ seconds; delay for attempt \code{k} is \code{backoff^k}. Default \code{2} (i.e. 
 \item{...}{Passed to the wrapped function on each call. Reserved for
 future extensions; currently forwarded via the wrapper's \code{...}.}
 
-\item{.on_error}{Optional predicate \verb{function(cnd) -> logical}. When
-\code{TRUE} the error is retried; when \code{FALSE} it is re-raised immediately.
-Default \code{NULL} retries all errors.}
+\item{.on_error}{Optional predicate \verb{function(cnd) -> logical}, or a
+character vector of condition classes to retry on (e.g.
+\code{c("http_error_503")}), mirroring httr2's \code{is_transient} idiom. When
+the predicate returns \code{FALSE} (or the error matches none of the
+classes) the error is re-raised immediately. Default \code{NULL} retries
+all errors.}
 
 \item{.max_delay}{Numeric cap on individual retry delays in seconds.
 Default \code{Inf}.}
@@ -40,6 +44,9 @@ a uniform random factor in \verb{[0.5, 1.5]} to avoid synchronized retries.}
 
 \item{.on_retry}{Optional callback \verb{function(attempt, delay, cnd)}
 invoked before each sleep. Errors in the callback are swallowed.}
+
+\item{.message}{Logical. If \code{TRUE}, emits a \code{message()} before each
+retry describing the attempt and delay. Default \code{FALSE}.}
 }
 \value{
 A function that forwards its arguments to \code{f}. On persistent
