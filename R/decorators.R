@@ -12,10 +12,27 @@
 NULL
 
 
-mark_decorated <- function(wrapper, inner) {
+mark_decorated <- function(wrapper, inner, label) {
   attr(wrapper, "fmisc_undecorate") <- inner
+  attr(wrapper, "fmisc_stack") <- c(attr(inner, "fmisc_stack"), label)
   class(wrapper) <- c("fmisc_decorated", "function")
   wrapper
+}
+
+decorator_label <- function(name, ...) {
+  dots <- Filter(Negate(is.null), list(...))
+  if (!length(dots)) {
+    return(name)
+  }
+  parts <- vapply(names(dots), function(nm) {
+    val <- dots[[nm]]
+    val_str <- if (is.function(val)) "<fn>" else paste(deparse(val), collapse = "")
+    if (nchar(val_str) > 24) {
+      val_str <- paste0(substr(val_str, 1, 21), "...")
+    }
+    paste0(nm, " = ", val_str)
+  }, character(1))
+  sprintf("%s(%s)", name, paste(parts, collapse = ", "))
 }
 
 
@@ -120,7 +137,10 @@ with_retry <- function(f,
     }
     invisible(NULL)
   }
-  mark_decorated(wrapper, f)
+  mark_decorated(
+    wrapper, f,
+    decorator_label("with_retry", max_tries = max_tries, backoff = backoff)
+  )
 }
 
 
@@ -206,7 +226,14 @@ with_timing <- function(f,
     }
     result
   }
-  mark_decorated(wrapper, f)
+  mark_decorated(
+    wrapper, f,
+    decorator_label(
+      "with_timing",
+      .report = if (!identical(.report, "message")) .report,
+      .threshold = if (.threshold != 0) .threshold
+    )
+  )
 }
 
 
@@ -321,7 +348,14 @@ with_logging <- function(f,
     )
     result
   }
-  mark_decorated(wrapper, f)
+  mark_decorated(
+    wrapper, f,
+    decorator_label(
+      "with_logging",
+      .name = .name,
+      .log_result = if (.log_result) TRUE
+    )
+  )
 }
 
 
@@ -391,7 +425,14 @@ with_cache <- function(f,
 
   attr(wrapper, "cache_clear") <- clear_fn
   attr(wrapper, "cache_info") <- info_fn
-  mark_decorated(wrapper, f)
+  mark_decorated(
+    wrapper, f,
+    decorator_label(
+      "with_cache",
+      .max_size = if (.max_size != Inf) .max_size,
+      .ttl = if (.ttl != Inf) .ttl
+    )
+  )
 }
 
 
@@ -482,7 +523,10 @@ with_rate_limit <- function(f, n, period = 1, ..., .wait = TRUE) {
     state$timestamps <- c(state$timestamps, as.numeric(Sys.time()))
     f(...)
   }
-  mark_decorated(wrapper, f)
+  mark_decorated(
+    wrapper, f,
+    decorator_label("with_rate_limit", n = n, period = period)
+  )
 }
 
 
@@ -551,4 +595,34 @@ undecorate <- function(f) {
 #' @export
 is_decorated <- function(f) {
   inherits(f, "fmisc_decorated")
+}
+
+
+#' Print a decorated function's wrapper stack
+#'
+#' Shows the decorators applied to `f`, outermost first, followed by the
+#' innermost wrapped function.
+#'
+#' @param x A function with class `"fmisc_decorated"`.
+#' @param ... Unused.
+#' @return `x`, invisibly.
+#' @family decorators
+#' @export
+print.fmisc_decorated <- function(x, ...) {
+  stack <- attr(x, "fmisc_stack")
+  inner <- attr(x, "fmisc_undecorate")
+  cat("<fmisc_decorated>\n")
+  if (!is.null(stack)) {
+    for (label in rev(stack)) {
+      cat("  ", label, "\n", sep = "")
+    }
+  }
+  if (!is.null(inner)) {
+    fn_str <- paste(deparse(inner), collapse = "")
+    if (nchar(fn_str) > 60) {
+      fn_str <- paste0(substr(fn_str, 1, 57), "...")
+    }
+    cat("-> ", fn_str, "\n", sep = "")
+  }
+  invisible(x)
 }
