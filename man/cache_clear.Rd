@@ -14,8 +14,7 @@ cache_info(f)
 }
 \value{
 \code{cache_clear()} returns \code{NULL} invisibly. \code{cache_info()} returns
-a list with \code{backend} (\code{"memoise"} or \code{"env"}), \code{size}, and (for
-\code{"env"}) the character vector of stored keys.
+a list with \code{backend} (\code{"cachem"}), \code{size}, \code{max_n}, and \code{max_age}.
 }
 \description{
 Clear or inspect a cached function's cache
@@ -25,6 +24,7 @@ Other decorators:
 \code{\link[=decorate]{decorate()}},
 \code{\link{fmisc_decorators}},
 \code{\link[=is_decorated]{is_decorated()}},
+\code{\link[=print.fmisc_decorated]{print.fmisc_decorated()}},
 \code{\link[=undecorate]{undecorate()}},
 \code{\link[=with_cache]{with_cache()}},
 \code{\link[=with_logging]{with_logging()}},

@@ -1,5 +1,17 @@
 # fmisc (development version)
 
+## Refactoring
+
+* `with_cache()` is now a thin facade over `memoise::memoise()` backed by
+  `cachem::cache_mem()`. `.max_size` maps to `max_n` (LRU eviction) and
+  `.ttl` to `max_age`; the hand-rolled environment backend and the
+  `deparse()`-based key scheme are gone (`memoise` hashes internally).
+  The `.key` argument is removed: custom cache keys are not supported by
+  `memoise`, so there is no drop-in replacement. `cache_info()` now
+  reports `backend = "cachem"` with `size`, `max_n`, and `max_age`
+  (the old `"env"`/`"memoise"` backends and `keys` element are gone).
+  `memoise` and `cachem` moved from Suggests to Imports.
+
 ## New features
 
 * `undecorate()` gains a `depth` argument (default `1`); `depth = Inf`
@@ -8,6 +20,10 @@
   `purrr::insistently()`, `memoise` + `cachem`, and `ratelimitr`, and
   documents the deliberate skip of burst-tolerant rate limiting (use
   `httr2::req_throttle()` for HTTP burst needs).
+* Decorated functions now record each applied decorator (name + key
+  parameters) in an `"fmisc_stack"` attribute, accumulated as wrappers
+  compose via `decorate()` or the native pipe. `print()` on an
+  `"fmisc_decorated"` object shows the wrapper stack outermost-first.
 
 ### Function Decorators (Function-Operator Toolkit)
 
@@ -15,7 +31,7 @@
   - `with_retry()` — retry with exponential backoff, jitter, `.on_error` predicate, `.on_retry` callback, and `.max_delay` cap. Raises `"fmisc_retry_exhausted"` on final failure while preserving the original condition's classes.
   - `with_timing()` — wall-clock timing via `proc.time()`, reported as cli message, `"elapsed"` attribute, or callback; reports on both success and failure.
   - `with_logging()` — call/success/error events via a default cli logger or a custom `.logger(event, data)`.
-  - `with_cache()` — memoisation. Delegates to `memoise::memoise()` when available and unbounded; otherwise uses a built-in env-backed cache with LRU eviction (`.max_size`) and time-to-live (`.ttl`). Companions: `cache_clear()`, `cache_info()`.
+  - `with_cache()` — memoisation facade over `memoise::memoise()` + `cachem::cache_mem()` with LRU eviction (`.max_size`) and time-to-live (`.ttl`). Companions: `cache_clear()`, `cache_info()`.
   - `with_rate_limit()` — throttle to `n` calls per rolling `period` seconds; either wait or raise `"fmisc_rate_limit_exceeded"`.
 * Composition helpers: `decorate()` composes unary decorators left-to-right; `is_decorated()` and `undecorate()` inspect the wrapper chain.
 

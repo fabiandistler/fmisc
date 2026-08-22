@@ -26,6 +26,7 @@ Other decorators:
 \code{\link[=decorate]{decorate()}},
 \code{\link{fmisc_decorators}},
 \code{\link[=is_decorated]{is_decorated()}},
+\code{\link[=print.fmisc_decorated]{print.fmisc_decorated()}},
 \code{\link[=with_cache]{with_cache()}},
 \code{\link[=with_logging]{with_logging()}},
 \code{\link[=with_rate_limit]{with_rate_limit()}},
