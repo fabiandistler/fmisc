@@ -8,7 +8,29 @@
 [![R-CMD-check](https://github.com/fabiandistler/fmisc/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/fabiandistler/fmisc/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-Various utilities for software development in R.
+Various utilities for software development in R: composable function
+decorators, memory-aware chunked processing, smart parallel apply, rich
+error messages, and package-development helpers.
+
+## Features
+
+- **Function decorators**: stackable function operators — retry with
+  exponential backoff (`with_retry()`), timing (`with_timing()`),
+  logging (`with_logging()`), memoisation (`with_cache()`), and rate
+  limiting (`with_rate_limit()`). Compose with `decorate()`, inspect
+  with `is_decorated()`, unwrap with `undecorate()`.
+- **Chunking & RAM management**: process data larger than memory via
+  `process_with_chunks()`, with automatic chunk sizing, cross-platform
+  RAM monitoring (Rcpp-accelerated), and disk spillover.
+- **Smart parallel computing**: `smart_parallel_apply()` picks an
+  OS-appropriate backend automatically and falls back to sequential
+  processing when no backend is available.
+- **Better errors**: `stop2()` produces rich, `{interpolated}` error
+  messages via cli/rlang with a base-R fallback.
+- **Development tools**: a best-practices function template
+  (`use_function_template()`), a package Makefile (`use_make2()`), and
+  custom [flir](https://flir.etiennebacher.com/) lint rules
+  (`get_flir_rules()`).
 
 ## Installation
 
@@ -18,6 +40,43 @@ You can install the development version of fmisc from
 ``` r
 # install.packages("pak")
 pak::pak("fabiandistler/fmisc")
+```
+
+## Function Decorators
+
+``` r
+library(fmisc)
+
+flaky <- function(x) {
+  if (runif(1) < 0.7) stop2("transient failure")
+  x * 2
+}
+
+robust <- flaky |>
+  with_retry(max_tries = 5, backoff = 0.1) |>
+  with_logging()
+
+robust(21)
+```
+
+## Chunking & RAM Management
+
+``` r
+big_df <- data.frame(x = rnorm(1e7), y = runif(1e7))
+
+result <- process_with_chunks(
+  big_df,
+  process_fn = function(chunk) colMeans(chunk),
+  combine_fn = function(parts) rowMeans(do.call(rbind, parts)),
+  max_ram_mb = 512,
+  verbose = FALSE
+)
+```
+
+## Smart Parallel Computing
+
+``` r
+results <- smart_parallel_apply(1:1000, function(i) sqrt(i))
 ```
 
 ## Development Tools
