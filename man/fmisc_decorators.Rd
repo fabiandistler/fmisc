@@ -11,16 +11,16 @@ with the class \code{"fmisc_decorated"}. Wrappers are curry-friendly and
 compose with the native pipe (see examples).
 }
 \seealso{
-Other decorators: 
-\code{\link{cache_clear}()},
-\code{\link{decorate}()},
-\code{\link{is_decorated}()},
-\code{\link{undecorate}()},
-\code{\link{with_cache}()},
-\code{\link{with_logging}()},
-\code{\link{with_rate_limit}()},
-\code{\link{with_retry}()},
-\code{\link{with_timing}()}
+Other decorators:
+\code{\link[=cache_clear]{cache_clear()}},
+\code{\link[=decorate]{decorate()}},
+\code{\link[=is_decorated]{is_decorated()}},
+\code{\link[=undecorate]{undecorate()}},
+\code{\link[=with_cache]{with_cache()}},
+\code{\link[=with_logging]{with_logging()}},
+\code{\link[=with_rate_limit]{with_rate_limit()}},
+\code{\link[=with_retry]{with_retry()}},
+\code{\link[=with_timing]{with_timing()}}
 }
 \concept{decorators}
 \keyword{internal}

@@ -32,14 +32,6 @@ A composable toolkit of "function operators" for cross-cutting concerns:
 \code{\link[=undecorate]{undecorate()}}.
 }
 
-\section{Dependency Injection}{
-
-\code{\link[=di_container]{di_container()}} provides a lightweight, closure-based DI container
-with auto-wiring by formal argument name, singleton/transient/value
-lifecycles, child scopes, and test-time overrides via
-\code{\link[=with_di_overrides]{with_di_overrides()}}.
-}
-
 \section{Custom Linting Rules}{
 
 The package provides custom flir rules available in the package installation
@@ -56,6 +48,11 @@ Useful links:
 }
 \author{
 \strong{Maintainer}: Fabian Distler \email{fdistlermpi@gmail.com}
+
+Authors:
+\itemize{
+  \item Fabian Distler \email{fdistlermpi@gmail.com}
+}
 
 }
 \keyword{internal}

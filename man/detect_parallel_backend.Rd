@@ -21,11 +21,11 @@ Detect the best parallelization backend for the current environment
 \seealso{
 \code{\link[=setup_parallel]{setup_parallel()}}, \code{\link[=smart_parallel_apply]{smart_parallel_apply()}}
 
-Other parallel: 
-\code{\link{print_parallel_info}()},
-\code{\link{setup_parallel}()},
-\code{\link{smart_parallel_apply}()},
-\code{\link{stop_parallel}()}
+Other parallel:
+\code{\link[=print_parallel_info]{print_parallel_info()}},
+\code{\link[=setup_parallel]{setup_parallel()}},
+\code{\link[=smart_parallel_apply]{smart_parallel_apply()}},
+\code{\link[=stop_parallel]{stop_parallel()}}
 }
 \concept{parallel}
 \keyword{internal}

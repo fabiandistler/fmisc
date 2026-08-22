@@ -16,12 +16,6 @@
 #' [decorate()], and can be inspected with [is_decorated()] and
 #' [undecorate()].
 #'
-#' @section Dependency Injection:
-#' [di_container()] provides a lightweight, closure-based DI container
-#' with auto-wiring by formal argument name, singleton/transient/value
-#' lifecycles, child scopes, and test-time overrides via
-#' [with_di_overrides()].
-#'
 #' @section Custom Linting Rules:
 #' The package provides custom flir rules available in the package installation
 #' directory and can be accessed via [get_flir_rules()].

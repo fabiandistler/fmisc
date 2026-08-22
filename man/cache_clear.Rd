@@ -21,15 +21,15 @@ a list with \code{backend} (\code{"memoise"} or \code{"env"}), \code{size}, and 
 Clear or inspect a cached function's cache
 }
 \seealso{
-Other decorators: 
-\code{\link{decorate}()},
+Other decorators:
+\code{\link[=decorate]{decorate()}},
 \code{\link{fmisc_decorators}},
-\code{\link{is_decorated}()},
-\code{\link{undecorate}()},
-\code{\link{with_cache}()},
-\code{\link{with_logging}()},
-\code{\link{with_rate_limit}()},
-\code{\link{with_retry}()},
-\code{\link{with_timing}()}
+\code{\link[=is_decorated]{is_decorated()}},
+\code{\link[=undecorate]{undecorate()}},
+\code{\link[=with_cache]{with_cache()}},
+\code{\link[=with_logging]{with_logging()}},
+\code{\link[=with_rate_limit]{with_rate_limit()}},
+\code{\link[=with_retry]{with_retry()}},
+\code{\link[=with_timing]{with_timing()}}
 }
 \concept{decorators}
