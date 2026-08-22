@@ -40,7 +40,8 @@ vignettes/*.pdf
 .Renviron
 
 # pkgdown site
-docs/
+docs/*
+!docs/agents/
 
 # translation temp files
 po/*~
@@ -54,3 +55,5 @@ rsconnect/
 *.so
 *.dll
 .memsearch
+/doc/
+/Meta/

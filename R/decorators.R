@@ -230,7 +230,7 @@ with_timing <- function(f,
     wrapper, f,
     decorator_label(
       "with_timing",
-      .report = .report,
+      .report = if (!identical(.report, "message")) .report,
       .threshold = if (.threshold != 0) .threshold
     )
   )
