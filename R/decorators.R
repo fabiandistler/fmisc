@@ -612,8 +612,7 @@ decorate <- function(f, ...) {
 #' @family decorators
 #' @export
 undecorate <- function(f, depth = 1) {
-  if (!is.numeric(depth) || length(depth) != 1 ||
-    (!is.infinite(depth) && depth < 1)) {
+  if (!is.numeric(depth) || length(depth) != 1 || is.na(depth) || depth < 1) {
     stop2("`depth` must be a positive number or `Inf`",
       class = "fmisc_decorator_error"
     )

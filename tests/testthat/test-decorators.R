@@ -249,6 +249,8 @@ test_that("undecorate(depth =) unwraps multiple layers", {
   expect_error(undecorate(g2, depth = 0), class = "fmisc_decorator_error")
   expect_error(undecorate(g2, depth = -1), class = "fmisc_decorator_error")
   expect_error(undecorate(g2, depth = "two"), class = "fmisc_decorator_error")
+  expect_error(undecorate(g2, depth = NA), class = "fmisc_decorator_error")
+  expect_error(undecorate(g2, depth = NaN), class = "fmisc_decorator_error")
 })
 
 test_that("pipe composition preserves is_decorated", {
