@@ -239,6 +239,21 @@ test_that("is_decorated and undecorate roundtrip through one layer", {
   expect_identical(undecorate(f), f)
 })
 
+test_that("undecorate(depth =) unwraps multiple layers", {
+  f <- function(x) x
+  g1 <- with_timing(f, .report = "attribute")
+  g2 <- with_logging(g1, .name = "x")
+  expect_identical(undecorate(g2), g1)
+  expect_identical(undecorate(g2, depth = 2), f)
+  expect_identical(undecorate(g2, depth = Inf), f)
+  expect_identical(undecorate(g2, depth = 99), f)
+  expect_error(undecorate(g2, depth = 0), class = "fmisc_decorator_error")
+  expect_error(undecorate(g2, depth = -1), class = "fmisc_decorator_error")
+  expect_error(undecorate(g2, depth = "two"), class = "fmisc_decorator_error")
+  expect_error(undecorate(g2, depth = NA), class = "fmisc_decorator_error")
+  expect_error(undecorate(g2, depth = NaN), class = "fmisc_decorator_error")
+})
+
 test_that("pipe composition preserves is_decorated", {
   f <- function(x) x
   g <- f |>

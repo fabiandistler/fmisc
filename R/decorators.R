@@ -574,16 +574,32 @@ decorate <- function(f, ...) {
 }
 
 
-#' Unwrap a decorated function by one layer
+#' Unwrap a decorated function
 #'
 #' @param f A function possibly wrapped by one of the `with_*()` decorators.
-#' @return The inner function `f` wrapped, or `f` unchanged if it is not
-#'   a decorated function.
+#' @param depth Positive number. How many wrapper layers to remove.
+#'   Default `1`; `Inf` unwraps completely, stopping at the innermost
+#'   function.
+#' @return The function `f` with `depth` layers removed, or `f` unchanged
+#'   if it is not a decorated function (or has fewer than `depth` layers).
 #' @family decorators
 #' @export
-undecorate <- function(f) {
-  inner <- attr(f, "fmisc_undecorate")
-  if (is.null(inner)) f else inner
+undecorate <- function(f, depth = 1) {
+  if (!is.numeric(depth) || length(depth) != 1 || is.na(depth) || depth < 1) {
+    stop2("`depth` must be a positive number or `Inf`",
+      class = "fmisc_decorator_error"
+    )
+  }
+  n <- 0
+  while (n < depth) {
+    inner <- attr(f, "fmisc_undecorate")
+    if (is.null(inner)) {
+      break
+    }
+    f <- inner
+    n <- n + 1
+  }
+  f
 }
 
 

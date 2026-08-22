@@ -14,6 +14,12 @@
 
 ## New features
 
+* `undecorate()` gains a `depth` argument (default `1`); `depth = Inf`
+  unwraps the full decorator chain. New vignette
+  `vignette("decorators")` compares the decorators against
+  `purrr::insistently()`, `memoise` + `cachem`, and `ratelimitr`, and
+  documents the deliberate skip of burst-tolerant rate limiting (use
+  `httr2::req_throttle()` for HTTP burst needs).
 * Decorated functions now record each applied decorator (name + key
   parameters) in an `"fmisc_stack"` attribute, accumulated as wrappers
   compose via `decorate()` or the native pipe. `print()` on an
