@@ -328,17 +328,15 @@ with_logging <- function(f,
 #' Memoise a function's results
 #'
 #' Wraps `f` so that repeated calls with the same arguments return a cached
-#' value. When `.max_size = Inf` and `.ttl = Inf` and the `memoise` package
-#' is available, delegates to [memoise::memoise()]. Otherwise uses a built-
-#' in environment-backed cache supporting LRU eviction and time-to-live.
+#' value. This is a thin facade over [memoise::memoise()] backed by
+#' `cachem::cache_mem()`: `memoise` hashes arguments internally, and
+#' `cache_mem` provides LRU eviction (`.max_size`) and time-to-live
+#' (`.ttl`).
 #'
 #' @param f A function to wrap.
 #' @param ... Reserved for future extension.
-#' @param .key Optional function `function(args_list) -> character(1)`
-#'   producing a cache key from the argument list. Default `NULL` uses a
-#'   `deparse()`-based key over all arguments.
 #' @param .max_size Maximum number of cached entries. `Inf` (default) for
-#'   unbounded. When exceeded, oldest entries are evicted (LRU).
+#'   unbounded; when exceeded, least-recently-used entries are evicted.
 #' @param .ttl Time-to-live in seconds for cached entries. `Inf` (default)
 #'   never expires.
 #'
@@ -362,14 +360,10 @@ with_logging <- function(f,
 #' }
 with_cache <- function(f,
                        ...,
-                       .key = NULL,
                        .max_size = Inf,
                        .ttl = Inf) {
   if (!is.function(f)) {
     stop2("`f` must be a function", class = "fmisc_decorator_error")
-  }
-  if (!is.null(.key) && !is.function(.key)) {
-    stop2("`.key` must be `NULL` or a function", class = "fmisc_decorator_error")
   }
   if (!is.numeric(.max_size) || length(.max_size) != 1 || .max_size <= 0) {
     stop2("`.max_size` must be a positive number or `Inf`", class = "fmisc_decorator_error")
@@ -378,85 +372,21 @@ with_cache <- function(f,
     stop2("`.ttl` must be a positive number or `Inf`", class = "fmisc_decorator_error")
   }
 
-  use_memoise <- is.infinite(.max_size) &&
-    is.infinite(.ttl) &&
-    is.null(.key) &&
-    requireNamespace("memoise", quietly = TRUE)
+  cache <- cachem::cache_mem(max_n = .max_size, max_age = .ttl)
+  memo <- memoise::memoise(f, cache = cache)
 
-  if (use_memoise) {
-    memo <- memoise::memoise(f)
-    wrapper <- function(...) memo(...)
-    clear_fn <- function() {
-      memoise::forget(memo)
-      invisible(NULL)
-    }
-    info_fn <- function() {
-      list(backend = "memoise", size = NA_integer_)
-    }
-  } else {
-    state <- new.env(parent = emptyenv())
-    state$store <- list()
-    state$keys <- character(0)
-
-    make_key <- function(args_list) {
-      raw <- if (!is.null(.key)) {
-        as.character(.key(args_list))[1]
-      } else {
-        parts <- vapply(args_list, function(x) {
-          tryCatch(
-            paste(deparse(x, control = c("keepInteger", "keepNA")), collapse = ""),
-            error = function(e) "?"
-          )
-        }, character(1))
-        paste(parts, collapse = "\x1f")
-      }
-      # Prefix guarantees a non-empty key so `list[[key]] <- value` works
-      # even for zero-argument functions (paste(character(0)) is "").
-      paste0(".k.", raw)
-    }
-
-    wrapper <- function(...) {
-      args_list <- list(...)
-      key <- make_key(args_list)
-      hit <- isTRUE(key %in% state$keys)
-      if (hit) {
-        entry <- state$store[[key]]
-        if (is.finite(.ttl)) {
-          age <- as.numeric(Sys.time()) - entry$time
-          if (isTRUE(age > .ttl)) {
-            state$store[[key]] <- NULL
-            state$keys <- setdiff(state$keys, key)
-            hit <- FALSE
-          }
-        }
-      }
-      if (hit) {
-        state$keys <- c(setdiff(state$keys, key), key)
-        return(entry$value)
-      }
-      value <- f(...)
-      state$store[[key]] <- list(value = value, time = as.numeric(Sys.time()))
-      state$keys <- c(setdiff(state$keys, key), key)
-      if (is.finite(.max_size) && length(state$keys) > .max_size) {
-        evict_n <- length(state$keys) - as.integer(.max_size)
-        to_evict <- state$keys[seq_len(evict_n)]
-        state$store[to_evict] <- NULL
-        state$keys <- state$keys[-seq_len(evict_n)]
-      }
-      value
-    }
-    clear_fn <- function() {
-      state$store <- list()
-      state$keys <- character(0)
-      invisible(NULL)
-    }
-    info_fn <- function() {
-      list(
-        backend = "env",
-        size = length(state$keys),
-        keys = state$keys
-      )
-    }
+  wrapper <- function(...) memo(...)
+  clear_fn <- function() {
+    cache$reset()
+    invisible(NULL)
+  }
+  info_fn <- function() {
+    list(
+      backend = "cachem",
+      size = length(cache$keys()),
+      max_n = .max_size,
+      max_age = .ttl
+    )
   }
 
   attr(wrapper, "cache_clear") <- clear_fn
@@ -469,8 +399,7 @@ with_cache <- function(f,
 #'
 #' @param f A function previously wrapped with [with_cache()].
 #' @return `cache_clear()` returns `NULL` invisibly. `cache_info()` returns
-#'   a list with `backend` (`"memoise"` or `"env"`), `size`, and (for
-#'   `"env"`) the character vector of stored keys.
+#'   a list with `backend` (`"cachem"`), `size`, `max_n`, and `max_age`.
 #' @family decorators
 #' @export
 cache_clear <- function(f) {

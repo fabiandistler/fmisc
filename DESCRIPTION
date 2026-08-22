@@ -10,9 +10,11 @@ BugReports: https://github.com/fabiandistler/fmisc/issues
 Depends:
     R (>= 3.5.0)
 Imports:
+    cachem,
     cli,
     data.table,
     foreach,
+    memoise,
     Rcpp,
     stats,
     usethis,
@@ -20,7 +22,6 @@ Imports:
 Suggests:
     flir,
     knitr,
-    memoise,
     rmarkdown,
     rlang,
     glue,
