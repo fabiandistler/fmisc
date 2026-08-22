@@ -2,19 +2,23 @@
 % Please edit documentation in R/decorators.R
 \name{undecorate}
 \alias{undecorate}
-\title{Unwrap a decorated function by one layer}
+\title{Unwrap a decorated function}
 \usage{
-undecorate(f)
+undecorate(f, depth = 1)
 }
 \arguments{
 \item{f}{A function possibly wrapped by one of the \verb{with_*()} decorators.}
+
+\item{depth}{Positive number. How many wrapper layers to remove.
+Default \code{1}; \code{Inf} unwraps completely, stopping at the innermost
+function.}
 }
 \value{
-The inner function \code{f} wrapped, or \code{f} unchanged if it is not
-a decorated function.
+The function \code{f} with \code{depth} layers removed, or \code{f} unchanged
+if it is not a decorated function (or has fewer than \code{depth} layers).
 }
 \description{
-Unwrap a decorated function by one layer
+Unwrap a decorated function
 }
 \seealso{
 Other decorators:
@@ -22,6 +26,7 @@ Other decorators:
 \code{\link[=decorate]{decorate()}},
 \code{\link{fmisc_decorators}},
 \code{\link[=is_decorated]{is_decorated()}},
+\code{\link[=print.fmisc_decorated]{print.fmisc_decorated()}},
 \code{\link[=with_cache]{with_cache()}},
 \code{\link[=with_logging]{with_logging()}},
 \code{\link[=with_rate_limit]{with_rate_limit()}},

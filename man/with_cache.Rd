@@ -4,19 +4,15 @@
 \alias{with_cache}
 \title{Memoise a function's results}
 \usage{
-with_cache(f, ..., .key = NULL, .max_size = Inf, .ttl = Inf)
+with_cache(f, ..., .max_size = Inf, .ttl = Inf)
 }
 \arguments{
 \item{f}{A function to wrap.}
 
 \item{...}{Reserved for future extension.}
 
-\item{.key}{Optional function \verb{function(args_list) -> character(1)}
-producing a cache key from the argument list. Default \code{NULL} uses a
-\code{deparse()}-based key over all arguments.}
-
 \item{.max_size}{Maximum number of cached entries. \code{Inf} (default) for
-unbounded. When exceeded, oldest entries are evicted (LRU).}
+unbounded; when exceeded, least-recently-used entries are evicted.}
 
 \item{.ttl}{Time-to-live in seconds for cached entries. \code{Inf} (default)
 never expires.}
@@ -28,9 +24,10 @@ A function that forwards its arguments to \code{f}. Attach
 }
 \description{
 Wraps \code{f} so that repeated calls with the same arguments return a cached
-value. When \code{.max_size = Inf} and \code{.ttl = Inf} and the \code{memoise} package
-is available, delegates to \code{\link[memoise:memoise]{memoise::memoise()}}. Otherwise uses a built-
-in environment-backed cache supporting LRU eviction and time-to-live.
+value. This is a thin facade over \code{\link[memoise:memoise]{memoise::memoise()}} backed by
+\code{cachem::cache_mem()}: \code{memoise} hashes arguments internally, and
+\code{cache_mem} provides LRU eviction (\code{.max_size}) and time-to-live
+(\code{.ttl}).
 }
 \examples{
 \donttest{
@@ -53,6 +50,7 @@ Other decorators:
 \code{\link[=decorate]{decorate()}},
 \code{\link{fmisc_decorators}},
 \code{\link[=is_decorated]{is_decorated()}},
+\code{\link[=print.fmisc_decorated]{print.fmisc_decorated()}},
 \code{\link[=undecorate]{undecorate()}},
 \code{\link[=with_logging]{with_logging()}},
 \code{\link[=with_rate_limit]{with_rate_limit()}},

@@ -193,8 +193,7 @@ test_that("with_cache caches subsequent calls with the same arguments", {
     counter <<- counter + 1
     x * 10
   }
-  # Force env-cache path by setting a finite .max_size
-  g <- with_cache(f, .max_size = 100)
+  g <- with_cache(f)
   expect_equal(g(2), 20)
   expect_equal(g(2), 20)
   expect_equal(counter, 1L)
@@ -202,7 +201,7 @@ test_that("with_cache caches subsequent calls with the same arguments", {
   expect_equal(counter, 2L)
 })
 
-test_that("cache_clear forces recompute; cache_info reports env size", {
+test_that("cache_clear forces recompute; cache_info reports size", {
   counter <- 0
   f <- function(x) {
     counter <<- counter + 1
@@ -212,8 +211,10 @@ test_that("cache_clear forces recompute; cache_info reports env size", {
   g(1)
   g(2)
   info <- cache_info(g)
-  expect_equal(info$backend, "env")
+  expect_equal(info$backend, "cachem")
   expect_equal(info$size, 2L)
+  expect_equal(info$max_n, 100)
+  expect_equal(info$max_age, Inf)
   cache_clear(g)
   g(1)
   expect_equal(counter, 3L)
@@ -292,10 +293,61 @@ test_that("is_decorated and undecorate roundtrip through one layer", {
   expect_identical(undecorate(f), f)
 })
 
+test_that("undecorate(depth =) unwraps multiple layers", {
+  f <- function(x) x
+  g1 <- with_timing(f, .report = "attribute")
+  g2 <- with_logging(g1, .name = "x")
+  expect_identical(undecorate(g2), g1)
+  expect_identical(undecorate(g2, depth = 2), f)
+  expect_identical(undecorate(g2, depth = Inf), f)
+  expect_identical(undecorate(g2, depth = 99), f)
+  expect_error(undecorate(g2, depth = 0), class = "fmisc_decorator_error")
+  expect_error(undecorate(g2, depth = -1), class = "fmisc_decorator_error")
+  expect_error(undecorate(g2, depth = "two"), class = "fmisc_decorator_error")
+  expect_error(undecorate(g2, depth = NA), class = "fmisc_decorator_error")
+  expect_error(undecorate(g2, depth = NaN), class = "fmisc_decorator_error")
+})
+
 test_that("pipe composition preserves is_decorated", {
   f <- function(x) x
   g <- f |>
     with_retry(max_tries = 1, backoff = 0) |>
     with_timing(.report = "attribute")
   expect_true(is_decorated(g))
+})
+
+test_that("decorator stack accumulates as wrappers compose", {
+  f <- function(x) x + 1
+  g <- f |>
+    with_retry(max_tries = 2, backoff = 0) |>
+    with_timing(.report = "attribute")
+  expect_equal(
+    attr(g, "fmisc_stack"),
+    c("with_retry(max_tries = 2L, backoff = 0)", 'with_timing(.report = "attribute")')
+  )
+  h <- decorate(
+    f,
+    function(fn) with_rate_limit(fn, n = 5, period = 1),
+    function(fn) with_cache(fn, .ttl = 60)
+  )
+  expect_length(attr(h, "fmisc_stack"), 2L)
+})
+
+test_that("plain functions have no decorator stack", {
+  expect_null(attr(function(x) x, "fmisc_stack"))
+})
+
+test_that("print.fmisc_decorated shows the stack outermost-first", {
+  f <- function(x) x + 1
+  g <- f |>
+    with_retry(max_tries = 2, backoff = 0) |>
+    with_timing(.report = "attribute")
+  out <- utils::capture.output(print(g))
+  expect_match(out[1], "fmisc_decorated", fixed = TRUE)
+  timing_line <- grep("with_timing", out, value = TRUE)
+  retry_line <- grep("with_retry", out, value = TRUE)
+  expect_length(timing_line, 1L)
+  expect_length(retry_line, 1L)
+  expect_lt(which(grepl("with_timing", out)), which(grepl("with_retry", out)))
+  expect_output(print(f), "^function")
 })
