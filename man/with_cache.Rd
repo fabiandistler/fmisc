@@ -35,23 +35,28 @@ in environment-backed cache supporting LRU eviction and time-to-live.
 \examples{
 \donttest{
 calls <- 0
-slow <- function(x) { calls <<- calls + 1; x * 2 }
+slow <- function(x) {
+  calls <<- calls + 1
+  x * 2
+}
 fast <- with_cache(slow)
-fast(21); fast(21); calls
+fast(21)
+fast(21)
+calls
 }
 }
 \seealso{
 \code{\link[=cache_clear]{cache_clear()}}, \code{\link[=cache_info]{cache_info()}}
 
-Other decorators: 
-\code{\link{cache_clear}()},
-\code{\link{decorate}()},
+Other decorators:
+\code{\link[=cache_clear]{cache_clear()}},
+\code{\link[=decorate]{decorate()}},
 \code{\link{fmisc_decorators}},
-\code{\link{is_decorated}()},
-\code{\link{undecorate}()},
-\code{\link{with_logging}()},
-\code{\link{with_rate_limit}()},
-\code{\link{with_retry}()},
-\code{\link{with_timing}()}
+\code{\link[=is_decorated]{is_decorated()}},
+\code{\link[=undecorate]{undecorate()}},
+\code{\link[=with_logging]{with_logging()}},
+\code{\link[=with_rate_limit]{with_rate_limit()}},
+\code{\link[=with_retry]{with_retry()}},
+\code{\link[=with_timing]{with_timing()}}
 }
 \concept{decorators}

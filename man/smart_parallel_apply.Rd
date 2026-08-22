@@ -38,17 +38,11 @@ result <- smart_parallel_apply(1:10, function(x, p) x^p, p = 3)
 \seealso{
 \code{\link[=setup_parallel]{setup_parallel()}}, \code{\link[=detect_parallel_backend]{detect_parallel_backend()}}
 
-Other parallel: 
-\code{\link{detect_parallel_backend}()},
-\code{\link{print_parallel_info}()},
-\code{\link{setup_parallel}()},
-\code{\link{stop_parallel}()}
-
-Other parallel: 
-\code{\link{detect_parallel_backend}()},
-\code{\link{print_parallel_info}()},
-\code{\link{setup_parallel}()},
-\code{\link{stop_parallel}()}
+Other parallel:
+\code{\link[=detect_parallel_backend]{detect_parallel_backend()}},
+\code{\link[=print_parallel_info]{print_parallel_info()}},
+\code{\link[=setup_parallel]{setup_parallel()}},
+\code{\link[=stop_parallel]{stop_parallel()}}
 }
 \concept{parallel}
 \keyword{Applies}

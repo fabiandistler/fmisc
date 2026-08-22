@@ -12,20 +12,6 @@
   - `with_rate_limit()` — throttle to `n` calls per rolling `period` seconds; either wait or raise `"fmisc_rate_limit_exceeded"`.
 * Composition helpers: `decorate()` composes unary decorators left-to-right; `is_decorated()` and `undecorate()` inspect the wrapper chain.
 
-### Dependency Injection
-
-* New `di_container()` — a closure-based dependency-injection container with:
-  - `register()` / `resolve()` / `has()` / `names()` / `unregister()` — service registration and resolution.
-  - Three lifecycles: `"singleton"` (factory once, cached), `"transient"` (factory each resolve), `"value"` (stored as-is).
-  - Auto-wiring by formal argument name, with `.deps` for explicit remapping.
-  - Circular-dependency detection (`"fmisc_di_cycle"`), missing-service errors (`"fmisc_di_missing"`), duplicate-registration errors (`"fmisc_di_duplicate"`).
-  - `child()` scopes that shadow the parent without mutation.
-  - `override()` returning a `restore()` closure that reinstates the prior registration and clears the singleton cache.
-  - `inject()` — pre-bind formals matching registered service names into a user function.
-  - Special `.container` factory formal to receive the owning container.
-* `with_di_overrides(container, overrides, code)` — withr-style helper that applies a set of overrides for the duration of an expression and always restores them via `on.exit()`.
-* `print.fmisc_di_container()` — cli-formatted listing of local registrations.
-
 ### Chunking and RAM Management Framework
 
 * New chunking and RAM management framework for processing large datasets that exceed available memory:

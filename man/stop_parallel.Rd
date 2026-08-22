@@ -15,11 +15,11 @@ Stop parallel backend and clean up resources
 \seealso{
 \code{\link[=setup_parallel]{setup_parallel()}}, \code{\link[=smart_parallel_apply]{smart_parallel_apply()}}
 
-Other parallel: 
-\code{\link{detect_parallel_backend}()},
-\code{\link{print_parallel_info}()},
-\code{\link{setup_parallel}()},
-\code{\link{smart_parallel_apply}()}
+Other parallel:
+\code{\link[=detect_parallel_backend]{detect_parallel_backend()}},
+\code{\link[=print_parallel_info]{print_parallel_info()}},
+\code{\link[=setup_parallel]{setup_parallel()}},
+\code{\link[=smart_parallel_apply]{smart_parallel_apply()}}
 }
 \concept{parallel}
 \keyword{internal}

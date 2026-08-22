@@ -30,11 +30,11 @@ Setup parallel backend with automatic configuration
 \code{\link[=detect_parallel_backend]{detect_parallel_backend()}}, \code{\link[=stop_parallel]{stop_parallel()}},
 \code{\link[=smart_parallel_apply]{smart_parallel_apply()}}
 
-Other parallel: 
-\code{\link{detect_parallel_backend}()},
-\code{\link{print_parallel_info}()},
-\code{\link{smart_parallel_apply}()},
-\code{\link{stop_parallel}()}
+Other parallel:
+\code{\link[=detect_parallel_backend]{detect_parallel_backend()}},
+\code{\link[=print_parallel_info]{print_parallel_info()}},
+\code{\link[=smart_parallel_apply]{smart_parallel_apply()}},
+\code{\link[=stop_parallel]{stop_parallel()}}
 }
 \concept{parallel}
 \keyword{internal}

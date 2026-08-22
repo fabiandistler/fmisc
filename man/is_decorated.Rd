@@ -16,15 +16,15 @@ is_decorated(f)
 Test whether a function was produced by a decorator
 }
 \seealso{
-Other decorators: 
-\code{\link{cache_clear}()},
-\code{\link{decorate}()},
+Other decorators:
+\code{\link[=cache_clear]{cache_clear()}},
+\code{\link[=decorate]{decorate()}},
 \code{\link{fmisc_decorators}},
-\code{\link{undecorate}()},
-\code{\link{with_cache}()},
-\code{\link{with_logging}()},
-\code{\link{with_rate_limit}()},
-\code{\link{with_retry}()},
-\code{\link{with_timing}()}
+\code{\link[=undecorate]{undecorate()}},
+\code{\link[=with_cache]{with_cache()}},
+\code{\link[=with_logging]{with_logging()}},
+\code{\link[=with_rate_limit]{with_rate_limit()}},
+\code{\link[=with_retry]{with_retry()}},
+\code{\link[=with_timing]{with_timing()}}
 }
 \concept{decorators}
