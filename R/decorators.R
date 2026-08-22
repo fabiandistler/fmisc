@@ -33,9 +33,14 @@ mark_decorated <- function(wrapper, inner) {
 #'   8, 16 s). Use `0` to disable delays.
 #' @param ... Passed to the wrapped function on each call. Reserved for
 #'   future extensions; currently forwarded via the wrapper's `...`.
-#' @param .on_error Optional predicate `function(cnd) -> logical`. When
-#'   `TRUE` the error is retried; when `FALSE` it is re-raised immediately.
-#'   Default `NULL` retries all errors.
+#' @param .on_error Optional predicate `function(cnd) -> logical`, or a
+#'   character vector of condition classes to retry on (e.g.
+#'   `c("http_error_503")`), mirroring httr2's `is_transient` idiom. When
+#'   the predicate returns `FALSE` (or the error matches none of the
+#'   classes) the error is re-raised immediately. Default `NULL` retries
+#'   all errors.
+#' @param .message Logical. If `TRUE`, emits a `message()` before each
+#'   retry describing the attempt and delay. Default `FALSE`.
 #' @param .max_delay Numeric cap on individual retry delays in seconds.
 #'   Default `Inf`.
 #' @param .jitter Logical. If `TRUE` (default), each delay is multiplied by
@@ -64,7 +69,8 @@ with_retry <- function(f,
                        .on_error = NULL,
                        .max_delay = Inf,
                        .jitter = TRUE,
-                       .on_retry = NULL) {
+                       .on_retry = NULL,
+                       .message = FALSE) {
   if (!is.function(f)) {
     stop2("`f` must be a function", class = "fmisc_decorator_error")
   }
@@ -81,11 +87,23 @@ with_retry <- function(f,
       class = "fmisc_decorator_error"
     )
   }
-  if (!is.null(.on_error) && !is.function(.on_error)) {
-    stop2("`.on_error` must be `NULL` or a predicate function", class = "fmisc_decorator_error")
+  if (!is.null(.on_error) && !is.function(.on_error) &&
+    !(is.character(.on_error) && length(.on_error) > 0 && !anyNA(.on_error))) {
+    stop2(
+      "`.on_error` must be `NULL`, a predicate function, or a character vector of condition classes",
+      class = "fmisc_decorator_error"
+    )
   }
   if (!is.null(.on_retry) && !is.function(.on_retry)) {
     stop2("`.on_retry` must be `NULL` or a callback function", class = "fmisc_decorator_error")
+  }
+
+  retryable <- if (is.function(.on_error)) {
+    .on_error
+  } else if (is.character(.on_error)) {
+    function(cnd) any(.on_error %in% class(cnd))
+  } else {
+    NULL
   }
 
   wrapper <- function(...) {
@@ -98,7 +116,7 @@ with_retry <- function(f,
         return(outcome$value)
       }
       cnd <- outcome$cnd
-      if (!is.null(.on_error) && !isTRUE(.on_error(cnd))) {
+      if (!is.null(retryable) && !isTRUE(retryable(cnd))) {
         stop(cnd)
       }
       if (attempt == max_tries) {
@@ -113,6 +131,14 @@ with_retry <- function(f,
       }
       delay <- min(backoff^attempt, .max_delay)
       if (isTRUE(.jitter)) delay <- delay * stats::runif(1, 0.5, 1.5)
+      if (isTRUE(.message)) {
+        retry_msg <- conditionMessage(cnd)
+        delay_str <- sprintf("%.3g", delay)
+        message(sprintf(
+          "with_retry: attempt %d/%d failed (%s); retrying in %ss",
+          attempt, max_tries, retry_msg, delay_str
+        ))
+      }
       if (!is.null(.on_retry)) {
         tryCatch(.on_retry(attempt, delay, cnd), error = function(e) NULL)
       }

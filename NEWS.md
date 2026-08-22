@@ -2,6 +2,11 @@
 
 ## New features
 
+* `with_retry()` gains two conveniences: `.on_error` now also accepts a
+  character vector of condition classes to retry on (e.g.
+  `c("http_error_503")`), mirroring httr2's `is_transient` idiom; and a
+  `.message = TRUE` toggle emits a `message()` before each retry.
+
 ### Function Decorators (Function-Operator Toolkit)
 
 * New composable "function operators" for cross-cutting concerns. Each `with_*()` takes a function as its first argument and returns a wrapped function with class `"fmisc_decorated"`, making them curry- and pipe-friendly:
