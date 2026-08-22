@@ -159,6 +159,8 @@ test_that("cache_clear forces recompute; cache_info reports size", {
   info <- cache_info(g)
   expect_equal(info$backend, "cachem")
   expect_equal(info$size, 2L)
+  expect_equal(info$max_n, 100)
+  expect_equal(info$max_age, Inf)
   cache_clear(g)
   g(1)
   expect_equal(counter, 3L)

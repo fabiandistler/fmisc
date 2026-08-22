@@ -6,6 +6,10 @@
   `cachem::cache_mem()`. `.max_size` maps to `max_n` (LRU eviction) and
   `.ttl` to `max_age`; the hand-rolled environment backend and the
   `deparse()`-based key scheme are gone (`memoise` hashes internally).
+  The `.key` argument is removed: custom cache keys are not supported by
+  `memoise`, so there is no drop-in replacement. `cache_info()` now
+  reports `backend = "cachem"` with `size`, `max_n`, and `max_age`
+  (the old `"env"`/`"memoise"` backends and `keys` element are gone).
   `memoise` and `cachem` moved from Suggests to Imports.
 
 ## New features
