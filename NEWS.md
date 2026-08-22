@@ -2,6 +2,11 @@
 
 ## New features
 
+* Decorated functions now record each applied decorator (name + key
+  parameters) in an `"fmisc_stack"` attribute, accumulated as wrappers
+  compose via `decorate()` or the native pipe. `print()` on an
+  `"fmisc_decorated"` object shows the wrapper stack outermost-first.
+
 ### Function Decorators (Function-Operator Toolkit)
 
 * New composable "function operators" for cross-cutting concerns. Each `with_*()` takes a function as its first argument and returns a wrapped function with class `"fmisc_decorated"`, making them curry- and pipe-friendly:
