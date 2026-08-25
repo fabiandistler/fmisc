@@ -4,6 +4,8 @@
 ^LICENSE\.md$
 ^\.claude$
 ^\.specify$
+^ROOMBA\.md$
+^\.roomba$
 ^README\.Rmd$
 ^dev$
 ^\.github$
