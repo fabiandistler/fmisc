@@ -19,14 +19,16 @@ export(with_rate_limit)
 export(with_retry)
 export(with_timing)
 importFrom(Rcpp,sourceCpp)
-importFrom(data.table,":=")
-importFrom(data.table,.BY)
-importFrom(data.table,.EACHI)
-importFrom(data.table,.GRP)
-importFrom(data.table,.I)
-importFrom(data.table,.N)
-importFrom(data.table,.NGRP)
-importFrom(data.table,.SD)
-importFrom(data.table,data.table)
+importFrom(data.table,
+  ":=",
+  .BY,
+  .EACHI,
+  .GRP,
+  .I,
+  .N,
+  .NGRP,
+  .SD,
+  data.table
+)
 importFrom(foreach,"%dopar%")
 useDynLib(fmisc, .registration = TRUE)

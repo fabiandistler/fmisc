@@ -45,34 +45,9 @@ Other parallel:
 \code{\link[=stop_parallel]{stop_parallel()}}
 }
 \concept{parallel}
-\keyword{Applies}
-\keyword{FUN}
-\keyword{This}
-\keyword{Universal}
-\keyword{X.}
-\keyword{a}
-\keyword{and}
-\keyword{applies}
-\keyword{apply}
-\keyword{automatically}
-\keyword{automatically.}
-\keyword{available}
-\keyword{backend}
-\keyword{best}
-\keyword{detects}
-\keyword{each}
-\keyword{element}
-\keyword{elements}
-\keyword{for}
-\keyword{function}
-\keyword{internal}
-\keyword{method}
-\keyword{of}
-\keyword{parallel}
-\keyword{parallelization}
-\keyword{system}
-\keyword{the}
-\keyword{to}
-\keyword{using}
-\keyword{vector/list}
-\keyword{your}
+\concept{parallel
+Universal parallel apply function
+
+Applies a function to elements of a vector/list using the best available
+parallel backend automatically. This function automatically detects the best
+parallelization method for your system and applies FUN to each element of X.}

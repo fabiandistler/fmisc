@@ -1,0 +1,151 @@
+---
+title: "Using fmisc Custom Linting Rules"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using fmisc Custom Linting Rules}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+The `fmisc` package provides custom linting rules for the **flir** package. This vignette demonstrates how to use these custom rules in your R projects.
+
+# Using flir Custom Rules
+
+## Setup
+
+First, set up flir in your project:
+
+```{r eval=FALSE}
+library(flir)
+setup_flir()
+```
+
+This creates a `flir/` directory with a `config.yml` file.
+
+## Loading fmisc Rules
+
+Edit `flir/config.yml` to include fmisc rules:
+
+```yaml
+from-package:
+  - fmisc
+```
+
+You can also manually get the rules path:
+
+```{r eval=FALSE}
+library(fmisc)
+get_flir_rules()
+```
+
+## Running flir
+
+Check your code for issues:
+
+```{r eval=FALSE}
+# Lint all R files in current directory
+flir::lint_dir()
+
+# Lint specific files
+flir::lint_file("my_script.R")
+```
+
+Apply automatic fixes:
+
+```{r eval=FALSE}
+# Fix all R files in current directory
+flir::fix_dir()
+
+# Fix specific files
+flir::fix_file("my_script.R")
+```
+
+## Available flir Rules
+
+### deprecated-sample-n
+
+Updates dplyr's deprecated `sample_n()`:
+
+**Before:**
+```r
+sampled <- sample_n(mtcars, 10)
+```
+
+**After:**
+```r
+sampled <- slice_sample(mtcars, n = 10)
+```
+
+### deprecated-sample-frac
+
+Updates dplyr's deprecated `sample_frac()`:
+
+**Before:**
+```r
+sampled <- sample_frac(mtcars, 0.1)
+```
+
+**After:**
+```r
+sampled <- slice_sample(mtcars, prop = 0.1)
+```
+
+# Creating Custom flir Rules
+
+Create a YAML file (e.g., `my-rule.yml`):
+
+```yaml
+id: my-custom-rule
+language: r
+severity: warning
+rule:
+  pattern: old_function($ARG1, $ARG2)
+message: "Use new_function() instead of old_function()"
+fix: new_function(~~ARG1, ~~ARG2)
+```
+
+### Rule Structure
+
+- `id`: Unique identifier for the rule
+- `language`: Programming language (always "r" for R)
+- `severity`: One of "warning", "error", or "info"
+- `rule`: Pattern matching specification
+  - `pattern`: ast-grep pattern to match
+  - `any`: List of alternative patterns
+  - `inside`: Context where pattern should match
+- `message`: Description shown to users
+- `fix`: (Optional) Automatic replacement
+
+### Using Metavariables
+
+Metavariables capture code patterns:
+
+- In patterns: Use `$VAR` syntax
+- In messages/fixes: Use `~~VAR` syntax
+
+Example with multiple patterns:
+
+```yaml
+id: modernize-apply
+language: r
+severity: warning
+rule:
+  any:
+    - pattern: sapply($DATA, $FUN)
+    - pattern: sapply($DATA, $FUN, simplify = $SIMP)
+message: "Consider using vapply() for type-stable results"
+```
+
+For more information:
+
+- [flir documentation](https://flir.etiennebacher.com/)
+- [fmisc GitHub repository](https://github.com/fabiandistler/fmisc)

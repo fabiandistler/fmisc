@@ -1,0 +1,107 @@
+---
+title: "Function Decorators and the R Ecosystem"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Function Decorators and the R Ecosystem}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction
+
+`fmisc` ships a small toolkit of composable function operators
+("decorators"): `with_retry()`, `with_timing()`, `with_logging()`,
+`with_cache()`, and `with_rate_limit()`. They cover the common
+cross-cutting concerns without pulling in heavy dependencies, compose
+freely with the native pipe, and can be inspected (`print()`),
+unwrapped (`undecorate()`), and tested in isolation.
+
+They intentionally stay minimal. This vignette summarises when to keep
+using them and when to reach for a dedicated package instead.
+
+# Decorators vs. the ecosystem
+
+## Retries: `with_retry()` vs `purrr::insistently()`
+
+Use `with_retry()` when you need exponential backoff with jitter,
+selective retry via `.on_error`, and a retry callback — with no
+dependencies beyond `cli`.
+
+Reach for `purrr::insistently()` (or `purrr::quietly()` /
+`purrr::safely()`) when you are already inside a `purrr` pipeline and
+want retry semantics that integrate with its adverb style. Note that
+`insistently()` retries on *any* error unless combined with
+`rate_backoff()`, and does not offer exponential backoff with jitter by
+itself.
+
+## Caching: `with_cache()` vs `memoise` + `cachem`
+
+There is no contest here — because `with_cache()` *is* a facade over
+`memoise::memoise()` backed by `cachem::cache_mem()`:
+
+```{r eval=FALSE}
+fast <- with_cache(slow, .max_size = 1024, .ttl = 3600)
+```
+
+`.max_size` maps to `cachem`'s `max_n` (LRU eviction), `.ttl` to
+`max_age`. If you need more than an in-memory LRU/TTL cache — disk
+persistence (`cache_disk`), shared caches, or cache pruning — use
+`memoise` directly; every `cachem` backend is one argument away:
+
+```{r eval=FALSE}
+memo <- memoise::memoise(slow, cache = cachem::cache_disk("~/.cache"))
+```
+
+## Rate limiting: `with_rate_limit()` vs `ratelimitr`
+
+`with_rate_limit()` enforces at most `n` calls per rolling `period`
+seconds, either sleeping (`.wait = TRUE`) or raising
+`"fmisc_rate_limit_exceeded"`.
+
+For multi-function rate limiting across a group of calls, token-bucket
+semantics, or self-resetting rate-limited functions with finer control,
+use `ratelimitr::limit_rate()`.
+
+## HTTP-specific throttling
+
+**Burst-tolerant rate limiting is deliberately not implemented in
+fmisc.** The strict rolling window is intentional: it is predictable,
+easy to reason about, and matches how most API quotas are documented.
+If you need burst tolerance for HTTP traffic (allowing short spikes up
+to a bucket capacity while staying under a long-run average), do not
+reach for this decorator — use `httr2::req_throttle()`, which implements
+a proper token-bucket scheme and integrates with httr2's request
+pipeline:
+
+```{r eval=FALSE}
+request("https://api.example.com") |>
+  req_throttle(rate = 10 / 1) |>
+  req_perform()
+```
+
+# Inspecting and unwrapping
+
+Decorators record what was applied, so decorated functions explain
+themselves:
+
+```{r}
+f <- function(x) x + 1
+g <- f |>
+  fmisc::with_retry(max_tries = 3L, backoff = 0) |>
+  fmisc::with_timing(.report = "attribute")
+print(g)
+```
+
+Peel layers off with `undecorate()`: one layer by default, or all of
+them with `depth = Inf`.
+
+```{r}
+identical(fmisc::undecorate(g, depth = Inf), f)
+```
