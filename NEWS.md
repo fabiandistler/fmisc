@@ -1,4 +1,4 @@
-# fmisc (development version)
+# fmisc 0.2.0
 
 ## Refactoring
 
