@@ -42,6 +42,7 @@ directory and can be accessed via \code{\link[=get_flir_rules]{get_flir_rules()}
 Useful links:
 \itemize{
   \item \url{https://github.com/fabiandistler/fmisc}
+  \item \url{https://fabiandistler.github.io/fmisc/}
   \item Report bugs at \url{https://github.com/fabiandistler/fmisc/issues}
 }
 

@@ -4,9 +4,6 @@
 #' frameworks based on OS capabilities and available packages.
 #'
 #' @family parallel
-#' @keywords internal
-
-
 #' Universal parallel apply function
 #'
 #' Applies a function to elements of a vector/list using the best available
