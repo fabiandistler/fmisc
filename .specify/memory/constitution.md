@@ -9,7 +9,7 @@ Every utility must follow tidyverse design philosophy: purposeful design, consis
 TDD mandatory for all features: tests written and approved → tests fail → implement → tests pass → refactor. Red-Green-Refactor cycle strictly enforced. Minimum coverage: new features require corresponding tests. Integration tests required for complex workflows. Use `{testthat}` (edition >= 3). No commits merge without passing test suite.
 
 ### III. Code Quality & Linting Standards
-All code must pass `devtools::check()` with zero errors and minimal warnings. Use `{lintr}` for linting; custom rules via fmisc's flir rule definitions. Code must follow tidyverse style guide. Roxygen2 must generate clean documentation without warnings. No code comments unless the WHY is non-obvious.
+All code must pass `devtools::check()` with zero errors and minimal warnings. Use `{lintr}` for linting. Code must follow tidyverse style guide. Roxygen2 must generate clean documentation without warnings. No code comments unless the WHY is non-obvious.
 
 ### IV. Feature Scope & Clarity
 Each utility must have a single, well-defined responsibility. Functions must follow argument ordering: data → descriptors → details. No "org-only" utilities; all tools must be reusable and independently testable. Breaking changes require version bumping (MAJOR.MINOR.PATCH) and explicit documentation.

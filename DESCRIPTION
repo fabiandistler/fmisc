@@ -7,8 +7,7 @@ Description: Miscellaneous utilities for software development in R:
     composable function decorators for retry, timing, logging, caching
     and rate limiting; memory-aware chunked processing with RAM
     monitoring and disk spillover; OS-aware parallel apply helpers;
-    a 'stop2()' error helper; package-development templates; and custom
-    'flir' lint rules.
+    a 'stop2()' error helper; and package-development templates.
 License: MIT + file LICENSE
 URL: https://github.com/fabiandistler/fmisc, https://fabiandistler.github.io/fmisc/
 BugReports: https://github.com/fabiandistler/fmisc/issues
@@ -25,7 +24,6 @@ Imports:
     usethis,
     utils
 Suggests:
-    flir,
     knitr,
     rmarkdown,
     rlang,
@@ -45,3 +43,4 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 SystemRequirements: C++11
 Config/roxygen2/version: 8.1.0
+RoxygenNote: 7.3.1

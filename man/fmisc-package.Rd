@@ -32,12 +32,6 @@ A composable toolkit of "function operators" for cross-cutting concerns:
 \code{\link[=undecorate]{undecorate()}}.
 }
 
-\section{Custom Linting Rules}{
-
-The package provides custom flir rules available in the package installation
-directory and can be accessed via \code{\link[=get_flir_rules]{get_flir_rules()}}.
-}
-
 \seealso{
 Useful links:
 \itemize{
