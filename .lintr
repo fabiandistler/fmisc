@@ -1,0 +1,7 @@
+# Exclusions for lintr (read by lint_package(), including the maintenance-gate r-lint job).
+exclusions: list(
+    # Code template copied into user projects, not package code: its helpers do not exist here.
+    "inst/templates/function_template.R",
+    # Standard testthat runner; library(fmisc) is attached for test_check().
+    "tests/testthat.R"
+  )

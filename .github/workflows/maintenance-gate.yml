@@ -1,0 +1,98 @@
+# maintenance-gate - blocks what a tool can decide conclusively.
+# These checks replace the former catalog jobs `security-footguns` and
+# `dead-code` (local variables/imports). What is green here needs no agent run.
+#
+# Actions are pinned to commit SHAs: zizmor's `unpinned-uses` audit (job
+# workflow-security) blocks tag refs, so the gate would otherwise fail itself.
+# Keep the pins current with Dependabot (`package-ecosystem: github-actions`).
+#
+# Location: .github/workflows/maintenance-gate.yml
+name: maintenance-gate
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  workflow-security:
+    # zizmor: template injection, excessive permissions, unpinned uses, dangerous
+    # triggers (pull_request_target, workflow_run) in .github/workflows/.
+    # Not covered: an issue_comment trigger without an author_association check
+    # has no zizmor rule - see references/jobs.md, "One-off check".
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      actions: read # private repos only
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: zizmor
+        uses: zizmorcore/zizmor-action@cc914d7f3750a2d13d75c7f184a1060aa0e9d482 # v0.6.4
+        with:
+          persona: regular
+          min-severity: medium
+          # Without GitHub Advanced Security: fail the job and annotate the PR.
+          # With GHAS: set advanced-security: true, drop annotations, and grant
+          # security-events: write - findings then land in the Security tab and
+          # block only through a ruleset.
+          advanced-security: false
+          annotations: true
+
+  secrets:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # gitleaks-action lists the PR's commits; without this it fails with 403
+      # "Resource not accessible by integration" on private repos.
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2.3.9
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  python-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        if: hashFiles('pyproject.toml', 'requirements.txt') != ''
+      # No --select: it would replace the project's rule set and ruff's defaults
+      # (BLE001 blind except, ASYNC blocking calls, ...). A CLI --extend-select S
+      # would override the project's own ignores (e.g. S101 in tests) - the S rules
+      # stay with bandit, which ruff's S set is a port of.
+      - name: ruff (default rules + project config)
+        if: hashFiles('pyproject.toml', 'requirements.txt') != ''
+        run: uvx ruff check .
+      - name: bandit
+        if: hashFiles('pyproject.toml', 'requirements.txt') != ''
+        run: uvx bandit -r . -q
+
+  r-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: r-lib/actions/setup-r@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        if: hashFiles('DESCRIPTION') != ''
+      - uses: r-lib/actions/setup-r-dependencies@f9a764fea8d5c63df6ef9a5c7795bf7deb5d7e05 # v2.14.0
+        if: hashFiles('DESCRIPTION') != ''
+        with:
+          # local::. installs pkg so object_usage_linter resolves cross-file refs via namespace
+          extra-packages: any::lintr, local::.
+      - name: lintr (object_usage, unused_import)
+        if: hashFiles('DESCRIPTION') != ''
+        run: |
+          Rscript -e 'l <- lintr::lint_package(linters = list(lintr::object_usage_linter(), lintr::unused_import_linter())); print(l); if (length(l)) quit(status = 1)'

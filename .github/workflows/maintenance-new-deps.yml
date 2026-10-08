@@ -1,0 +1,41 @@
+# maintenance-new-deps - flags newly added direct dependencies that are not in their
+# index or are brand-new there (slopsquatting: a squatter registers a package name an
+# agent hallucinated). uv audit, pip-audit and renv::vulns() only report published
+# advisories, and a fresh squat has none - so every other gate stays green.
+#
+# Report, not a gate: flagged packages show up as warning annotations on the PR and
+# as a table in the job summary; the job never fails on findings. Whether a young
+# package is legitimate is judgment, which is the reviewer's call.
+#
+# Separate from maintenance-deps-audit on purpose: that workflow needs uv.lock and
+# blocks; this one also covers requirements.txt and R packages and only reports.
+#
+# Thresholds: NEW_DEPS_MIN_AGE_DAYS (first release) and NEW_DEPS_MIN_RELEASES below.
+# Needs scripts/maintenance-new-deps.py (copied by the bootstrap run).
+#
+# Location: .github/workflows/maintenance-new-deps.yml
+name: maintenance-new-deps
+
+on:
+  pull_request:
+    paths: ["pyproject.toml", "requirements*.txt", "DESCRIPTION"]
+
+permissions:
+  contents: read
+
+jobs:
+  new-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # The base commit must be present for the diff.
+          fetch-depth: 0
+          persist-credentials: false
+      - name: new dependencies against PyPI / CRAN (report)
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          NEW_DEPS_MIN_AGE_DAYS: "90"
+          NEW_DEPS_MIN_RELEASES: "3"
+        # ubuntu-latest ships Python 3.12; the script uses only the standard library.
+        run: python3 scripts/maintenance-new-deps.py --base "$BASE_SHA"

@@ -140,7 +140,7 @@ with_retry <- function(f,
         orig_classes <- setdiff(class(cnd), c("error", "condition", "simpleError"))
         # Pre-format the original message and pass via variable substitution
         # so cli's glue parser does not choke on braces in conditionMessage.
-        inner_msg <- conditionMessage(cnd)
+        inner_msg <- conditionMessage(cnd) # nolint: object_usage_linter. Used via cli glue.
         stop2(
           "Retry exhausted after {max_tries} attempts: {inner_msg}",
           class = c("fmisc_retry_exhausted", orig_classes)
@@ -230,7 +230,7 @@ with_timing <- function(f,
           # Bind values locally and pass to cli via `{var}` substitution so
           # braces in `fn_label` (e.g. deparse'd anonymous functions) don't
           # break cli's glue parser.
-          elapsed_str <- sprintf("%.3f", elapsed)
+          elapsed_str <- sprintf("%.3f", elapsed) # nolint: object_usage_linter. Used via cli glue.
           if (identical(status, "ok")) {
             cli::cli_alert_info("{fn_label} took {elapsed_str}s")
           } else {
@@ -306,7 +306,7 @@ with_logging <- function(f,
   default_logger <- function(event, data) {
     # Bind values locally so cli's `{var}` substitution picks them up as
     # literal text. Avoids glue parsing of braces in deparsed args/results.
-    name <- data$name
+    name <- data$name # nolint: object_usage_linter. Used via cli glue.
     if (identical(event, "call")) {
       args_str <- data$args_str
       if (nzchar(args_str)) {
@@ -322,7 +322,7 @@ with_logging <- function(f,
         cli::cli_alert_success("{name} ok")
       }
     } else if (identical(event, "error")) {
-      err_msg <- data$message
+      err_msg <- data$message # nolint: object_usage_linter. Used via cli glue.
       cli::cli_alert_danger("{name} failed: {err_msg}")
     }
   }
