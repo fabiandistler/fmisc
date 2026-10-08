@@ -1,0 +1,12 @@
+# Keeps the SHA-pinned actions current (zizmor's unpinned-uses audit blocks tag refs).
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ["*"]
