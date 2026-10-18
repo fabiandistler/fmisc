@@ -10,12 +10,12 @@ Source:
 [`DESCRIPTION`](https://github.com/fabiandistler/fmisc/blob/main/DESCRIPTION)
 
 Distler F (2026). *fmisc: Miscellaneous R Utilities*. R package version
-0.2.0, <https://github.com/fabiandistler/fmisc>.
+0.3.0, <https://github.com/fabiandistler/fmisc>.
 
     @Manual{,
       title = {fmisc: Miscellaneous R Utilities},
       author = {Fabian Distler},
       year = {2026},
-      note = {R package version 0.2.0},
+      note = {R package version 0.3.0},
       url = {https://github.com/fabiandistler/fmisc},
     }

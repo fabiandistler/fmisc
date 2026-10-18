@@ -1,6 +1,10 @@
 # fmisc: Miscellaneous R Utilities
 
-Provides utility functions for R package development.
+Miscellaneous utilities for software development in R: composable
+function decorators for retry, timing, logging, caching and rate
+limiting; memory-aware chunked processing with RAM monitoring and disk
+spillover; OS-aware parallel apply helpers; a 'stop2()' error helper;
+and package-development templates.
 
 ## Smart Parallel Computing
 

@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmisc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,10 +37,11 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="development version" id="fmisc-development-version">fmisc (development version)<a class="anchor" aria-label="anchor" href="#fmisc-development-version"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.3.0" id="fmisc-030">fmisc 0.3.0<a class="anchor" aria-label="anchor" href="#fmisc-030"></a></h2>
 <div class="section level3">
-<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
-<ul><li>The bundled flir lint rules (<code>deprecated-sample-n</code>, <code>deprecated-sample-frac</code>) and <code>get_flir_rules()</code> are removed, along with the <code>using-fmisc</code> vignette that documented them. <code>flir</code> is no longer in Suggests (<a href="https://github.com/fabiandistler/fmisc/issues/62" class="external-link">#62</a>).</li>
+<h3 id="breaking-changes-0-3-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-3-0"></a></h3>
+<ul><li>
+<code>get_flir_rules()</code> is removed, so calling it errors and listing <code>fmisc</code> in the <code>from-package</code> field of <code>flir/config.yml</code> no longer loads any rules. The bundled rules themselves, <code>deprecated-sample-n</code> and <code>deprecated-sample-frac</code> (which rewrote dplyr’s superseded <code>sample_n()</code> and <code>sample_frac()</code>), are gone with no replacement: write the rules into your own project instead, or drop the <code>from-package</code> entry. <code>flir</code> is no longer in Suggests, and the <code>using-fmisc</code> vignette that documented the integration is removed, so <code>vignette("using-fmisc")</code> errors (<a href="https://github.com/fabiandistler/fmisc/issues/62" class="external-link">#62</a>).</li>
 </ul></div>
 </div>
     <div class="section level2">
