@@ -1,6 +1,6 @@
 Package: fmisc
 Title: Miscellaneous R Utilities
-Version: 0.2.0
+Version: 0.3.0
 Authors@R:
     person("Fabian", "Distler", , "fdistlermpi@gmail.com", role = c("aut", "cre"))
 Description: Miscellaneous utilities for software development in R:
@@ -43,4 +43,3 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 SystemRequirements: C++11
 Config/roxygen2/version: 8.1.0
-RoxygenNote: 7.3.1

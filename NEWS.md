@@ -1,11 +1,15 @@
-# fmisc (development version)
+# fmisc 0.3.0
 
 ## Breaking changes
 
-* The bundled flir lint rules (`deprecated-sample-n`,
-  `deprecated-sample-frac`) and `get_flir_rules()` are removed, along with
-  the `using-fmisc` vignette that documented them. `flir` is no longer in
-  Suggests (#62).
+* `get_flir_rules()` is removed, so calling it errors and listing `fmisc`
+  in the `from-package` field of `flir/config.yml` no longer loads any
+  rules. The bundled rules themselves, `deprecated-sample-n` and
+  `deprecated-sample-frac` (which rewrote dplyr's superseded `sample_n()`
+  and `sample_frac()`), are gone with no replacement: write the rules into
+  your own project instead, or drop the `from-package` entry. `flir` is no
+  longer in Suggests, and the `using-fmisc` vignette that documented the
+  integration is removed, so `vignette("using-fmisc")` errors (#62).
 
 # fmisc 0.2.0
 
