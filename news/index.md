@@ -2,6 +2,16 @@
 
 ## fmisc (development version)
 
+### Breaking changes
+
+- The bundled flir lint rules (`deprecated-sample-n`,
+  `deprecated-sample-frac`) and `get_flir_rules()` are removed, along
+  with the `using-fmisc` vignette that documented them. `flir` is no
+  longer in Suggests
+  ([\#62](https://github.com/fabiandistler/fmisc/issues/62)).
+
+## fmisc 0.2.0
+
 ### Refactoring
 
 - [`with_cache()`](https://fabiandistler.github.io/fmisc/reference/with_cache.md)

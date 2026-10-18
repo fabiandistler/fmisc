@@ -9,8 +9,6 @@
   : Chunk Processor Class
 - [`decorate()`](https://fabiandistler.github.io/fmisc/reference/decorate.md)
   : Compose several decorators onto a function
-- [`get_flir_rules()`](https://fabiandistler.github.io/fmisc/reference/get_flir_rules.md)
-  : Get flir rules from fmisc package
 - [`is_decorated()`](https://fabiandistler.github.io/fmisc/reference/is_decorated.md)
   : Test whether a function was produced by a decorator
 - [`print(`*`<fmisc_decorated>`*`)`](https://fabiandistler.github.io/fmisc/reference/print.fmisc_decorated.md)

@@ -36,11 +36,9 @@ error messages, and package-development helpers.
   produces rich, `{interpolated}` error messages via cli/rlang with a
   base-R fallback.
 - **Development tools**: a best-practices function template
-  ([`use_function_template()`](https://fabiandistler.github.io/fmisc/reference/use_function_template.md)),
-  a package Makefile
-  ([`use_make2()`](https://fabiandistler.github.io/fmisc/reference/use_make2.md)),
-  and custom [flir](https://flir.etiennebacher.com/) lint rules
-  ([`get_flir_rules()`](https://fabiandistler.github.io/fmisc/reference/get_flir_rules.md)).
+  ([`use_function_template()`](https://fabiandistler.github.io/fmisc/reference/use_function_template.md))
+  and a package Makefile
+  ([`use_make2()`](https://fabiandistler.github.io/fmisc/reference/use_make2.md)).
 
 ## Installation
 
@@ -131,37 +129,6 @@ use_make2()
 # make help     - see all available targets
 ```
 
-## Linting
-
-### flir Custom Rules
-
-fmisc bundles custom rules for [flir](https://flir.etiennebacher.com/).
-To use them, add fmisc to the `from-package` field in your project’s
-`flir/config.yml`:
-
-``` yaml
-from-package:
-  - fmisc
-```
-
-You can also get the path to the bundled rules directly:
-
-``` r
-
-get_flir_rules()
-```
-
-Available rules:
-
-- `deprecated-sample-n`: replaces dplyr’s deprecated `sample_n()` with
-  `slice_sample(n = )`
-- `deprecated-sample-frac`: replaces dplyr’s deprecated `sample_frac()`
-  with `slice_sample(prop = )`
-
-See
-[`vignette("using-fmisc")`](https://fabiandistler.github.io/fmisc/articles/using-fmisc.md)
-for details, including how to write your own rules.
-
 # Package index
 
 ## All functions
@@ -173,8 +140,6 @@ for details, including how to write your own rules.
   : Chunk Processor Class
 - [`decorate()`](https://fabiandistler.github.io/fmisc/reference/decorate.md)
   : Compose several decorators onto a function
-- [`get_flir_rules()`](https://fabiandistler.github.io/fmisc/reference/get_flir_rules.md)
-  : Get flir rules from fmisc package
 - [`is_decorated()`](https://fabiandistler.github.io/fmisc/reference/is_decorated.md)
   : Test whether a function was produced by a decorator
 - [`print(`*`<fmisc_decorated>`*`)`](https://fabiandistler.github.io/fmisc/reference/print.fmisc_decorated.md)
@@ -208,5 +173,3 @@ for details, including how to write your own rules.
 
 - [Function Decorators and the R
   Ecosystem](https://fabiandistler.github.io/fmisc/articles/decorators.md):
-- [Using fmisc Custom Linting
-  Rules](https://fabiandistler.github.io/fmisc/articles/using-fmisc.md):

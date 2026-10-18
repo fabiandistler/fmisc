@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">fmisc</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0.9002</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,7 +19,6 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/decorators.html">Function Decorators and the R Ecosystem</a></li>
-    <li><a class="dropdown-item" href="../articles/using-fmisc.html">Using fmisc Custom Linting Rules</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
@@ -40,19 +39,26 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="fmisc-development-version">fmisc (development version)<a class="anchor" aria-label="anchor" href="#fmisc-development-version"></a></h2>
 <div class="section level3">
-<h3 id="refactoring-development-version">Refactoring<a class="anchor" aria-label="anchor" href="#refactoring-development-version"></a></h3>
+<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<ul><li>The bundled flir lint rules (<code>deprecated-sample-n</code>, <code>deprecated-sample-frac</code>) and <code>get_flir_rules()</code> are removed, along with the <code>using-fmisc</code> vignette that documented them. <code>flir</code> is no longer in Suggests (<a href="https://github.com/fabiandistler/fmisc/issues/62" class="external-link">#62</a>).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.2.0" id="fmisc-020">fmisc 0.2.0<a class="anchor" aria-label="anchor" href="#fmisc-020"></a></h2>
+<div class="section level3">
+<h3 id="refactoring-0-2-0">Refactoring<a class="anchor" aria-label="anchor" href="#refactoring-0-2-0"></a></h3>
 <ul><li>
 <code><a href="../reference/with_cache.html">with_cache()</a></code> is now a thin facade over <code><a href="https://memoise.r-lib.org/reference/memoise.html" class="external-link">memoise::memoise()</a></code> backed by <code><a href="https://cachem.r-lib.org/reference/cache_mem.html" class="external-link">cachem::cache_mem()</a></code>. <code>.max_size</code> maps to <code>max_n</code> (LRU eviction) and <code>.ttl</code> to <code>max_age</code>; the hand-rolled environment backend and the <code><a href="https://rdrr.io/r/base/deparse.html" class="external-link">deparse()</a></code>-based key scheme are gone (<code>memoise</code> hashes internally). The <code>.key</code> argument is removed: custom cache keys are not supported by <code>memoise</code>, so there is no drop-in replacement. <code><a href="../reference/cache_clear.html">cache_info()</a></code> now reports <code>backend = "cachem"</code> with <code>size</code>, <code>max_n</code>, and <code>max_age</code> (the old <code>"env"</code>/<code>"memoise"</code> backends and <code>keys</code> element are gone). <code>memoise</code> and <code>cachem</code> moved from Suggests to Imports.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<h3 id="new-features-0-2-0">New features<a class="anchor" aria-label="anchor" href="#new-features-0-2-0"></a></h3>
 <ul><li>
 <code><a href="../reference/with_retry.html">with_retry()</a></code> gains two conveniences: <code>.on_error</code> now also accepts a character vector of condition classes to retry on (e.g. <code>c("http_error_503")</code>), mirroring httr2’s <code>is_transient</code> idiom; and a <code>.message = TRUE</code> toggle emits a <code><a href="https://rdrr.io/r/base/message.html" class="external-link">message()</a></code> before each retry.</li>
 <li>
 <code><a href="../reference/undecorate.html">undecorate()</a></code> gains a <code>depth</code> argument (default <code>1</code>); <code>depth = Inf</code> unwraps the full decorator chain. New vignette <code><a href="../articles/decorators.html">vignette("decorators")</a></code> compares the decorators against <code><a href="https://purrr.tidyverse.org/reference/insistently.html" class="external-link">purrr::insistently()</a></code>, <code>memoise</code> + <code>cachem</code>, and <code>ratelimitr</code>, and documents the deliberate skip of burst-tolerant rate limiting (use <code><a href="https://httr2.r-lib.org/reference/req_throttle.html" class="external-link">httr2::req_throttle()</a></code> for HTTP burst needs).</li>
 <li>Decorated functions now record each applied decorator (name + key parameters) in an <code>"fmisc_stack"</code> attribute, accumulated as wrappers compose via <code><a href="../reference/decorate.html">decorate()</a></code> or the native pipe. <code><a href="https://rdrr.io/r/base/print.html" class="external-link">print()</a></code> on an <code>"fmisc_decorated"</code> object shows the wrapper stack outermost-first.</li>
 </ul><div class="section level4">
-<h4 id="function-decorators-function-operator-toolkit-development-version">Function Decorators (Function-Operator Toolkit)<a class="anchor" aria-label="anchor" href="#function-decorators-function-operator-toolkit-development-version"></a></h4>
+<h4 id="function-decorators-function-operator-toolkit-0-2-0">Function Decorators (Function-Operator Toolkit)<a class="anchor" aria-label="anchor" href="#function-decorators-function-operator-toolkit-0-2-0"></a></h4>
 <ul><li>New composable “function operators” for cross-cutting concerns. Each <code>with_*()</code> takes a function as its first argument and returns a wrapped function with class <code>"fmisc_decorated"</code>, making them curry- and pipe-friendly:
 <ul><li>
 <code><a href="../reference/with_retry.html">with_retry()</a></code> — retry with exponential backoff, jitter, <code>.on_error</code> predicate, <code>.on_retry</code> callback, and <code>.max_delay</code> cap. Raises <code>"fmisc_retry_exhausted"</code> on final failure while preserving the original condition’s classes.</li>
@@ -68,7 +74,7 @@
 <li>Composition helpers: <code><a href="../reference/decorate.html">decorate()</a></code> composes unary decorators left-to-right; <code><a href="../reference/is_decorated.html">is_decorated()</a></code> and <code><a href="../reference/undecorate.html">undecorate()</a></code> inspect the wrapper chain.</li>
 </ul></div>
 <div class="section level4">
-<h4 id="chunking-and-ram-management-framework-development-version">Chunking and RAM Management Framework<a class="anchor" aria-label="anchor" href="#chunking-and-ram-management-framework-development-version"></a></h4>
+<h4 id="chunking-and-ram-management-framework-0-2-0">Chunking and RAM Management Framework<a class="anchor" aria-label="anchor" href="#chunking-and-ram-management-framework-0-2-0"></a></h4>
 <ul><li>New chunking and RAM management framework for processing large datasets that exceed available memory:
 <ul><li>
 <code><a href="../reference/process_with_chunks.html">process_with_chunks()</a></code> automatically processes data in chunks with RAM monitoring and automatic disk spillover when memory threshold is exceeded</li>
@@ -96,7 +102,7 @@
 </ul></li>
 </ul></div>
 <div class="section level4">
-<h4 id="smart-parallel-computing-framework-development-version">Smart Parallel Computing Framework<a class="anchor" aria-label="anchor" href="#smart-parallel-computing-framework-development-version"></a></h4>
+<h4 id="smart-parallel-computing-framework-0-2-0">Smart Parallel Computing Framework<a class="anchor" aria-label="anchor" href="#smart-parallel-computing-framework-0-2-0"></a></h4>
 <ul><li>Added comprehensive parallel computing framework that automatically selects the best backend based on OS and available packages</li>
 <li>New functions:
 <ul><li>
@@ -122,7 +128,7 @@
 </ul></div>
 </div>
 <div class="section level3">
-<h3 id="bug-fixes-development-version">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-development-version"></a></h3>
+<h3 id="bug-fixes-0-2-0">Bug fixes<a class="anchor" aria-label="anchor" href="#bug-fixes-0-2-0"></a></h3>
 <ul><li><p><code>chunk_processor()$get_results()</code> now correctly combines chunks in chronological order, combining disk-saved chunks before in-memory chunks.</p></li>
 <li><p><code><a href="../reference/create_chunk_iterator.html">create_chunk_iterator()</a></code> now properly excludes list objects from vector validation, preventing incorrect handling of list inputs.</p></li>
 </ul></div>

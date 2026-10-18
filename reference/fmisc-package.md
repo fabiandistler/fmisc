@@ -33,12 +33,6 @@ and can be inspected with
 and
 [`undecorate()`](https://fabiandistler.github.io/fmisc/reference/undecorate.md).
 
-## Custom Linting Rules
-
-The package provides custom flir rules available in the package
-installation directory and can be accessed via
-[`get_flir_rules()`](https://fabiandistler.github.io/fmisc/reference/get_flir_rules.md).
-
 ## See also
 
 Useful links:
