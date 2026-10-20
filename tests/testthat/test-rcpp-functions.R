@@ -50,7 +50,7 @@ test_that("split_vector_chunks handles exact division", {
   chunks <- split_vector_chunks(vec, chunk_size = 20)
 
   expect_equal(length(chunks), 5)
-  expect_true(all(sapply(chunks, length) == 20))
+  expect_true(all(lengths(chunks) == 20))
 })
 
 test_that("split_vector_chunks preserves numeric values", {
@@ -203,7 +203,7 @@ test_that("split_vector_chunks handles large vectors efficiently", {
   chunks <- split_vector_chunks(vec, chunk_size = 1000)
 
   expect_equal(length(chunks), 10)
-  expect_true(all(sapply(chunks, length) == 1000))
+  expect_true(all(lengths(chunks) == 1000))
 
   # Verify reconstruction
   reconstructed <- unlist(chunks)

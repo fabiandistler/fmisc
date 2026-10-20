@@ -25,13 +25,15 @@
 #'   max_ram_mb = 500
 #' )
 #' }
-process_with_chunks <- function(data,
-                                process_fn,
-                                max_ram_mb = 1000,
-                                chunk_size = NULL,
-                                temp_dir = tempdir(),
-                                combine_fn = rbind,
-                                verbose = TRUE) {
+process_with_chunks <- function(
+  data,
+  process_fn,
+  max_ram_mb = 1000,
+  chunk_size = NULL,
+  temp_dir = tempdir(),
+  combine_fn = rbind,
+  verbose = TRUE
+) {
   # Calculate optimal chunk size if not provided
   if (is.null(chunk_size)) {
     data_size_mb <- as.numeric(utils::object.size(data)) / (1024^2)
@@ -41,7 +43,12 @@ process_with_chunks <- function(data,
       total_rows <- length(data)
     }
     # Use C++ implementation for optimal chunk size calculation
-    chunk_size <- calculate_optimal_chunk_size(data_size_mb, total_rows, max_ram_mb, target_fraction = 0.1)
+    chunk_size <- calculate_optimal_chunk_size(
+      data_size_mb,
+      total_rows,
+      max_ram_mb,
+      target_fraction = 0.1
+    )
     if (verbose) {
       message(sprintf("Auto-calculated chunk size: %d rows", chunk_size))
     }
@@ -51,7 +58,10 @@ process_with_chunks <- function(data,
   iterator <- create_chunk_iterator(data, chunk_size)
 
   # Create temp directory for chunks if needed
-  chunk_dir <- file.path(temp_dir, paste0("chunks_", format(Sys.time(), "%Y%m%d_%H%M%S")))
+  chunk_dir <- file.path(
+    temp_dir,
+    paste0("chunks_", format(Sys.time(), "%Y%m%d_%H%M%S"))
+  )
   dir.create(chunk_dir, showWarnings = FALSE, recursive = TRUE)
 
   results_list <- list()
@@ -59,7 +69,10 @@ process_with_chunks <- function(data,
   initial_ram <- get_ram_usage_cpp()
 
   if (verbose) {
-    message(sprintf("Starting processing with %d chunks", iterator$total_chunks))
+    message(sprintf(
+      "Starting processing with %d chunks",
+      iterator$total_chunks
+    ))
     message(sprintf("Initial RAM usage: %.2f MB", initial_ram))
   }
 
@@ -73,7 +86,9 @@ process_with_chunks <- function(data,
     if (verbose && chunk_num %% 10 == 0) {
       message(sprintf(
         "Processing chunk %d/%d (RAM: %.2f MB)",
-        chunk_num, iterator$total_chunks, current_ram
+        chunk_num,
+        iterator$total_chunks,
+        current_ram
       ))
     }
 
@@ -86,12 +101,18 @@ process_with_chunks <- function(data,
     # If RAM usage is too high, write to disk
     if (current_ram > max_ram_mb || length(results_list) > 50) {
       if (verbose) {
-        message(sprintf("RAM threshold reached (%.2f MB). Writing chunks to disk...", current_ram))
+        message(sprintf(
+          "RAM threshold reached (%.2f MB). Writing chunks to disk...",
+          current_ram
+        ))
       }
 
       # Write accumulated results to disk
       if (length(results_list) > 0) {
-        chunk_file <- file.path(chunk_dir, sprintf("chunk_%04d.rds", length(disk_chunks) + 1))
+        chunk_file <- file.path(
+          chunk_dir,
+          sprintf("chunk_%04d.rds", length(disk_chunks) + 1)
+        )
         if (length(results_list) == 1) {
           combined_results <- results_list[[1]]
         } else {
@@ -105,7 +126,10 @@ process_with_chunks <- function(data,
         gc()
 
         if (verbose) {
-          message(sprintf("Wrote chunk to disk. New RAM usage: %.2f MB", get_ram_usage_cpp()))
+          message(sprintf(
+            "Wrote chunk to disk. New RAM usage: %.2f MB",
+            get_ram_usage_cpp()
+          ))
         }
       }
     }
@@ -177,7 +201,9 @@ process_with_chunks <- function(data,
 #' chunk <- iterator$get_next()
 #' }
 create_chunk_iterator <- function(data, chunk_size) {
-  if (is.data.frame(data) || data.table::is.data.table(data) || is.matrix(data)) {
+  if (
+    is.data.frame(data) || data.table::is.data.table(data) || is.matrix(data)
+  ) {
     total_rows <- nrow(data)
   } else if (is.vector(data) && !is.list(data)) {
     total_rows <- length(data)
@@ -217,7 +243,11 @@ create_chunk_iterator <- function(data, chunk_size) {
       start_idx <- (current_chunk - 1) * chunk_size + 1
       end_idx <- min(current_chunk * chunk_size, total_rows)
 
-      if (is.data.frame(data) || data.table::is.data.table(data) || is.matrix(data)) {
+      if (
+        is.data.frame(data) ||
+          data.table::is.data.table(data) ||
+          is.matrix(data)
+      ) {
         return(data[start_idx:end_idx, , drop = FALSE])
       } else {
         return(data[start_idx:end_idx])
@@ -245,11 +275,18 @@ create_chunk_iterator <- function(data, chunk_size) {
 #' processor$add_chunk(data.frame(x = 1:100))
 #' result <- processor$get_results()
 #' }
-chunk_processor <- function(max_ram_mb = 1000, temp_dir = tempdir(), verbose = TRUE) {
+chunk_processor <- function(
+  max_ram_mb = 1000,
+  temp_dir = tempdir(),
+  verbose = TRUE
+) {
   # Private state
   chunks <- list()
   disk_chunks <- character()
-  chunk_dir <- file.path(temp_dir, paste0("chunks_", format(Sys.time(), "%Y%m%d_%H%M%S")))
+  chunk_dir <- file.path(
+    temp_dir,
+    paste0("chunks_", format(Sys.time(), "%Y%m%d_%H%M%S"))
+  )
   dir.create(chunk_dir, showWarnings = FALSE, recursive = TRUE)
 
   list(
@@ -263,7 +300,10 @@ chunk_processor <- function(max_ram_mb = 1000, temp_dir = tempdir(), verbose = T
           message(sprintf("Flushing to disk (RAM: %.2f MB)", current_ram))
         }
 
-        chunk_file <- file.path(chunk_dir, sprintf("chunk_%04d.rds", length(disk_chunks) + 1))
+        chunk_file <- file.path(
+          chunk_dir,
+          sprintf("chunk_%04d.rds", length(disk_chunks) + 1)
+        )
         saveRDS(chunks, chunk_file, compress = TRUE)
         disk_chunks <<- c(disk_chunks, chunk_file)
         chunks <<- list()

@@ -14,7 +14,9 @@ test_that("with_retry retries then succeeds", {
   counter <- 0
   f <- function() {
     counter <<- counter + 1
-    if (counter < 3) stop("transient failure")
+    if (counter < 3) {
+      stop("transient failure")
+    }
     "ok"
   }
   g <- with_retry(f, max_tries = 5, backoff = 0, .jitter = FALSE)
@@ -40,10 +42,9 @@ test_that("with_retry .on_error predicate short-circuits non-matching errors", {
     stop("boom")
   }
   # Predicate returns FALSE -> re-raise immediately without retry
-  g <- with_retry(f,
-    max_tries = 3, backoff = 0,
-    .on_error = function(cnd) FALSE
-  )
+  g <- with_retry(f, max_tries = 3, backoff = 0, .on_error = function(cnd) {
+    FALSE
+  })
   expect_error(g(), "boom")
   expect_equal(counter, 1)
 })
@@ -52,15 +53,22 @@ test_that("with_retry .on_retry callback receives attempt, delay, cnd", {
   counter <- 0
   f <- function() {
     counter <<- counter + 1
-    if (counter < 3) stop("transient")
+    if (counter < 3) {
+      stop("transient")
+    }
     "done"
   }
   records <- list()
-  g <- with_retry(f,
-    max_tries = 5, backoff = 0, .jitter = FALSE,
+  g <- with_retry(
+    f,
+    max_tries = 5,
+    backoff = 0,
+    .jitter = FALSE,
     .on_retry = function(attempt, delay, cnd) {
       records[[length(records) + 1]] <<- list(
-        attempt = attempt, delay = delay, msg = conditionMessage(cnd)
+        attempt = attempt,
+        delay = delay,
+        msg = conditionMessage(cnd)
       )
     }
   )
@@ -73,9 +81,18 @@ test_that("with_retry .on_retry callback receives attempt, delay, cnd", {
 
 test_that("with_retry validation errors on bad inputs", {
   expect_error(with_retry("not a function"), class = "fmisc_decorator_error")
-  expect_error(with_retry(identity, max_tries = 0), class = "fmisc_decorator_error")
-  expect_error(with_retry(identity, backoff = -1), class = "fmisc_decorator_error")
-  expect_error(with_retry(identity, .on_error = 42), class = "fmisc_decorator_error")
+  expect_error(
+    with_retry(identity, max_tries = 0),
+    class = "fmisc_decorator_error"
+  )
+  expect_error(
+    with_retry(identity, backoff = -1),
+    class = "fmisc_decorator_error"
+  )
+  expect_error(
+    with_retry(identity, .on_error = 42),
+    class = "fmisc_decorator_error"
+  )
 })
 
 test_that("with_retry .on_error accepts a character vector of condition classes", {
@@ -84,16 +101,20 @@ test_that("with_retry .on_error accepts a character vector of condition classes"
     counter <<- counter + 1
     stop2("server down", class = "http_error_503")
   }
-  g <- with_retry(boom,
-    max_tries = 3, backoff = 0,
+  g <- with_retry(
+    boom,
+    max_tries = 3,
+    backoff = 0,
     .on_error = c("http_error_503", "http_error_502")
   )
   expect_error(g(), class = "fmisc_retry_exhausted")
   expect_equal(counter, 3L)
 
   counter <- 0
-  h <- with_retry(boom,
-    max_tries = 3, backoff = 0,
+  h <- with_retry(
+    boom,
+    max_tries = 3,
+    backoff = 0,
     .on_error = "http_error_404"
   )
   expect_error(h(), "server down")
@@ -119,7 +140,10 @@ test_that("with_retry .message toggles retry chatter", {
   messages <- collect_messages(
     with_retry(
       function() stop2("transient", class = "my_transient"),
-      max_tries = 3, backoff = 0, .jitter = FALSE, .message = TRUE
+      max_tries = 3,
+      backoff = 0,
+      .jitter = FALSE,
+      .message = TRUE
     )()
   )
   expect_length(messages, 2L)
@@ -144,11 +168,19 @@ test_that("with_timing attribute mode attaches elapsed and does not print", {
 test_that("with_timing callback fires on success and failure", {
   events <- list()
   cb <- function(name, elapsed, ok) {
-    events[[length(events) + 1]] <<- list(name = name, ok = ok, elapsed = elapsed)
+    events[[length(events) + 1]] <<- list(
+      name = name,
+      ok = ok,
+      elapsed = elapsed
+    )
   }
   g <- with_timing(function(x) x, .report = "callback", .callback = cb)
   expect_equal(g(1), 1)
-  boom <- with_timing(function() stop("no"), .report = "callback", .callback = cb)
+  boom <- with_timing(
+    function() stop("no"),
+    .report = "callback",
+    .callback = cb
+  )
   expect_error(boom())
   expect_length(events, 2L)
   expect_true(events[[1]]$ok)
@@ -160,8 +192,11 @@ test_that("with_timing threshold suppresses reporting below cutoff", {
   cb <- function(name, elapsed, ok) {
     events[[length(events) + 1]] <<- list()
   }
-  g <- with_timing(function() 1,
-    .report = "callback", .callback = cb, .threshold = Inf
+  g <- with_timing(
+    function() 1,
+    .report = "callback",
+    .callback = cb,
+    .threshold = Inf
   )
   g()
   expect_length(events, 0L)
@@ -268,8 +303,14 @@ test_that("with_rate_limit sleeps to obey window when .wait=TRUE", {
 })
 
 test_that("with_rate_limit validates inputs", {
-  expect_error(with_rate_limit(identity, n = 0), class = "fmisc_decorator_error")
-  expect_error(with_rate_limit(identity, n = 1, period = 0), class = "fmisc_decorator_error")
+  expect_error(
+    with_rate_limit(identity, n = 0),
+    class = "fmisc_decorator_error"
+  )
+  expect_error(
+    with_rate_limit(identity, n = 1, period = 0),
+    class = "fmisc_decorator_error"
+  )
 })
 
 test_that("decorate composes decorators left-to-right", {
@@ -323,7 +364,10 @@ test_that("decorator stack accumulates as wrappers compose", {
     with_timing(.report = "attribute")
   expect_equal(
     attr(g, "fmisc_stack"),
-    c("with_retry(max_tries = 2L, backoff = 0)", 'with_timing(.report = "attribute")')
+    c(
+      "with_retry(max_tries = 2L, backoff = 0)",
+      'with_timing(.report = "attribute")'
+    )
   )
   h <- decorate(
     f,
@@ -348,6 +392,6 @@ test_that("print.fmisc_decorated shows the stack outermost-first", {
   retry_line <- grep("with_retry", out, value = TRUE)
   expect_length(timing_line, 1L)
   expect_length(retry_line, 1L)
-  expect_lt(which(grepl("with_timing", out)), which(grepl("with_retry", out)))
+  expect_lt(grep("with_timing", out), grep("with_retry", out))
   expect_output(print(f), "^function")
 })

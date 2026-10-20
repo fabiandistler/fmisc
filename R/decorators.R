@@ -24,14 +24,22 @@ decorator_label <- function(name, ...) {
   if (!length(dots)) {
     return(name)
   }
-  parts <- vapply(names(dots), function(nm) {
-    val <- dots[[nm]]
-    val_str <- if (is.function(val)) "<fn>" else paste(deparse(val), collapse = "")
-    if (nchar(val_str) > 24) {
-      val_str <- paste0(substr(val_str, 1, 21), "...")
-    }
-    paste0(nm, " = ", val_str)
-  }, character(1))
+  parts <- vapply(
+    names(dots),
+    function(nm) {
+      val <- dots[[nm]]
+      val_str <- if (is.function(val)) {
+        "<fn>"
+      } else {
+        paste(deparse(val), collapse = "")
+      }
+      if (nchar(val_str) > 24) {
+        val_str <- paste0(substr(val_str, 1, 21), "...")
+      }
+      paste0(nm, " = ", val_str)
+    },
+    character(1)
+  )
   sprintf("%s(%s)", name, paste(parts, collapse = ", "))
 }
 
@@ -79,40 +87,54 @@ decorator_label <- function(name, ...) {
 #' robust <- with_retry(flaky, max_tries = 5, backoff = 0.1)
 #' robust(21)
 #' }
-with_retry <- function(f,
-                       max_tries = 3L,
-                       backoff = 2,
-                       ...,
-                       .on_error = NULL,
-                       .max_delay = Inf,
-                       .jitter = TRUE,
-                       .on_retry = NULL,
-                       .message = FALSE) {
+with_retry <- function(
+  f,
+  max_tries = 3L,
+  backoff = 2,
+  ...,
+  .on_error = NULL,
+  .max_delay = Inf,
+  .jitter = TRUE,
+  .on_retry = NULL,
+  .message = FALSE
+) {
   if (!is.function(f)) {
     stop2("`f` must be a function", class = "fmisc_decorator_error")
   }
   if (!is.numeric(max_tries) || length(max_tries) != 1 || max_tries < 1) {
     stop2(
-      sprintf("`max_tries` must be a positive integer, got: %s", format(max_tries)),
+      sprintf(
+        "`max_tries` must be a positive integer, got: %s",
+        format(max_tries)
+      ),
       class = "fmisc_decorator_error"
     )
   }
   max_tries <- as.integer(max_tries)
   if (!is.numeric(backoff) || length(backoff) != 1 || backoff < 0) {
     stop2(
-      sprintf("`backoff` must be a non-negative number, got: %s", format(backoff)),
+      sprintf(
+        "`backoff` must be a non-negative number, got: %s",
+        format(backoff)
+      ),
       class = "fmisc_decorator_error"
     )
   }
-  if (!is.null(.on_error) && !is.function(.on_error) &&
-    !(is.character(.on_error) && length(.on_error) > 0 && !anyNA(.on_error))) {
+  if (
+    !is.null(.on_error) &&
+      !is.function(.on_error) &&
+      !(is.character(.on_error) && length(.on_error) > 0 && !anyNA(.on_error))
+  ) {
     stop2(
       "`.on_error` must be `NULL`, a predicate function, or a character vector of condition classes",
       class = "fmisc_decorator_error"
     )
   }
   if (!is.null(.on_retry) && !is.function(.on_retry)) {
-    stop2("`.on_retry` must be `NULL` or a callback function", class = "fmisc_decorator_error")
+    stop2(
+      "`.on_retry` must be `NULL` or a callback function",
+      class = "fmisc_decorator_error"
+    )
   }
 
   retryable <- if (is.function(.on_error)) {
@@ -137,7 +159,10 @@ with_retry <- function(f,
         stop(cnd)
       }
       if (attempt == max_tries) {
-        orig_classes <- setdiff(class(cnd), c("error", "condition", "simpleError"))
+        orig_classes <- setdiff(
+          class(cnd),
+          c("error", "condition", "simpleError")
+        )
         # Pass the original message via cli's `{expr}` substitution, never
         # pasted into the template, so braces in conditionMessage stay literal.
         stop2(
@@ -146,13 +171,18 @@ with_retry <- function(f,
         )
       }
       delay <- min(backoff^attempt, .max_delay)
-      if (isTRUE(.jitter)) delay <- delay * stats::runif(1, 0.5, 1.5)
+      if (isTRUE(.jitter)) {
+        delay <- delay * stats::runif(1, 0.5, 1.5)
+      }
       if (isTRUE(.message)) {
         retry_msg <- conditionMessage(cnd)
         delay_str <- sprintf("%.3g", delay)
         message(sprintf(
           "with_retry: attempt %d/%d failed (%s); retrying in %ss",
-          attempt, max_tries, retry_msg, delay_str
+          attempt,
+          max_tries,
+          retry_msg,
+          delay_str
         ))
       }
       if (!is.null(.on_retry)) {
@@ -163,7 +193,8 @@ with_retry <- function(f,
     invisible(NULL)
   }
   mark_decorated(
-    wrapper, f,
+    wrapper,
+    f,
     decorator_label("with_retry", max_tries = max_tries, backoff = backoff)
   )
 }
@@ -196,11 +227,13 @@ with_retry <- function(f,
 #' }, .threshold = 0)
 #' g(42)
 #' }
-with_timing <- function(f,
-                        ...,
-                        .report = c("message", "attribute", "callback"),
-                        .callback = NULL,
-                        .threshold = 0) {
+with_timing <- function(
+  f,
+  ...,
+  .report = c("message", "attribute", "callback"),
+  .callback = NULL,
+  .threshold = 0
+) {
   if (!is.function(f)) {
     stop2("`f` must be a function", class = "fmisc_decorator_error")
   }
@@ -253,7 +286,8 @@ with_timing <- function(f,
     result
   }
   mark_decorated(
-    wrapper, f,
+    wrapper,
+    f,
     decorator_label(
       "with_timing",
       .report = if (!identical(.report, "message")) .report,
@@ -289,17 +323,22 @@ with_timing <- function(f,
 #' g <- with_logging(function(x, y) x + y, .log_result = TRUE)
 #' g(1, 2)
 #' }
-with_logging <- function(f,
-                         ...,
-                         .logger = NULL,
-                         .log_args = TRUE,
-                         .log_result = FALSE,
-                         .name = NULL) {
+with_logging <- function(
+  f,
+  ...,
+  .logger = NULL,
+  .log_args = TRUE,
+  .log_result = FALSE,
+  .name = NULL
+) {
   if (!is.function(f)) {
     stop2("`f` must be a function", class = "fmisc_decorator_error")
   }
   if (!is.null(.logger) && !is.function(.logger)) {
-    stop2("`.logger` must be `NULL` or a function", class = "fmisc_decorator_error")
+    stop2(
+      "`.logger` must be `NULL` or a function",
+      class = "fmisc_decorator_error"
+    )
   }
   fn_label <- if (!is.null(.name)) .name else deparse(substitute(f))[1]
 
@@ -351,11 +390,14 @@ with_logging <- function(f,
       f(...),
       error = function(cnd) {
         tryCatch(
-          logger("error", list(
-            name = fn_label,
-            message = conditionMessage(cnd),
-            cnd = cnd
-          )),
+          logger(
+            "error",
+            list(
+              name = fn_label,
+              message = conditionMessage(cnd),
+              cnd = cnd
+            )
+          ),
           error = function(e) NULL
         )
         stop(cnd)
@@ -363,17 +405,21 @@ with_logging <- function(f,
     )
     result_str <- if (isTRUE(.log_result)) safe_deparse(result) else ""
     tryCatch(
-      logger("success", list(
-        name = fn_label,
-        result = result,
-        result_str = result_str
-      )),
+      logger(
+        "success",
+        list(
+          name = fn_label,
+          result = result,
+          result_str = result_str
+        )
+      ),
       error = function(e) NULL
     )
     result
   }
   mark_decorated(
-    wrapper, f,
+    wrapper,
+    f,
     decorator_label(
       "with_logging",
       .name = .name,
@@ -416,18 +462,21 @@ with_logging <- function(f,
 #' fast(21)
 #' calls
 #' }
-with_cache <- function(f,
-                       ...,
-                       .max_size = Inf,
-                       .ttl = Inf) {
+with_cache <- function(f, ..., .max_size = Inf, .ttl = Inf) {
   if (!is.function(f)) {
     stop2("`f` must be a function", class = "fmisc_decorator_error")
   }
   if (!is.numeric(.max_size) || length(.max_size) != 1 || .max_size <= 0) {
-    stop2("`.max_size` must be a positive number or `Inf`", class = "fmisc_decorator_error")
+    stop2(
+      "`.max_size` must be a positive number or `Inf`",
+      class = "fmisc_decorator_error"
+    )
   }
   if (!is.numeric(.ttl) || length(.ttl) != 1 || .ttl <= 0) {
-    stop2("`.ttl` must be a positive number or `Inf`", class = "fmisc_decorator_error")
+    stop2(
+      "`.ttl` must be a positive number or `Inf`",
+      class = "fmisc_decorator_error"
+    )
   }
 
   cache <- cachem::cache_mem(max_n = .max_size, max_age = .ttl)
@@ -450,7 +499,8 @@ with_cache <- function(f,
   attr(wrapper, "cache_clear") <- clear_fn
   attr(wrapper, "cache_info") <- info_fn
   mark_decorated(
-    wrapper, f,
+    wrapper,
+    f,
     decorator_label(
       "with_cache",
       .max_size = if (.max_size != Inf) .max_size,
@@ -470,7 +520,8 @@ with_cache <- function(f,
 cache_clear <- function(f) {
   clear <- attr(f, "cache_clear")
   if (is.null(clear)) {
-    stop2("`f` is not a cached function (wrap it with `with_cache()` first)",
+    stop2(
+      "`f` is not a cached function (wrap it with `with_cache()` first)",
       class = "fmisc_decorator_error"
     )
   }
@@ -482,7 +533,8 @@ cache_clear <- function(f) {
 cache_info <- function(f) {
   info <- attr(f, "cache_info")
   if (is.null(info)) {
-    stop2("`f` is not a cached function (wrap it with `with_cache()` first)",
+    stop2(
+      "`f` is not a cached function (wrap it with `with_cache()` first)",
       class = "fmisc_decorator_error"
     )
   }
@@ -534,7 +586,9 @@ with_rate_limit <- function(f, n, period = 1, ..., .wait = TRUE) {
     if (length(state$timestamps) >= n) {
       wait <- period - (now - state$timestamps[1])
       if (isTRUE(.wait)) {
-        if (wait > 0) Sys.sleep(wait)
+        if (wait > 0) {
+          Sys.sleep(wait)
+        }
         now <- as.numeric(Sys.time())
         state$timestamps <- state$timestamps[state$timestamps > (now - period)]
       } else {
@@ -548,7 +602,8 @@ with_rate_limit <- function(f, n, period = 1, ..., .wait = TRUE) {
     f(...)
   }
   mark_decorated(
-    wrapper, f,
+    wrapper,
+    f,
     decorator_label("with_rate_limit", n = n, period = period)
   )
 }
@@ -589,7 +644,8 @@ decorate <- function(f, ...) {
   }
   for (d in decs) {
     if (!is.function(d)) {
-      stop2("Each decorator must be a unary function taking `f`",
+      stop2(
+        "Each decorator must be a unary function taking `f`",
         class = "fmisc_decorator_error"
       )
     }
@@ -610,7 +666,8 @@ decorate <- function(f, ...) {
 #' @export
 undecorate <- function(f, depth = 1) {
   if (!is.numeric(depth) || length(depth) != 1 || is.na(depth) || depth < 1) {
-    stop2("`depth` must be a positive number or `Inf`",
+    stop2(
+      "`depth` must be a positive number or `Inf`",
       class = "fmisc_decorator_error"
     )
   }

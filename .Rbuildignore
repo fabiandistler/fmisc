@@ -16,3 +16,4 @@
 ^scripts$
 ^maintenance$
 ^\.lintr$
+^\.pre-commit-config\.yaml$
