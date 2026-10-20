@@ -56,11 +56,7 @@
 #'
 #' @seealso [related_function()], [other_function()]
 #' @family family_name
-my_function <- function(x,
-                        pattern,
-                        ...,
-                        na.rm = FALSE,
-                        verbose = TRUE) {
+my_function <- function(x, pattern, ..., na.rm = FALSE, verbose = TRUE) {
   # --- ARGUMENT ORDERING CHECKLIST (design.tidyverse.org) -----------------------
   # [ ] 1. DATA arguments first (x, y, data) - required, determine output shape
   # [ ] 2. DESCRIPTOR arguments (pattern, by) - describe the operation

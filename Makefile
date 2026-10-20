@@ -31,7 +31,7 @@ help:
 	@echo "  make site         - Build pkgdown website"
 	@echo "  make coverage     - Generate test coverage report"
 	@echo "  make lint         - Lint code with lintr"
-	@echo "  make style        - Auto-format code with styler"
+	@echo "  make style        - Auto-format code with air"
 	@echo "  make deps         - Install package dependencies"
 	@echo "  make clean        - Remove generated files"
 	@echo "  make all          - document + build + check"
@@ -46,7 +46,7 @@ deps:
 # Install development dependencies
 deps-dev: deps
 	@echo "Installing development dependencies..."
-	$(R) -e "pkgs <- c('devtools', 'roxygen2', 'testthat', 'pkgdown', 'lintr', 'styler', 'covr'); \
+	$(R) -e "pkgs <- c('devtools', 'roxygen2', 'testthat', 'pkgdown', 'lintr', 'covr'); \
 	         new_pkgs <- pkgs[!(pkgs %in% installed.packages()[,'Package'])]; \
 	         if(length(new_pkgs)) install.packages(new_pkgs)"
 
@@ -105,7 +105,7 @@ lint:
 # Auto-format code
 style:
 	@echo "Styling code..."
-	$(R) -e "styler::style_pkg()"
+	air format .
 
 # Load package for interactive use
 load:

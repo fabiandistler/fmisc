@@ -73,7 +73,8 @@ test_that("full workflow: aggregation across chunks", {
   # Create dataset with categories
   df <- data.frame(
     category = rep(c("A", "B", "C"), length.out = 300),
-    value = rnorm(300)
+    value = rnorm(300),
+    stringsAsFactors = FALSE
   )
 
   # Process with aggregation

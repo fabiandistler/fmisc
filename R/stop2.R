@@ -65,10 +65,7 @@
 #' }
 #'
 #' @export
-stop2 <- function(message,
-                  ...,
-                  .envir = parent.frame(),
-                  class = NULL) {
+stop2 <- function(message, ..., .envir = parent.frame(), class = NULL) {
   if (requireNamespace("cli", quietly = TRUE)) {
     cli::cli_abort(
       message = message,
@@ -104,7 +101,9 @@ simple_glue <- function(message, .envir = parent.frame()) {
 
   repeat {
     match <- regexec(pattern, message)
-    if (match[[1]][1] == -1) break
+    if (match[[1]][1] == -1) {
+      break
+    }
 
     expr_start <- match[[1]][2]
     expr_length <- attr(match[[1]], "match.length")[2]

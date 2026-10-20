@@ -19,7 +19,8 @@ test_that("process_with_chunks processes data correctly", {
 test_that("process_with_chunks handles custom combine function", {
   df <- data.frame(
     category = rep(c("A", "B", "C"), length.out = 90),
-    value = 1:90
+    value = 1:90,
+    stringsAsFactors = FALSE
   )
 
   result <- process_with_chunks(
