@@ -15,3 +15,4 @@
 ^MAINTENANCE\.md$
 ^scripts$
 ^maintenance$
+^\.lintr$
