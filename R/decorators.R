@@ -163,11 +163,10 @@ with_retry <- function(
           class(cnd),
           c("error", "condition", "simpleError")
         )
-        # Pre-format the original message and pass via variable substitution
-        # so cli's glue parser does not choke on braces in conditionMessage.
-        inner_msg <- conditionMessage(cnd)
+        # Pass the original message via cli's `{expr}` substitution, never
+        # pasted into the template, so braces in conditionMessage stay literal.
         stop2(
-          "Retry exhausted after {max_tries} attempts: {inner_msg}",
+          "Retry exhausted after {max_tries} attempts: {conditionMessage(cnd)}",
           class = c("fmisc_retry_exhausted", orig_classes)
         )
       }
@@ -260,14 +259,15 @@ with_timing <- function(
       elapsed <- proc.time()[["elapsed"]] - start
       if (elapsed >= .threshold && !identical(.report, "attribute")) {
         if (identical(.report, "message")) {
-          # Bind values locally and pass to cli via `{var}` substitution so
-          # braces in `fn_label` (e.g. deparse'd anonymous functions) don't
-          # break cli's glue parser.
-          elapsed_str <- sprintf("%.3f", elapsed)
+          # Pass values to cli via `{expr}` substitution so braces in
+          # `fn_label` (e.g. deparse'd anonymous functions) don't break
+          # cli's glue parser.
           if (identical(status, "ok")) {
-            cli::cli_alert_info("{fn_label} took {elapsed_str}s")
+            cli::cli_alert_info("{fn_label} took {sprintf('%.3f', elapsed)}s")
           } else {
-            cli::cli_alert_warning("{fn_label} failed after {elapsed_str}s")
+            cli::cli_alert_warning(
+              "{fn_label} failed after {sprintf('%.3f', elapsed)}s"
+            )
           }
         } else if (identical(.report, "callback")) {
           tryCatch(
@@ -343,26 +343,24 @@ with_logging <- function(
   fn_label <- if (!is.null(.name)) .name else deparse(substitute(f))[1]
 
   default_logger <- function(event, data) {
-    # Bind values locally so cli's `{var}` substitution picks them up as
-    # literal text. Avoids glue parsing of braces in deparsed args/results.
-    name <- data$name
+    # Pass values via cli's `{expr}` substitution so they stay literal text.
+    # Avoids glue parsing of braces in deparsed args/results.
     if (identical(event, "call")) {
       args_str <- data$args_str
       if (nzchar(args_str)) {
-        cli::cli_alert_info("call {name}({args_str})")
+        cli::cli_alert_info("call {data$name}({args_str})")
       } else {
-        cli::cli_alert_info("call {name}()")
+        cli::cli_alert_info("call {data$name}()")
       }
     } else if (identical(event, "success")) {
       result_str <- data$result_str
       if (nzchar(result_str)) {
-        cli::cli_alert_success("{name} -> {result_str}")
+        cli::cli_alert_success("{data$name} -> {result_str}")
       } else {
-        cli::cli_alert_success("{name} ok")
+        cli::cli_alert_success("{data$name} ok")
       }
     } else if (identical(event, "error")) {
-      err_msg <- data$message
-      cli::cli_alert_danger("{name} failed: {err_msg}")
+      cli::cli_alert_danger("{data$name} failed: {data$message}")
     }
   }
   logger <- if (is.null(.logger)) default_logger else .logger
