@@ -392,6 +392,6 @@ test_that("print.fmisc_decorated shows the stack outermost-first", {
   retry_line <- grep("with_retry", out, value = TRUE)
   expect_length(timing_line, 1L)
   expect_length(retry_line, 1L)
-  expect_lt(which(grepl("with_timing", out)), which(grepl("with_retry", out)))
+  expect_lt(grep("with_timing", out), grep("with_retry", out))
   expect_output(print(f), "^function")
 })
