@@ -42,7 +42,8 @@ use_make2 <- function(open = interactive(), overwrite = FALSE) {
 
   # Path to template and destination
   template_path <- system.file(
-    "templates", "Makefile",
+    "templates",
+    "Makefile",
     package = "fmisc",
     mustWork = TRUE
   )

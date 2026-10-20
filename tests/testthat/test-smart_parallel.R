@@ -11,8 +11,13 @@ test_that("detect_parallel_backend returns valid structure", {
 
   # Check valid backend
   valid_backends <- c(
-    "mclapply", "parLapply", "doParallel",
-    "doMC", "furrr", "foreach", "sequential"
+    "mclapply",
+    "parLapply",
+    "doParallel",
+    "doMC",
+    "furrr",
+    "foreach",
+    "sequential"
   )
   expect_true(info$backend %in% valid_backends)
 

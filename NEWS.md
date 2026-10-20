@@ -94,4 +94,3 @@
 * `chunk_processor()$get_results()` now correctly combines chunks in chronological order, combining disk-saved chunks before in-memory chunks.
 
 * `create_chunk_iterator()` now properly excludes list objects from vector validation, preventing incorrect handling of list inputs.
-
