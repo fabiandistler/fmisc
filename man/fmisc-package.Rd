@@ -16,7 +16,8 @@ and available packages.
 
 Key function:
 \itemize{
-\item \code{\link[=smart_parallel_apply]{smart_parallel_apply()}} - Universal parallel apply with automatic backend detection
+\item \code{\link[=smart_parallel_apply]{smart_parallel_apply()}} - Universal parallel apply with automatic backend
+detection
 }
 
 The framework supports multiple backends including mclapply, parLapply,

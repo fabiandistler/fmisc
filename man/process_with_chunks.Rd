@@ -17,9 +17,11 @@ process_with_chunks(
 \arguments{
 \item{data}{A data.frame, matrix, or vector to process}
 
-\item{process_fn}{A function that takes a chunk of data and returns processed results}
+\item{process_fn}{A function that takes a chunk of data and returns
+processed results}
 
-\item{max_ram_mb}{Maximum RAM usage in MB before writing to disk (default: 1000)}
+\item{max_ram_mb}{Maximum RAM usage in MB before writing to disk
+(default: 1000)}
 
 \item{chunk_size}{Initial chunk size (default: auto-calculated)}
 

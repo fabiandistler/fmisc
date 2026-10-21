@@ -4,7 +4,8 @@
 #' and available packages.
 #'
 #' Key function:
-#' * [smart_parallel_apply()] - Universal parallel apply with automatic backend detection
+#' * [smart_parallel_apply()] - Universal parallel apply with automatic backend
+#'   detection
 #'
 #' The framework supports multiple backends including mclapply, parLapply,
 #' doParallel, doMC, furrr, and future, with intelligent OS-aware selection.

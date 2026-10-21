@@ -129,7 +129,8 @@ test_that("smart_parallel_apply works with additional arguments", {
 test_that("smart_parallel_apply cleans up on error", {
   # This should not leak resources even though it errors
   expect_warning(
-    smart_parallel_apply(substitute(stop()), function(x) eval(x)), # To throw error in TryCatch
+    # To throw error in TryCatch
+    smart_parallel_apply(substitute(stop()), function(x) eval(x)),
     "Parallel execution failed"
   )
 })

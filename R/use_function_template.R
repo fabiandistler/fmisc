@@ -3,8 +3,9 @@
 #' @description
 #' Creates a new R file based on the comprehensive function template that
 #' includes best practices from the tidyverse style guide and design guide.
-#' The template covers argument ordering, validation, error handling, dots usage,
-#' and documentation patterns that are not automatically checked by lintr/styler.
+#' The template covers argument ordering, validation, error handling, dots
+#' usage, and documentation patterns that are not automatically checked by
+#' lintr/styler.
 #'
 #' @details
 #' The template includes:
