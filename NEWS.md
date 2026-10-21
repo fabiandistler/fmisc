@@ -1,6 +1,16 @@
-# fmisc 0.3.0
+# fmisc (development version)
 
 ## New features
+
+* `ci_failures()` fetches the latest failed GitHub Actions run of the
+  current branch and returns one row per finding (`job`, `os`, `step`,
+  `kind`, `file`, `line`, `message`, `sha`, `url`). It recognises
+  R CMD check ERRORs, WARNINGs and NOTEs, testthat failures and errors,
+  lintr annotations and air format-check failures; a failed job it cannot
+  explain is kept as kind `"unparsed"` with the raw log of the failing
+  step, and a timed-out or cancelled job as kind `"timed_out"` or
+  `"cancelled"`. `gh` and `gert` join Imports; both were already installed as
+  dependencies of usethis (#76).
 
 * New `agent_run()` runs the Claude Code CLI (`claude -p`) once, read-only,
   in a directory and returns its answer, which must match a JSON Schema
@@ -17,6 +27,8 @@
   agent; that is defense in depth, not a sandbox. Errors are classed (`fmisc_agent_error` and subclasses).
   Needs `processx` and `jsonlite` (Suggests) and Claude Code CLI >= 2.1.259;
   not supported on Windows yet (#75).
+
+# fmisc 0.3.0
 
 ## Breaking changes
 

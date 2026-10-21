@@ -1,0 +1,148 @@
+2026-10-21T05:48:00.0000000Z ##[group]Run ## --------------------------------------------------------------------
+2026-10-21T05:48:00.0000001Z shell: /usr/local/bin/Rscript {0}
+2026-10-21T05:48:00.0000002Z ##[endgroup]
+2026-10-21T05:48:00.0000003Z [36m── R CMD build ─────────────────────────────────────────────────────────────────[39m
+2026-10-21T05:48:00.0000004Z * building ‘fmisc_0.3.0.tar.gz’
+2026-10-21T05:48:00.0000005Z 
+2026-10-21T05:48:00.0000006Z [36m── R CMD check ─────────────────────────────────────────────────────────────────[39m
+2026-10-21T05:48:00.0000007Z * using log directory '/home/runner/work/fmisc/fmisc/check/fmisc.Rcheck'
+2026-10-21T05:48:00.0000008Z * using R version 4.3.3 (2024-02-29)
+2026-10-21T05:48:00.0000009Z * using platform: x86_64-pc-linux-gnu (64-bit)
+2026-10-21T05:48:00.0000010Z * R was compiled by
+2026-10-21T05:48:00.0000011Z     gcc (Ubuntu 13.2.0-23ubuntu3) 13.2.0
+2026-10-21T05:48:00.0000012Z     GNU Fortran (Ubuntu 13.2.0-23ubuntu3) 13.2.0
+2026-10-21T05:48:00.0000013Z * running under: Ubuntu 24.04.5 LTS
+2026-10-21T05:48:00.0000014Z * using session charset: ASCII
+2026-10-21T05:48:00.0000015Z * using options '--no-manual --as-cran'
+2026-10-21T05:48:00.0000016Z * checking for file 'fmisc/DESCRIPTION' ... OK
+2026-10-21T05:48:00.0000017Z * this is package 'fmisc' version '0.3.0'
+2026-10-21T05:48:00.0000018Z * package encoding: UTF-8
+2026-10-21T05:48:00.0000019Z * checking package namespace information ... OK
+2026-10-21T05:48:00.0000020Z * checking package dependencies ...Warning: unable to access index for repository https://cloud.r-project.org/src/contrib:
+2026-10-21T05:48:00.0000021Z   cannot open URL 'https://cloud.r-project.org/src/contrib/PACKAGES'
+2026-10-21T05:48:00.0000022Z  OK
+2026-10-21T05:48:00.0000023Z * checking if this is a source package ... OK
+2026-10-21T05:48:00.0000024Z * checking if there is a namespace ... OK
+2026-10-21T05:48:00.0000025Z * checking for executable files ... OK
+2026-10-21T05:48:00.0000026Z * checking for hidden files and directories ... OK
+2026-10-21T05:48:00.0000027Z * checking for portable file names ... OK
+2026-10-21T05:48:00.0000028Z * checking for sufficient/correct file permissions ... OK
+2026-10-21T05:48:00.0000029Z * checking whether package 'fmisc' can be installed ... OK
+2026-10-21T05:48:00.0000030Z * used C++ compiler: 'g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0'
+2026-10-21T05:48:00.0000031Z * checking C++ specification ... NOTE
+2026-10-21T05:48:00.0000032Z   Specified C++11: please drop specification unless essential
+2026-10-21T05:48:00.0000033Z * checking installed package size ... OK
+2026-10-21T05:48:00.0000034Z * checking package directory ... OK
+2026-10-21T05:48:00.0000035Z * checking for future file timestamps ... NOTE
+2026-10-21T05:48:00.0000036Z unable to verify current time
+2026-10-21T05:48:00.0000037Z * checking 'build' directory ... OK
+2026-10-21T05:48:00.0000038Z * checking DESCRIPTION meta-information ... OK
+2026-10-21T05:48:00.0000039Z * checking top-level files ... NOTE
+2026-10-21T05:48:00.0000040Z Non-standard file/directory found at top level:
+2026-10-21T05:48:00.0000041Z   'AGENTS.md'
+2026-10-21T05:48:00.0000042Z * checking for left-over files ... OK
+2026-10-21T05:48:00.0000043Z * checking index information ... OK
+2026-10-21T05:48:00.0000044Z * checking package subdirectories ... OK
+2026-10-21T05:48:00.0000045Z * checking R files for non-ASCII characters ... OK
+2026-10-21T05:48:00.0000046Z * checking R files for syntax errors ... WARNING
+2026-10-21T05:48:00.0000047Z Warning in Sys.setlocale("LC_CTYPE", "en_US.UTF-8") :
+2026-10-21T05:48:00.0000048Z   OS reports request to set locale to "en_US.UTF-8" cannot be honored
+2026-10-21T05:48:00.0000049Z * checking whether the package can be loaded ... OK
+2026-10-21T05:48:00.0000050Z * checking whether the package can be loaded with stated dependencies ... OK
+2026-10-21T05:48:00.0000051Z * checking whether the package can be unloaded cleanly ... OK
+2026-10-21T05:48:00.0000052Z * checking whether the namespace can be loaded with stated dependencies ... OK
+2026-10-21T05:48:00.0000053Z * checking whether the namespace can be unloaded cleanly ... OK
+2026-10-21T05:48:00.0000054Z * checking loading without being on the library search path ... OK
+2026-10-21T05:48:00.0000055Z * checking use of S3 registration ... OK
+2026-10-21T05:48:00.0000056Z * checking dependencies in R code ... OK
+2026-10-21T05:48:00.0000057Z * checking S3 generic/method consistency ... OK
+2026-10-21T05:48:00.0000058Z * checking replacement functions ... OK
+2026-10-21T05:48:00.0000059Z * checking foreign function calls ... OK
+2026-10-21T05:48:00.0000060Z * checking R code for possible problems ... NOTE
+2026-10-21T05:48:00.0000061Z with_rate_limit: warning in decorator_label("with_rate_limit", n = n,
+2026-10-21T05:48:00.0000062Z   period = period): partial argument match of 'n' to 'name'
+2026-10-21T05:48:00.0000063Z * checking Rd files ... OK
+2026-10-21T05:48:00.0000064Z * checking Rd metadata ... OK
+2026-10-21T05:48:00.0000065Z * checking Rd line widths ... OK
+2026-10-21T05:48:00.0000066Z * checking Rd cross-references ... OK
+2026-10-21T05:48:00.0000067Z * checking for missing documentation entries ... OK
+2026-10-21T05:48:00.0000068Z * checking for code/documentation mismatches ... OK
+2026-10-21T05:48:00.0000069Z * checking Rd \usage sections ... OK
+2026-10-21T05:48:00.0000070Z * checking Rd contents ... OK
+2026-10-21T05:48:00.0000071Z * checking for unstated dependencies in examples ... OK
+2026-10-21T05:48:00.0000072Z * checking line endings in C/C++/Fortran sources/headers ... OK
+2026-10-21T05:48:00.0000073Z * checking line endings in Makefiles ... NOTE
+2026-10-21T05:48:00.0000074Z Found the following Makefile(s) without a final LF:
+2026-10-21T05:48:00.0000075Z   src/Makevars
+2026-10-21T05:48:00.0000076Z Some 'make' programs ignore lines not ending in LF.
+2026-10-21T05:48:00.0000077Z * checking compilation flags in Makevars ... OK
+2026-10-21T05:48:00.0000078Z * checking for GNU extensions in Makefiles ... OK
+2026-10-21T05:48:00.0000079Z * checking for portable use of $(BLAS_LIBS) and $(LAPACK_LIBS) ... OK
+2026-10-21T05:48:00.0000080Z * checking use of PKG_*FLAGS in Makefiles ... OK
+2026-10-21T05:48:00.0000081Z * checking use of SHLIB_OPENMP_*FLAGS in Makefiles ... OK
+2026-10-21T05:48:00.0000082Z * checking include directives in Makefiles ... OK
+2026-10-21T05:48:00.0000083Z * checking pragmas in C/C++ headers and code ... OK
+2026-10-21T05:48:00.0000084Z * checking compilation flags used ... NOTE
+2026-10-21T05:48:00.0000085Z Compilation used the following non-portable flag(s):
+2026-10-21T05:48:00.0000086Z   '-mno-omit-leaf-frame-pointer'
+2026-10-21T05:48:00.0000087Z * checking compiled code ... OK
+2026-10-21T05:48:00.0000088Z  WARNING
+2026-10-21T05:48:00.0000089Z 'qpdf' is needed for checks on size reduction of PDFs
+2026-10-21T05:48:00.0000090Z * checking installed files from 'inst/doc' ... OK
+2026-10-21T05:48:00.0000091Z * checking files in 'vignettes' ... OK
+2026-10-21T05:48:00.0000092Z * checking examples ... OK
+2026-10-21T05:48:00.0000093Z * checking examples with --run-donttest ... OK
+2026-10-21T05:48:00.0000094Z * checking for unstated dependencies in 'tests' ... OK
+2026-10-21T05:48:00.0000095Z * checking tests ...
+2026-10-21T05:48:00.0000096Z   Running ‘testthat.R’ [6s/14s]
+2026-10-21T05:48:00.0000097Z  [7s/14s] ERROR
+2026-10-21T05:48:00.0000098Z Running the tests in ‘tests/testthat.R’ failed.
+2026-10-21T05:48:00.0000099Z Last 13 lines of output:
+2026-10-21T05:48:01.0000000Z   
+2026-10-21T05:48:01.0000001Z   [ FAIL 2 | WARN 0 | SKIP 0 | PASS 343 ]
+2026-10-21T05:48:01.0000002Z   
+2026-10-21T05:48:01.0000003Z   ══ Failed tests ════════════════════════════════════════════════════════════════
+2026-10-21T05:48:01.0000004Z   ── Failure ('test-zz-demo.R:2:3'): stop2 keeps the class ───────────────────────
+2026-10-21T05:48:01.0000005Z   1 + 1 (`actual`) not equal to 3 (`expected`).
+2026-10-21T05:48:01.0000006Z   
+2026-10-21T05:48:01.0000007Z     `actual`: 2
+2026-10-21T05:48:01.0000008Z   `expected`: 3
+2026-10-21T05:48:01.0000009Z   ── Error ('test-zz-demo.R:6:3'): stop2 errors early ────────────────────────────
+2026-10-21T05:48:01.0000010Z   Error in `eval(code, test_env)`: boom
+2026-10-21T05:48:01.0000011Z   
+2026-10-21T05:48:01.0000012Z   [ FAIL 2 | WARN 0 | SKIP 0 | PASS 343 ]
+2026-10-21T05:48:01.0000013Z   Error: Test failures
+2026-10-21T05:48:01.0000014Z   Execution halted
+2026-10-21T05:48:01.0000015Z * checking for unstated dependencies in vignettes ... OK
+2026-10-21T05:48:01.0000016Z * checking package vignettes in 'inst/doc' ... OK
+2026-10-21T05:48:01.0000017Z * checking re-building of vignette outputs ... OK
+2026-10-21T05:48:01.0000018Z * checking for non-standard things in the check directory ... OK
+2026-10-21T05:48:01.0000019Z * checking for detritus in the temp directory ... OK
+2026-10-21T05:48:01.0000020Z * DONE
+2026-10-21T05:48:01.0000021Z 
+2026-10-21T05:48:01.0000022Z Status: 1 ERROR, 2 WARNINGs, 7 NOTEs
+2026-10-21T05:48:01.0000023Z See
+2026-10-21T05:48:01.0000024Z   '/home/runner/work/fmisc/fmisc/check/fmisc.Rcheck/00check.log'
+2026-10-21T05:48:01.0000025Z for details.
+2026-10-21T05:48:01.0000026Z Error: R CMD check found ERRORs
+2026-10-21T05:48:01.0000027Z Execution halted
+2026-10-21T05:48:01.0000028Z ##[error]Process completed with exit code 1.
+2026-10-21T05:49:00.0000000Z ##[group]Show testthat output
+2026-10-21T05:49:00.0000001Z > test_check("fmisc")
+2026-10-21T05:49:00.0000002Z [ FAIL 2 | WARN 0 | SKIP 0 | PASS 343 ]
+2026-10-21T05:49:00.0000003Z 
+2026-10-21T05:49:00.0000004Z ══ Failed tests ════════════════════════════════════════════════════════════════
+2026-10-21T05:49:00.0000005Z ── Failure ('test-zz-demo.R:2:3'): stop2 keeps the class ───────────────────────
+2026-10-21T05:49:00.0000006Z 1 + 1 (`actual`) not equal to 3 (`expected`).
+2026-10-21T05:49:00.0000007Z 
+2026-10-21T05:49:00.0000008Z   `actual`: 2
+2026-10-21T05:49:00.0000009Z `expected`: 3
+2026-10-21T05:49:00.0000010Z ── Error ('test-zz-demo.R:6:3'): stop2 errors early ────────────────────────────
+2026-10-21T05:49:00.0000011Z Error in `eval(code, test_env)`: boom
+2026-10-21T05:49:00.0000012Z 
+2026-10-21T05:49:00.0000013Z [ FAIL 2 | WARN 0 | SKIP 0 | PASS 343 ]
+2026-10-21T05:49:00.0000014Z Error: Test failures
+2026-10-21T05:49:00.0000015Z Execution halted
+2026-10-21T05:49:00.0000016Z ##[endgroup]
+2026-10-21T05:50:00.0000000Z Post job cleanup.
+2026-10-21T05:50:00.0000001Z Cleaning up orphan processes
