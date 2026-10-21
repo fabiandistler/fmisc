@@ -183,7 +183,7 @@ process_with_chunks <- function(
     message("Done!")
   }
 
-  return(final_result)
+  final_result
 }
 
 
@@ -253,9 +253,9 @@ create_chunk_iterator <- function(data, chunk_size) {
           data.table::is.data.table(data) ||
           is.matrix(data)
       ) {
-        return(data[start_idx:end_idx, , drop = FALSE])
+        data[start_idx:end_idx, , drop = FALSE]
       } else {
-        return(data[start_idx:end_idx])
+        data[start_idx:end_idx]
       }
     },
     reset = function() {
@@ -353,7 +353,7 @@ chunk_processor <- function(
         }
       }
 
-      return(result)
+      result
     },
     cleanup = function() {
       chunks <<- list()
