@@ -1,0 +1,20 @@
+2026-10-21T05:15:02.1943757Z ##[endgroup]
+2026-10-21T05:15:02.2429673Z ##[group]Run Rscript -e 'l <- lintr::lint_package(); print(l); if (length(l)) quit(status = 1)'
+2026-10-21T05:15:02.2430070Z [36;1mRscript -e 'l <- lintr::lint_package(); print(l); if (length(l)) quit(status = 1)'[0m
+2026-10-21T05:15:02.2488264Z shell: /usr/bin/bash -e {0}
+2026-10-21T05:15:02.2489965Z ##[endgroup]
+2026-10-21T05:15:04.4297249Z Warning message:
+2026-10-21T05:15:04.4297627Z Warning encountered while loading config:
+2026-10-21T05:15:04.4298026Z Caused by warning:
+2026-10-21T05:15:04.4298282Z ! Warning from config setting `linters`.
+2026-10-21T05:15:04.4298544Z Caused by warning:
+2026-10-21T05:15:04.4299170Z ! ℹ Trying to remove cyclocomp_linter, which is not in `defaults`.
+2026-10-21T05:15:04.4334763Z ##[warning]file=R/chunking.R,line=186,col=3,[return_linter] Use implicit return behavior; explicit return() is not needed.
+2026-10-21T05:15:04.4341166Z ##[warning]file=R/chunking.R,line=239,col=21,[assignment_linter] Replace <<- by assigning to a specific environment (with assign() or <-) to avoid hard-to-predict behavior.
+2026-10-21T05:15:04.4342643Z ##[warning]file=R/chunking.R,line=256,col=9,[return_linter] Use implicit return behavior; explicit return() is not needed.
+2026-10-21T05:15:04.4343650Z ##[warning]file=R/chunking.R,line=258,col=9,[return_linter] Use implicit return behavior; explicit return() is not needed.
+2026-10-21T05:15:04.4344648Z ##[warning]file=R/chunking.R,line=356,col=7,[return_linter] Use implicit return behavior; explicit return() is not needed.
+2026-10-21T05:15:04.4345621Z ##[warning]file=R/stop2.R,line=140,col=3,[return_linter] Use implicit return behavior; explicit return() is not needed.
+2026-10-21T05:15:04.4470640Z ##[error]Process completed with exit code 1.
+2026-10-21T05:15:04.4625650Z Post job cleanup.
+2026-10-21T05:15:04.6484300Z Cleaning up orphan processes
