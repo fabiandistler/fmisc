@@ -12,6 +12,22 @@
   `"cancelled"`. `gh` and `gert` join Imports; both were already installed as
   dependencies of usethis (#76).
 
+* New `agent_run()` runs the Claude Code CLI (`claude -p`) once, read-only,
+  in a directory and returns its answer, which must match a JSON Schema
+  given as a string, as an `fmisc_agent_result`. The agent gets only the
+  `Read`, `Glob` and `Grep` tools, no repo or user customisations, and the
+  prompt goes on stdin. The model, turn and budget caps are fixed, and
+  `timeout` bounds the whole run and kills the process tree. It uses the
+  CLI's existing login, intended to be a Claude subscription, and removes
+  API-key, gateway and cloud-provider variables (`ANTHROPIC_API_KEY`,
+  `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_BASE_URL`, `CLAUDE_CODE_USE_*`, ...)
+  from the child environment so a run never bills elsewhere by accident.
+  Fixed Read deny rules keep common secret files (`.env*`, `.Renviron*`,
+  `*.pem`, `*.key`, SSH keys, `.netrc`, `.git-credentials`) away from the
+  agent; that is defense in depth, not a sandbox. Errors are classed (`fmisc_agent_error` and subclasses).
+  Needs `processx` and `jsonlite` (Suggests) and Claude Code CLI >= 2.1.259;
+  not supported on Windows yet (#75).
+
 # fmisc 0.3.0
 
 ## Breaking changes

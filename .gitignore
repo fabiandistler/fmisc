@@ -42,6 +42,7 @@ vignettes/*.pdf
 # pkgdown site
 docs/*
 !docs/agents/
+!docs/adr/
 
 # translation temp files
 po/*~
