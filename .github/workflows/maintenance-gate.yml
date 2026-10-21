@@ -91,7 +91,9 @@ jobs:
         if: hashFiles('DESCRIPTION') != ''
         with:
           # local::. installs pkg so object_usage_linter resolves cross-file refs via namespace
-          extra-packages: any::lintr, local::.
+          # lintr pinned to the version in the pre-push hook's renv.lock
+          # (lorenzwalthert/precommit), so hook and gate apply the same defaults.
+          extra-packages: lintr@3.4.0, local::.
       # Linters come from the committed .lintr, the same file the prek
       # pre-push lintr hook reads. Do not inline a linter list here.
       - name: lintr (.lintr)
