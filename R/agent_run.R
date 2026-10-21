@@ -8,11 +8,16 @@
 #' @section Authentication and billing:
 #' `agent_run()` uses whatever login the `claude` CLI already has, meant to
 #' be the owner's Claude subscription (OAuth). It never reads, stores or
-#' passes tokens. `ANTHROPIC_API_KEY` is **removed** from the child
-#' process's environment, so a key set in the R session cannot switch the
-#' run to API billing. `cost_usd` is the CLI's client-side estimate, not a
-#' bill. Use it for occasional, attended calls; it is not made for batch
-#' runs over many rows.
+#' passes tokens. These variables are **removed** from the child process's
+#' environment, so nothing set in the R session can switch the run to API
+#' billing, a gateway or a cloud provider: `ANTHROPIC_API_KEY`,
+#' `ANTHROPIC_AUTH_TOKEN`, `ANTHROPIC_BASE_URL`, `ANTHROPIC_CUSTOM_HEADERS`,
+#' `CLAUDE_CODE_USE_BEDROCK`, `CLAUDE_CODE_USE_VERTEX`,
+#' `CLAUDE_CODE_USE_FOUNDRY`, `CLAUDE_CODE_USE_MANTLE` and
+#' `CLAUDE_CODE_USE_ANTHROPIC_AWS`. `CLAUDE_CODE_OAUTH_TOKEN` (a subscription
+#' token from `claude setup-token`) passes through. `cost_usd` is the CLI's
+#' client-side estimate, not a bill. Use it for occasional, attended calls;
+#' it is not made for batch runs over many rows.
 #'
 #' @section Isolation:
 #' The CLI runs with `--safe-mode --restricted --strict-mcp-config`, so
@@ -23,10 +28,14 @@
 #' the budget cap (USD 1) are fixed. The prompt goes on stdin, never on the
 #' command line, and no session transcript is kept.
 #'
-#' The agent can still **read every file in `workdir`**, including `.env` and
-#' other secrets, and send them to the model. Point `workdir` at a directory
-#' that holds only what the agent should see. Managed (policy) settings
-#' still apply.
+#' A fixed list of Read deny rules blocks common secret files at any depth:
+#' `.env*`, `.Renviron*`, `.netrc`, `.git-credentials`, `*.pem`, `*.key`,
+#' SSH keys (`id_rsa*`, `id_dsa*`, `id_ecdsa*`, `id_ed25519*`) and `.ssh/`.
+#' Claude Code applies these best-effort to Glob and Grep as well. This is
+#' defense in depth, **not a sandbox**: the agent can read every other file
+#' in `workdir` and send it to the model, including secrets under other
+#' names. Point `workdir` at a directory that holds only what the agent
+#' should see. Managed (policy) settings still apply.
 #'
 #' Needs Claude Code CLI 2.1.259 or later on PATH. Not supported on Windows
 #' yet.
@@ -230,6 +239,7 @@ agent_cli_args <- function(schema) {
     "Read,Glob,Grep",
     "--disallowedTools",
     "mcp__*",
+    agent_secret_deny_rules,
     "--permission-mode",
     "dontAsk",
     "--permission-prompts",
@@ -245,11 +255,45 @@ agent_cli_args <- function(schema) {
   )
 }
 
-# The parent environment minus ANTHROPIC_API_KEY, so the CLI authenticates
-# with the Claude subscription and never bills the API by accident.
+# Read deny rules (gitignore syntax; a pattern without a slash matches at any
+# depth). Claude Code applies Read rules best-effort to Glob and Grep too; it
+# never consults Glob or Grep path rules, so none are passed. Defense in
+# depth, not a sandbox: a secret under any other name stays readable.
+agent_secret_deny_rules <- c(
+  "Read(.env*)",
+  "Read(.Renviron*)",
+  "Read(.netrc)",
+  "Read(.git-credentials)",
+  "Read(*.pem)",
+  "Read(*.key)",
+  "Read(id_rsa*)",
+  "Read(id_dsa*)",
+  "Read(id_ecdsa*)",
+  "Read(id_ed25519*)",
+  "Read(.ssh/**)"
+)
+
+# Variables that make the CLI authenticate with something other than the
+# subscription login, or send requests somewhere other than Anthropic.
+# CLAUDE_CODE_OAUTH_TOKEN (from `claude setup-token`) is the subscription
+# and passes through.
+agent_unset_env <- c(
+  "ANTHROPIC_API_KEY",
+  "ANTHROPIC_AUTH_TOKEN",
+  "ANTHROPIC_BASE_URL",
+  "ANTHROPIC_CUSTOM_HEADERS",
+  "CLAUDE_CODE_USE_BEDROCK",
+  "CLAUDE_CODE_USE_VERTEX",
+  "CLAUDE_CODE_USE_FOUNDRY",
+  "CLAUDE_CODE_USE_MANTLE",
+  "CLAUDE_CODE_USE_ANTHROPIC_AWS"
+)
+
+# The parent environment minus agent_unset_env, so billing always goes
+# through the Claude subscription.
 agent_child_env <- function() {
   env <- unclass(Sys.getenv())
-  env[names(env) != "ANTHROPIC_API_KEY"]
+  env[!names(env) %in% agent_unset_env]
 }
 
 new_agent_result <- function(result) {

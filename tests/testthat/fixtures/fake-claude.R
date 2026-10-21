@@ -41,7 +41,22 @@ switch(
       argv = args,
       stdin = stdin_text,
       wd = normalizePath(getwd()),
-      api_key_set = nzchar(Sys.getenv("ANTHROPIC_API_KEY"))
+      # Names only, never values: which auth/provider variables reached us.
+      env_set = I(intersect(
+        c(
+          "ANTHROPIC_API_KEY",
+          "ANTHROPIC_AUTH_TOKEN",
+          "ANTHROPIC_BASE_URL",
+          "ANTHROPIC_CUSTOM_HEADERS",
+          "CLAUDE_CODE_USE_BEDROCK",
+          "CLAUDE_CODE_USE_VERTEX",
+          "CLAUDE_CODE_USE_FOUNDRY",
+          "CLAUDE_CODE_USE_MANTLE",
+          "CLAUDE_CODE_USE_ANTHROPIC_AWS",
+          "CLAUDE_CODE_OAUTH_TOKEN"
+        ),
+        names(Sys.getenv())
+      ))
     )
   )),
   refusal = emit(result(result = "I can't help with that.")),

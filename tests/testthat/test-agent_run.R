@@ -38,11 +38,7 @@ test_that("agent_run() sends the prompt on stdin and read-only flags in argv", {
   dir.create(workdir)
   prompt <- "List the R files.\nSECRET-PROMPT-MARKER"
 
-  seen <- with_env_var(
-    "ANTHROPIC_API_KEY",
-    "sk-ant-test-not-a-real-key",
-    agent_run(prompt, schema_answer, workdir = workdir)
-  )$value
+  seen <- agent_run(prompt, schema_answer, workdir = workdir)$value
 
   # The exact argv from the design note (docs/adr/0001-agent-run-claude-cli.md).
   expect_identical(
@@ -60,6 +56,17 @@ test_that("agent_run() sends the prompt on stdin and read-only flags in argv", {
       "Read,Glob,Grep",
       "--disallowedTools",
       "mcp__*",
+      "Read(.env*)",
+      "Read(.Renviron*)",
+      "Read(.netrc)",
+      "Read(.git-credentials)",
+      "Read(*.pem)",
+      "Read(*.key)",
+      "Read(id_rsa*)",
+      "Read(id_dsa*)",
+      "Read(id_ecdsa*)",
+      "Read(id_ed25519*)",
+      "Read(.ssh/**)",
       "--permission-mode",
       "dontAsk",
       "--permission-prompts",
@@ -89,7 +96,32 @@ test_that("agent_run() sends the prompt on stdin and read-only flags in argv", {
   expect_false(any(grepl("SECRET-PROMPT-MARKER", seen$argv, fixed = TRUE)))
   expect_identical(seen$stdin, prompt)
   expect_identical(seen$wd, normalizePath(workdir))
-  expect_false(seen$api_key_set)
+})
+
+test_that("agent_run() strips API and provider credentials from the child", {
+  skip_if_no_fake_claude_support()
+  local_fake_claude("echo")
+  dummy <- c(
+    ANTHROPIC_API_KEY = "test-dummy",
+    ANTHROPIC_AUTH_TOKEN = "test-dummy",
+    ANTHROPIC_BASE_URL = "https://gateway.invalid",
+    ANTHROPIC_CUSTOM_HEADERS = "X-Test: 1",
+    CLAUDE_CODE_USE_BEDROCK = "1",
+    CLAUDE_CODE_USE_VERTEX = "1",
+    CLAUDE_CODE_USE_FOUNDRY = "1",
+    CLAUDE_CODE_USE_MANTLE = "1",
+    CLAUDE_CODE_USE_ANTHROPIC_AWS = "1",
+    # The subscription token from `claude setup-token` must pass through.
+    CLAUDE_CODE_OAUTH_TOKEN = "test-dummy"
+  )
+  old <- Sys.getenv(names(dummy), unset = NA)
+  names(old) <- names(dummy)
+  on.exit(restore_env(old), add = TRUE)
+  restore_env(dummy)
+
+  seen <- agent_run("Hi", schema_answer, workdir = tempdir())$value
+
+  expect_identical(unlist(seen$env_set), "CLAUDE_CODE_OAUTH_TOKEN")
 })
 
 test_that("agent_run() reports a CLI error result as fmisc_agent_failed", {

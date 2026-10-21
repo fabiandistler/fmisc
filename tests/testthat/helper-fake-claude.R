@@ -10,7 +10,7 @@
 # (fields trimmed from a live 2.1.306 run):
 #   success     structured_output, exit 0
 #   echo        structured_output = what the fake received (argv, stdin, wd,
-#               whether ANTHROPIC_API_KEY was set), exit 0
+#               which auth/provider variables were set, names only), exit 0
 #   refusal     success without structured_output, exit 0
 #   max_turns   is_error, subtype error_max_turns, exit 1
 #   auth_error  is_error, authentication failure text, exit 1

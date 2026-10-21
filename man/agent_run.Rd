@@ -48,11 +48,16 @@ web.
 
 \code{agent_run()} uses whatever login the \code{claude} CLI already has, meant to
 be the owner's Claude subscription (OAuth). It never reads, stores or
-passes tokens. \code{ANTHROPIC_API_KEY} is \strong{removed} from the child
-process's environment, so a key set in the R session cannot switch the
-run to API billing. \code{cost_usd} is the CLI's client-side estimate, not a
-bill. Use it for occasional, attended calls; it is not made for batch
-runs over many rows.
+passes tokens. These variables are \strong{removed} from the child process's
+environment, so nothing set in the R session can switch the run to API
+billing, a gateway or a cloud provider: \code{ANTHROPIC_API_KEY},
+\code{ANTHROPIC_AUTH_TOKEN}, \code{ANTHROPIC_BASE_URL}, \code{ANTHROPIC_CUSTOM_HEADERS},
+\code{CLAUDE_CODE_USE_BEDROCK}, \code{CLAUDE_CODE_USE_VERTEX},
+\code{CLAUDE_CODE_USE_FOUNDRY}, \code{CLAUDE_CODE_USE_MANTLE} and
+\code{CLAUDE_CODE_USE_ANTHROPIC_AWS}. \code{CLAUDE_CODE_OAUTH_TOKEN} (a subscription
+token from \verb{claude setup-token}) passes through. \code{cost_usd} is the CLI's
+client-side estimate, not a bill. Use it for occasional, attended calls;
+it is not made for batch runs over many rows.
 }
 
 \section{Isolation}{
@@ -65,10 +70,14 @@ call that would need a permission prompt is denied (\code{dontAsk},
 the budget cap (USD 1) are fixed. The prompt goes on stdin, never on the
 command line, and no session transcript is kept.
 
-The agent can still \strong{read every file in \code{workdir}}, including \code{.env} and
-other secrets, and send them to the model. Point \code{workdir} at a directory
-that holds only what the agent should see. Managed (policy) settings
-still apply.
+A fixed list of Read deny rules blocks common secret files at any depth:
+\verb{.env*}, \verb{.Renviron*}, \code{.netrc}, \code{.git-credentials}, \verb{*.pem}, \verb{*.key},
+SSH keys (\verb{id_rsa*}, \verb{id_dsa*}, \verb{id_ecdsa*}, \verb{id_ed25519*}) and \verb{.ssh/}.
+Claude Code applies these best-effort to Glob and Grep as well. This is
+defense in depth, \strong{not a sandbox}: the agent can read every other file
+in \code{workdir} and send it to the model, including secrets under other
+names. Point \code{workdir} at a directory that holds only what the agent
+should see. Managed (policy) settings still apply.
 
 Needs Claude Code CLI 2.1.259 or later on PATH. Not supported on Windows
 yet.
