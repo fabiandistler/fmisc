@@ -7,7 +7,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/fabiandistler/fmisc/blob/v0.3.0/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/fabiandistler/fmisc/blob/main/DESCRIPTION)
 
 Distler F (2026). *fmisc: Miscellaneous R Utilities*. R package version
 0.3.0, <https://github.com/fabiandistler/fmisc>.
