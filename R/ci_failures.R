@@ -17,11 +17,14 @@
 #' * `format`: a file `air format --check` would reformat.
 #' * `unparsed`: a failed job none of the above explains. `message` holds the
 #'   raw log of the failing step, so nothing is dropped silently.
+#' * `timed_out`, `cancelled`: a job that ended that way; `message` is the
+#'   conclusion and `step` the step it ended in. Its log is not read.
 #'
 #' @return A data frame with one row per finding and the columns
 #'   * `job`: job name, such as `"ubuntu-latest (release)"`.
 #'   * `os`: runner label, such as `"ubuntu-latest"`.
-#'   * `step`: name of the failed step (`NA` when GitHub names none).
+#'   * `step`: name of the step the job failed in (`NA` when GitHub names
+#'     none).
 #'   * `kind`: one of the kinds above.
 #'   * `file`: path relative to the package root, or `NA`.
 #'   * `line`: integer line in `file`, or `NA`.
@@ -64,17 +67,47 @@ ci_failures <- function() {
     run_id = run$id,
     per_page = 100
   )$jobs
-  failed <- Filter(function(job) identical(job$conclusion, "failure"), jobs)
-  findings <- lapply(failed, function(job) {
+  red <- Filter(
+    function(job) isTRUE(job$conclusion %in% red_conclusions),
+    jobs
+  )
+  findings <- lapply(red, function(job) {
+    if (!identical(job$conclusion, "failure")) {
+      # A timed-out or cancelled job has no failing step to parse.
+      return(job_rows(
+        job,
+        run,
+        found_rows(job$conclusion, NA_character_, NA_integer_, job$conclusion)
+      ))
+    }
     log <- gh::gh(
       "/repos/{owner}/{repo}/actions/jobs/{job_id}/logs",
       owner = remote$username,
       repo = remote$repo,
       job_id = job$id
-    )$message
-    job_findings(job, run, log)
+    )
+    job_findings(job, run, log_text(log))
   })
   new_ci_failures(do.call(rbind, c(list(empty_findings()), findings)))
+}
+
+# Job conclusions that turn a run red.
+red_conclusions <- c("failure", "timed_out", "cancelled")
+
+# gh::gh() returns a text/plain body as `list(message = )` and an
+# application/octet-stream body as raw bytes.
+log_text <- function(response) {
+  if (is.raw(response)) {
+    text <- rawToChar(unclass(response))
+    Encoding(text) <- "UTF-8"
+    return(text)
+  }
+  if (!is.character(response$message)) {
+    cli::cli_abort(
+      "The job log response has neither a text body nor raw bytes."
+    )
+  }
+  response$message
 }
 
 new_ci_failures <- function(findings) {
@@ -120,15 +153,21 @@ job_findings <- function(job, run, log) {
       )
     )
   }
-  failed_step <- Filter(
-    function(step) identical(step$conclusion, "failure"),
+  job_rows(job, run, found)
+}
+
+# Findings plus the job's context columns. `step` is the last step that
+# ended the way the job did (the failed, timed-out or cancelled step).
+job_rows <- function(job, run, found) {
+  ended_step <- Filter(
+    function(step) identical(step$conclusion, job$conclusion),
     job$steps
   )
   data.frame(
     job = job$name,
     os = if (length(job$labels) > 0) job$labels[[1]] else NA_character_,
-    step = if (length(failed_step) > 0) {
-      failed_step[[1]]$name
+    step = if (length(ended_step) > 0) {
+      ended_step[[length(ended_step)]]$name
     } else {
       NA_character_
     },

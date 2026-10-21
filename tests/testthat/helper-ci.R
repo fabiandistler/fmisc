@@ -3,12 +3,14 @@
 # three endpoints ci_failures() calls from fixture logs. No network.
 #
 # `jobs` is a list of lists with `name`, `os`, `step` (the failed step, or
-# NULL) and `log` (a file in fixtures/ci-logs/). `runs = list()` means the
-# branch has no failed run.
+# NULL), `log` (a file in fixtures/ci-logs/) and optionally `conclusion`
+# (default "failure"). `runs = list()` means the branch has no failed run.
+# `raw_logs = TRUE` serves logs as raw bytes, as gh does for octet-stream.
 local_ci_run <- function(
   jobs = list(),
   runs = NULL,
   branch = "feat/x",
+  raw_logs = FALSE,
   env = parent.frame()
 ) {
   fixtures <- normalizePath(testthat::test_path("fixtures", "ci-logs"))
@@ -50,7 +52,13 @@ local_ci_run <- function(
         list(name = "Set up job", conclusion = "success"),
         list(
           name = if (is.null(job$step)) "Run step" else job$step,
-          conclusion = if (is.null(job$step)) "success" else "failure"
+          conclusion = if (is.null(job$step)) {
+            "success"
+          } else if (is.null(job$conclusion)) {
+            "failure"
+          } else {
+            job$conclusion
+          }
         )
       )
     )
@@ -71,9 +79,13 @@ local_ci_run <- function(
       "/repos/{owner}/{repo}/actions/jobs/{job_id}/logs" = {
         i <- params$job_id - 200
         path <- file.path(fixtures, jobs[[i]]$log)
-        list(
-          message = paste(readLines(path, encoding = "UTF-8"), collapse = "\n")
-        )
+        text <- paste(readLines(path, encoding = "UTF-8"), collapse = "\n")
+        if (raw_logs) {
+          # What gh::gh() returns for an application/octet-stream body.
+          structure(charToRaw(text), class = c("gh_response", "raw"))
+        } else {
+          list(message = text)
+        }
       },
       stop("unexpected endpoint ", endpoint)
     )

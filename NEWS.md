@@ -8,7 +8,8 @@
   R CMD check ERRORs, WARNINGs and NOTEs, testthat failures and errors,
   lintr annotations and air format-check failures; a failed job it cannot
   explain is kept as kind `"unparsed"` with the raw log of the failing
-  step. `gh` and `gert` join Imports; both were already installed as
+  step, and a timed-out or cancelled job as kind `"timed_out"` or
+  `"cancelled"`. `gh` and `gert` join Imports; both were already installed as
   dependencies of usethis (#76).
 
 # fmisc 0.3.0

@@ -221,14 +221,17 @@ test_that("the latest failed run of the current branch is asked for", {
     sum(calls$endpoints == "/repos/{owner}/{repo}/actions/jobs/{job_id}/logs"),
     1
   )
-  expect_equal(unique(findings$job), "r-lint")
+  expect_equal(unique(findings$job), c("r-lint", "macos-latest (release)"))
   expect_equal(
     unique(findings$sha),
     "0123456789abcdef0123456789abcdef01234567"
   )
   expect_equal(
     unique(findings$url),
-    "https://github.com/fabiandistler/fmisc/actions/runs/101/job/201"
+    paste0(
+      "https://github.com/fabiandistler/fmisc/actions/runs/101/job/",
+      c("201", "202")
+    )
   )
 })
 
@@ -263,4 +266,71 @@ test_that("printing shows one line per finding", {
 
   expect_snapshot(print(findings))
   expect_snapshot(print(findings[0, ]))
+})
+
+test_that("job logs served as raw bytes are parsed like text", {
+  local_ci_run(
+    list(
+      list(
+        name = "r-lint",
+        os = "ubuntu-latest",
+        step = "lintr (.lintr)",
+        log = "r-lint.log"
+      )
+    ),
+    raw_logs = TRUE
+  )
+
+  findings <- ci_failures()
+
+  expect_equal(nrow(findings), 6)
+  expect_equal(unique(findings$kind), "lint")
+  expect_equal(findings$file[1], "R/chunking.R")
+})
+
+test_that("timed-out and cancelled jobs get one row each", {
+  calls <- local_ci_run(list(
+    list(
+      name = "windows-latest (release)",
+      os = "windows-latest",
+      step = "Run r-lib/actions/check-r-package@v2",
+      log = "check-tests.log",
+      conclusion = "timed_out"
+    ),
+    list(
+      name = "macos-latest (release)",
+      os = "macos-latest",
+      step = "Run r-lib/actions/setup-r-dependencies@v2",
+      log = "check-tests.log",
+      conclusion = "cancelled"
+    ),
+    list(
+      name = "ubuntu-latest (release)",
+      os = "ubuntu-latest",
+      log = "check-tests.log",
+      conclusion = "success"
+    )
+  ))
+
+  findings <- ci_failures()
+
+  expect_equal(findings$kind, c("timed_out", "cancelled"))
+  expect_equal(
+    findings$job,
+    c("windows-latest (release)", "macos-latest (release)")
+  )
+  expect_equal(findings$os, c("windows-latest", "macos-latest"))
+  expect_equal(
+    findings$step,
+    c(
+      "Run r-lib/actions/check-r-package@v2",
+      "Run r-lib/actions/setup-r-dependencies@v2"
+    )
+  )
+  expect_equal(findings$message, c("timed_out", "cancelled"))
+  expect_identical(findings$file, c(NA_character_, NA_character_))
+  expect_identical(findings$line, c(NA_integer_, NA_integer_))
+  expect_false(
+    "/repos/{owner}/{repo}/actions/jobs/{job_id}/logs" %in% calls$endpoints
+  )
 })

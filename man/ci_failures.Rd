@@ -11,7 +11,8 @@ A data frame with one row per finding and the columns
 \itemize{
 \item \code{job}: job name, such as \code{"ubuntu-latest (release)"}.
 \item \code{os}: runner label, such as \code{"ubuntu-latest"}.
-\item \code{step}: name of the failed step (\code{NA} when GitHub names none).
+\item \code{step}: name of the step the job failed in (\code{NA} when GitHub names
+none).
 \item \code{kind}: one of the kinds above.
 \item \code{file}: path relative to the package root, or \code{NA}.
 \item \code{line}: integer line in \code{file}, or \code{NA}.
@@ -42,6 +43,8 @@ A job log can produce these kinds of finding:
 \item \code{format}: a file \verb{air format --check} would reformat.
 \item \code{unparsed}: a failed job none of the above explains. \code{message} holds the
 raw log of the failing step, so nothing is dropped silently.
+\item \code{timed_out}, \code{cancelled}: a job that ended that way; \code{message} is the
+conclusion and \code{step} the step it ended in. Its log is not read.
 }
 }
 \examples{
