@@ -137,5 +137,5 @@ simple_glue <- function(message, .envir = parent.frame()) {
     message <- paste0(before, value, after)
   }
 
-  return(message)
+  message
 }

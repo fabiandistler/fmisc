@@ -4,8 +4,10 @@
 #' chunks to disk when RAM usage exceeds the specified threshold.
 #'
 #' @param data A data.frame, matrix, or vector to process
-#' @param process_fn A function that takes a chunk of data and returns processed results
-#' @param max_ram_mb Maximum RAM usage in MB before writing to disk (default: 1000)
+#' @param process_fn A function that takes a chunk of data and returns
+#'   processed results
+#' @param max_ram_mb Maximum RAM usage in MB before writing to disk
+#'   (default: 1000)
 #' @param chunk_size Initial chunk size (default: auto-calculated)
 #' @param temp_dir Directory for temporary files (default: tempdir())
 #' @param combine_fn Function to combine results from chunks (default: rbind)
@@ -160,7 +162,8 @@ process_with_chunks <- function(
     unlink(chunk_dir, recursive = TRUE)
   }
 
-  # Then, combine any remaining in-memory results (these came after the last disk flush)
+  # Then, combine any remaining in-memory results (these came after the last
+  # disk flush)
   if (length(results_list) > 0) {
     if (length(results_list) == 1) {
       in_memory_result <- results_list[[1]]
@@ -180,15 +183,15 @@ process_with_chunks <- function(
     message("Done!")
   }
 
-  return(final_result)
+  final_result
 }
 
 
 #' Create Chunk Iterator
 #'
-#' Creates an iterator that splits data into chunks based on a maximum chunk size.
-#' Uses fast C++ implementations for numeric matrices and vectors, standard R subsetting
-#' for data frames to preserve row indices and ordering.
+#' Creates an iterator that splits data into chunks based on a maximum chunk
+#' size. Uses fast C++ implementations for numeric matrices and vectors,
+#' standard R subsetting for data frames to preserve row indices and ordering.
 #'
 #' @param data A data.frame, data.table, matrix, or vector to chunk
 #' @param chunk_size Integer specifying the number of rows/elements per chunk
@@ -221,7 +224,8 @@ create_chunk_iterator <- function(data, chunk_size) {
   } else if (is.vector(data) && is.numeric(data) && !is.list(data)) {
     chunks <- split_vector_chunks(data, chunk_size)
   }
-  # For data.frames and mixed-type matrices, use standard R subsetting to preserve row order
+  # For data.frames and mixed-type matrices, use standard R subsetting to
+  # preserve row order
 
   list(
     total_chunks = num_chunks,
@@ -239,7 +243,8 @@ create_chunk_iterator <- function(data, chunk_size) {
         return(chunks[[current_chunk]])
       }
 
-      # Otherwise use standard R subsetting (preserves row order and attributes for data.frames)
+      # Otherwise use standard R subsetting (preserves row order and
+      # attributes for data.frames)
       start_idx <- (current_chunk - 1) * chunk_size + 1
       end_idx <- min(current_chunk * chunk_size, total_rows)
 
@@ -248,9 +253,9 @@ create_chunk_iterator <- function(data, chunk_size) {
           data.table::is.data.table(data) ||
           is.matrix(data)
       ) {
-        return(data[start_idx:end_idx, , drop = FALSE])
+        data[start_idx:end_idx, , drop = FALSE]
       } else {
-        return(data[start_idx:end_idx])
+        data[start_idx:end_idx]
       }
     },
     reset = function() {
@@ -348,7 +353,7 @@ chunk_processor <- function(
         }
       }
 
-      return(result)
+      result
     },
     cleanup = function() {
       chunks <<- list()

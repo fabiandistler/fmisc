@@ -53,7 +53,10 @@ use_make2 <- function(open = interactive(), overwrite = FALSE) {
   if (file.exists(dest_path) && !isTRUE(overwrite)) {
     if (!interactive()) {
       stop2(
-        "{.file Makefile} already exists. Use {.code overwrite = TRUE} to replace it."
+        paste0(
+          "{.file Makefile} already exists. ",
+          "Use {.code overwrite = TRUE} to replace it."
+        )
       )
     }
     response <- readline("Makefile already exists. Overwrite? (y/N): ")

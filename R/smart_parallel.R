@@ -14,7 +14,8 @@
 #' @param FUN Function to apply to each element
 #' @param n_cores Number of cores to use (NULL for auto-detection)
 #' @param ... Additional arguments passed to FUN
-#' @param setup Advanced: Optional pre-configured setup object from [setup_parallel()].
+#' @param setup Advanced: Optional pre-configured setup object from
+#'   [setup_parallel()].
 #'   If provided, n_cores is ignored. Most users should omit this parameter.
 #'   Reusing setup is more efficient for multiple operations.
 #'

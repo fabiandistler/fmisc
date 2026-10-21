@@ -95,7 +95,7 @@ test_that("with_retry validation errors on bad inputs", {
   )
 })
 
-test_that("with_retry .on_error accepts a character vector of condition classes", {
+test_that("with_retry .on_error accepts a character vector of classes", {
   counter <- 0
   boom <- function() {
     counter <<- counter + 1

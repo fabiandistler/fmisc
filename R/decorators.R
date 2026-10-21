@@ -126,7 +126,10 @@ with_retry <- function(
       !(is.character(.on_error) && length(.on_error) > 0 && !anyNA(.on_error))
   ) {
     stop2(
-      "`.on_error` must be `NULL`, a predicate function, or a character vector of condition classes",
+      paste0(
+        "`.on_error` must be `NULL`, a predicate function, ",
+        "or a character vector of condition classes"
+      ),
       class = "fmisc_decorator_error"
     )
   }

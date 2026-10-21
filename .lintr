@@ -1,3 +1,17 @@
+linters: linters_with_defaults(
+    # Targets lintr 3.4.0: pinned in the CI gate and the hook's renv.lock.
+    # cyclocomp_linter left out (not a default since lintr 3.2.0); do not add
+    # it: it flags long but readable decorator code.
+    # chunking.R keeps iterator state in closures, the intended use of <<-.
+    assignment_linter = assignment_linter(operator = c("<-", "<<-")),
+    # X and FUN mirror base::lapply() in the exported smart_parallel_apply().
+    object_name_linter = object_name_linter(
+      styles = c("snake_case", "symbols"),
+      regexes = c(apply_args = "^X$|^FUN$")
+    ),
+    # Kept from the maintenance gate: catches imports that are never used.
+    unused_import_linter = unused_import_linter()
+  )
 exclusions: list(
     # Template copied into user projects by use_function_template(); its helpers exist there, not here.
     "inst/templates/function_template.R",
