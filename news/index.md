@@ -1,5 +1,21 @@
 # Changelog
 
+## fmisc (development version)
+
+### New features
+
+- [`ci_failures()`](https://fabiandistler.github.io/fmisc/reference/ci_failures.md)
+  fetches the latest failed GitHub Actions run of the current branch and
+  returns one row per finding (`job`, `os`, `step`, `kind`, `file`,
+  `line`, `message`, `sha`, `url`). It recognises R CMD check ERRORs,
+  WARNINGs and NOTEs, testthat failures and errors, lintr annotations
+  and air format-check failures; a failed job it cannot explain is kept
+  as kind `"unparsed"` with the raw log of the failing step, and a
+  timed-out or cancelled job as kind `"timed_out"` or `"cancelled"`.
+  `gh` and `gert` join Imports; both were already installed as
+  dependencies of usethis
+  ([\#76](https://github.com/fabiandistler/fmisc/issues/76)).
+
 ## fmisc 0.3.0
 
 ### Breaking changes

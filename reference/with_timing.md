@@ -71,7 +71,7 @@ g <- with_timing(function(x) {
   x
 }, .threshold = 0)
 g(42)
-#> ℹ function(x) { took 0.050s
+#> ℹ function(x) { took 0.051s
 #> [1] 42
 # }
 ```

@@ -7,6 +7,8 @@
   : Clear or inspect a cached function's cache
 - [`chunk_processor()`](https://fabiandistler.github.io/fmisc/reference/chunk_processor.md)
   : Chunk Processor Class
+- [`ci_failures()`](https://fabiandistler.github.io/fmisc/reference/ci_failures.md)
+  : Findings from the latest failed CI run of the current branch
 - [`decorate()`](https://fabiandistler.github.io/fmisc/reference/decorate.md)
   : Compose several decorators onto a function
 - [`is_decorated()`](https://fabiandistler.github.io/fmisc/reference/is_decorated.md)

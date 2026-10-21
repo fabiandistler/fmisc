@@ -35,7 +35,7 @@ burns rotation slots.
 | Once planned as a job | Runs in CI instead |
 |----|----|
 | security-footguns | gitleaks, bandit, ruff default rules (`BLE001`, `S110`, `ASYNC`) + prek hooks (gitleaks on commit) |
-| dead-code (local vars/imports) | `ruff F401/F841`, `lintr::object_usage_linter` |
+| dead-code (local vars/imports) | `ruff F401/F841`, [`lintr::object_usage_linter`](https://lintr.r-lib.org/reference/object_usage_linter.html) |
 | workflow security | zizmor (GitHub Actions) |
 | deps-audit, scan half (uv projects) | `uv audit`: blocking on lockfile PRs, weekly report |
 | new dependencies (slopsquatting) | `maintenance-new-deps`: report on PRs that add a dependency |

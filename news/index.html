@@ -37,6 +37,14 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="development version" id="fmisc-development-version">fmisc (development version)<a class="anchor" aria-label="anchor" href="#fmisc-development-version"></a></h2>
+<div class="section level3">
+<h3 id="new-features-development-version">New features<a class="anchor" aria-label="anchor" href="#new-features-development-version"></a></h3>
+<ul><li>
+<code><a href="../reference/ci_failures.html">ci_failures()</a></code> fetches the latest failed GitHub Actions run of the current branch and returns one row per finding (<code>job</code>, <code>os</code>, <code>step</code>, <code>kind</code>, <code>file</code>, <code>line</code>, <code>message</code>, <code>sha</code>, <code>url</code>). It recognises R CMD check ERRORs, WARNINGs and NOTEs, testthat failures and errors, lintr annotations and air format-check failures; a failed job it cannot explain is kept as kind <code>"unparsed"</code> with the raw log of the failing step, and a timed-out or cancelled job as kind <code>"timed_out"</code> or <code>"cancelled"</code>. <code>gh</code> and <code>gert</code> join Imports; both were already installed as dependencies of usethis (<a href="https://github.com/fabiandistler/fmisc/issues/76" class="external-link">#76</a>).</li>
+</ul></div>
+</div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="fmisc-030">fmisc 0.3.0<a class="anchor" aria-label="anchor" href="#fmisc-030"></a></h2>
 <div class="section level3">
 <h3 id="breaking-changes-0-3-0">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-3-0"></a></h3>
