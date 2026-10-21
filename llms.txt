@@ -133,6 +133,8 @@ use_make2()
 
 ## All functions
 
+- [`agent_run()`](https://fabiandistler.github.io/fmisc/reference/agent_run.md)
+  : Run a read-only Claude Code agent and get structured output back
 - [`cache_clear()`](https://fabiandistler.github.io/fmisc/reference/cache_clear.md)
   [`cache_info()`](https://fabiandistler.github.io/fmisc/reference/cache_clear.md)
   : Clear or inspect a cached function's cache
