@@ -38,6 +38,7 @@ repos:
   # Full R linting via lintr, only on push: needs a system Rscript and
   # restores a renv environment, the slow part of the setup. Catches what
   # jarl does not cover (yet). For lintr on commit, remove the stages line.
+  # Linters and exclusions come from .lintr, shared with the CI gate's r-lint.
   - repo: https://github.com/lorenzwalthert/precommit
     rev: v0.4.3.9032
     hooks:

@@ -1,3 +1,14 @@
+linters: linters_with_defaults(
+    # Flags long but readable decorator code; length is not complexity here.
+    cyclocomp_linter = NULL,
+    # X and FUN mirror base::lapply() in the exported smart_parallel_apply().
+    object_name_linter = object_name_linter(
+      styles = c("snake_case", "symbols"),
+      regexes = c(apply_args = "^X$|^FUN$")
+    ),
+    # Kept from the maintenance gate: catches imports that are never used.
+    unused_import_linter = unused_import_linter()
+  )
 exclusions: list(
     # Template copied into user projects by use_function_template(); its helpers exist there, not here.
     "inst/templates/function_template.R",
