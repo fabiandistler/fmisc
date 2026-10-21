@@ -1,0 +1,54 @@
+2026-10-21T05:48:11.1031305Z ##[group]Run ## --------------------------------------------------------------------
+2026-10-21T05:48:11.1041701Z shell: /usr/local/bin/Rscript {0}
+2026-10-21T05:48:11.1047767Z ##[endgroup]
+2026-10-21T05:48:11.6872389Z [36m── R CMD build ─────────────────────────────────────────────────────────────────[39m
+2026-10-21T05:48:12.2643476Z * checking for file ‘.../DESCRIPTION’ ... OK
+2026-10-21T05:48:23.3684649Z * building ‘fmisc_0.3.0.tar.gz’
+2026-10-21T05:48:23.4337222Z
+2026-10-21T05:48:23.4822394Z [36m── R CMD check ─────────────────────────────────────────────────────────────────[39m
+2026-10-21T05:48:23.7288116Z * using log directory ‘/home/runner/work/fmisc/fmisc/check/fmisc.Rcheck’
+2026-10-21T05:48:23.7289212Z * using R version 4.6.1 (2026-06-24)
+2026-10-21T05:48:23.7674446Z * checking for file ‘fmisc/DESCRIPTION’ ... OK
+2026-10-21T05:48:25.4615761Z * checking for sufficient/correct file permissions ... OK
+2026-10-21T05:48:36.8565871Z * checking whether package ‘fmisc’ can be installed ... [10s/11s] NOTE
+2026-10-21T05:48:36.8567482Z Found the following notes/warnings:
+2026-10-21T05:48:36.8570122Z   SystemRequirements specified C++11: support has been removed
+2026-10-21T05:48:36.8571628Z See ‘/home/runner/work/fmisc/fmisc/check/fmisc.Rcheck/00install.out’ for details.
+2026-10-21T05:48:36.8572992Z * used C++ compiler: ‘g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0’
+2026-10-21T05:48:36.8574538Z * checking C++ specification ... NOTE
+2026-10-21T05:48:36.8575209Z   Obsolete C++11 standard request will be ignored
+2026-10-21T05:48:36.8614588Z * checking installed package size ... OK
+2026-10-21T05:48:37.1021952Z * checking DESCRIPTION meta-information ... NOTE
+2026-10-21T05:48:37.1022558Z License stub is invalid DCF.
+2026-10-21T05:48:37.1884728Z * checking top-level files ... NOTE
+2026-10-21T05:48:37.1885562Z Non-standard file/directory found at top level:
+2026-10-21T05:48:37.1886215Z   ‘AGENTS.md’
+2026-10-21T05:48:37.1891204Z * checking for left-over files ... OK
+2026-10-21T05:48:42.1098290Z * checking foreign function calls ... OK
+2026-10-21T05:48:45.6281266Z * checking R code for possible problems ... NOTE
+2026-10-21T05:48:45.6282546Z with_rate_limit: warning in decorator_label("with_rate_limit", n = n,
+2026-10-21T05:48:45.6283495Z   period = period): partial argument match of 'n' to 'name'
+2026-10-21T05:48:45.6284645Z   (/home/runner/work/fmisc/fmisc/check/fmisc.Rcheck/00_pkg_src/fmisc/R/decorators.R:607-611)
+2026-10-21T05:48:46.1370170Z * checking Rd files ... OK
+2026-10-21T05:48:48.7531785Z * checking line endings in C/C++/Fortran sources/headers ... OK
+2026-10-21T05:48:48.7545177Z * checking line endings in Makefiles ... NOTE
+2026-10-21T05:48:48.7545895Z Found the following Makefile(s) without a final LF:
+2026-10-21T05:48:48.7550253Z   src/Makevars
+2026-10-21T05:48:48.7551182Z Some ‘make’ programs ignore lines not ending in LF.
+2026-10-21T05:48:48.8344471Z * checking compilation flags in Makevars ... OK
+2026-10-21T05:48:54.9291773Z * checking for unstated dependencies in ‘tests’ ... OK
+2026-10-21T05:48:55.1133062Z * checking tests ...
+2026-10-21T05:49:05.3320277Z   Running ‘testthat.R’ [6s/10s]
+2026-10-21T05:49:05.3390760Z  [6s/10s] OK
+2026-10-21T05:49:05.8607959Z * checking for unstated dependencies in vignettes ... OK
+2026-10-21T05:49:06.9564417Z * checking for detritus in the temp directory ... OK
+2026-10-21T05:49:06.9567938Z * DONE
+2026-10-21T05:49:06.9571292Z
+2026-10-21T05:49:06.9571593Z Status: 6 NOTEs
+2026-10-21T05:49:06.9571941Z See
+2026-10-21T05:49:06.9572899Z   ‘/home/runner/work/fmisc/fmisc/check/fmisc.Rcheck/00check.log’
+2026-10-21T05:49:06.9573505Z for details.
+2026-10-21T05:49:06.9576888Z
+2026-10-21T05:49:07.0696238Z ##[end-action id=__r-lib_actions_4.rcmdcheck;outcome=success;conclusion=success;duration_ms=55968]
+2026-10-21T05:49:07.3055306Z Post job cleanup.
+2026-10-21T05:49:07.7323040Z Cleaning up orphan processes

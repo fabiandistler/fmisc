@@ -1,0 +1,19 @@
+2026-10-20T18:53:08.7938729Z ✖ 	0	Styling threw an error.
+2026-10-20T18:53:08.7940255Z ─────────────────────────────────────────
+2026-10-20T18:53:08.7940563Z Please review the changes carefully!
+2026-10-20T18:53:08.8080789Z ##[group]Run if FILES_TO_COMMIT=($(git diff-index --name-only fd5192107889e8ce9e0af78058b5a4c21f5eff3c \
+2026-10-20T18:53:08.8081190Z [36;1mif FILES_TO_COMMIT=($(git diff-index --name-only fd5192107889e8ce9e0af78058b5a4c21f5eff3c \[0m
+2026-10-20T18:53:08.8082354Z [36;1m  git commit ${FILES_TO_COMMIT[*]} -m "Style code (GHA)"[0m
+2026-10-20T18:53:08.8082548Z [36;1m  git pull --ff-only[0m
+2026-10-20T18:53:08.8082691Z [36;1m  git push origin[0m
+2026-10-20T18:53:08.8136016Z shell: /usr/bin/bash -e {0}
+2026-10-20T18:53:08.8138975Z ##[endgroup]
+2026-10-20T18:53:08.8305149Z [chore/prek-hooks 5cd05f6] Style code (GHA)
+2026-10-20T18:53:08.8305608Z  1 file changed, 3 insertions(+), 4 deletions(-)
+2026-10-20T18:53:09.2980675Z From https://github.com/fabiandistler/fmisc
+2026-10-20T18:53:09.2981108Z    fd51921..b546039  chore/prek-hooks -> origin/chore/prek-hooks
+2026-10-20T18:53:09.2986446Z hint: Diverging branches can't be fast-forwarded, you need to either:
+2026-10-20T18:53:09.2988559Z fatal: Not possible to fast-forward, aborting.
+2026-10-20T18:53:09.3001259Z ##[error]Process completed with exit code 128.
+2026-10-20T18:53:09.3144725Z Post job cleanup.
+2026-10-20T18:53:09.4591140Z Cleaning up orphan processes

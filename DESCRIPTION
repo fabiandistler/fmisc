@@ -18,6 +18,8 @@ Imports:
     cli,
     data.table,
     foreach,
+    gert,
+    gh,
     memoise,
     Rcpp,
     stats,
@@ -34,6 +36,7 @@ Suggests:
     parallel,
     doMC,
     testthat (>= 3.0.0),
+    withr,
     yaml
 VignetteBuilder: knitr
 LinkingTo:
