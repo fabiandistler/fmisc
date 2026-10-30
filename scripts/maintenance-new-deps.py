@@ -69,6 +69,13 @@ R_BASE_PACKAGES = {
 PEP508_NAME = re.compile(r"^\s*([A-Za-z0-9](?:[A-Za-z0-9._-]*[A-Za-z0-9])?)")
 
 
+@dataclass(frozen=True)
+class RDependency:
+    field: str
+    package: str
+    constraint: str
+
+
 @dataclass
 class Result:
     ecosystem: str
@@ -158,17 +165,28 @@ def parse_dcf(text: str) -> dict[str, str]:
     return fields
 
 
-def r_deps_description(text: str | None) -> set[str]:
-    if not text:
-        return set()
+def r_dep_entries(text: str) -> list[RDependency]:
+    """One entry per dependency in DESCRIPTION, base packages excluded.
+
+    The constraint is the text inside the parentheses (`>= 1.2.0`), "" when there is none.
+    """
     fields = parse_dcf(text)
-    names = set()
+    entries = []
     for f in R_DEP_FIELDS:
         for entry in fields.get(f, "").split(","):
             name = re.sub(r"\(.*?\)", "", entry).strip()
             if name and name not in R_BASE_PACKAGES:
-                names.add(name)
-    return names
+                constraint = re.search(r"\((.*?)\)", entry)
+                entries.append(
+                    RDependency(f, name, constraint.group(1).strip() if constraint else "")
+                )
+    return entries
+
+
+def r_deps_description(text: str | None) -> set[str]:
+    if not text:
+        return set()
+    return {dep.package for dep in r_dep_entries(text)}
 
 
 def r_remotes(text: str | None) -> set[str]:
