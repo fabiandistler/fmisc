@@ -11,18 +11,69 @@
 # Source: prompt idea by Fabian Distler, 2026-09-01, via skill `idee-zu-artefakt`.
 # Part of: plugin `repo-maintenance`, skill `maintenance-run`, catalog MAINTENANCE.md.
 #
-# Usage:   scripts/maintenance-scan.sh <deps-audit|dead-exports|test-flakiness>
+# Invocation, flags and exit codes: usage() below, or --help.
 
 set -uo pipefail
 
+usage() {
+  cat <<'EOF'
+Usage: scripts/maintenance-scan.sh <deps-audit|dead-exports|test-flakiness>
+Deterministic scanner for the catalog jobs that have tool support. Produces
+raw findings so the agent answers only the open question (breaking-change
+risk, export really dead, nondeterminism intentional?). Works in any
+directory inside the target repo.
+  deps-audit      vulnerable or outdated dependencies (renv::vulns, OSV CRAN, uv, pip-audit)
+  dead-exports    exports with no reference outside the package (NAMESPACE, __all__)
+  test-flakiness  time, randomness, network candidates in tests/ or test/
+  -h, --help      this text
+Examples:
+  scripts/maintenance-scan.sh deps-audit
+  scripts/maintenance-scan.sh test-flakiness
+Exit codes:
+  0  scan ran; test-flakiness without tests/ or test/ notes the skip on stderr
+  2  usage error: no or unknown job
+  3  environment: not a Git repo, or no DESCRIPTION, pyproject.toml or requirements.txt found
+EOF
+}
+
 JOB="${1:-}"
-[ -z "$JOB" ] && { echo "Usage: $0 <deps-audit|dead-exports|test-flakiness>" >&2; exit 2; }
+case "$JOB" in
+  -h | --help)
+    usage
+    exit 0
+    ;;
+  "")
+    echo "No job given. Run with --help." >&2
+    exit 2
+    ;;
+  deps-audit | dead-exports | test-flakiness)
+    ;;
+  *)
+    echo "Unknown job: $JOB (see --help)" >&2
+    echo "security-footguns and dead-code (local) run in the CI gate, not here." >&2
+    exit 2
+    ;;
+esac
+
+# Sibling scripts (maintenance-r-advisories.py), resolved before the cd below.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || {
+  echo "Not a Git repository." >&2
+  exit 3
+}
+cd "$ROOT" || exit 3
 
 has() { command -v "$1" >/dev/null 2>&1; }
 is_r_pkg()  { [ -f DESCRIPTION ]; }
 is_python() { [ -f pyproject.toml ] || [ -f requirements.txt ]; }
 hdr() { printf '\n===== %s =====\n' "$1"; }
 skip() { printf '[skipped] %s\n' "$1"; }
+
+if ! is_r_pkg && ! is_python; then
+  echo "No DESCRIPTION, pyproject.toml or requirements.txt found. Nothing to scan." >&2
+  exit 3
+fi
 
 case "$JOB" in
 
@@ -43,12 +94,15 @@ deps-audit)
       skip "renv.lock or Rscript missing -> renv::vulns()"
     fi
 
-    if has Rscript; then
-      hdr "R: oysteR::audit_description()  [Sonatype OSS Index]"
-      Rscript -e 'if (!requireNamespace("oysteR", quietly = TRUE)) { cat("oysteR not installed\n"); quit(status = 0) }
-                  res <- try(oysteR::audit_description(dir = "."), silent = TRUE)
-                  if (inherits(res, "try-error")) cat("oysteR failed:", conditionMessage(attr(res, "condition")), "\n") else print(res)'
+    # Needs neither R nor renv.lock: DESCRIPTION constraints against the OSV dump.
+    hdr "R: DESCRIPTION constraints vs. OSV CRAN advisories  [R Consortium advisory database]"
+    if has python3 && [ -f "$SCRIPT_DIR/maintenance-r-advisories.py" ] && [ -f "$SCRIPT_DIR/maintenance-new-deps.py" ]; then
+      python3 "$SCRIPT_DIR/maintenance-r-advisories.py" 2>&1 || true
+    else
+      skip "python3, or maintenance-r-advisories.py / maintenance-new-deps.py next to the scanner, missing -> OSV CRAN advisories"
+    fi
 
+    if has Rscript; then
       hdr "R: outdated packages (old.packages)"
       Rscript -e 'op <- old.packages(); if (is.null(op)) cat("none\n") else print(op[, c("Package","Installed","ReposVer"), drop = FALSE])'
     fi
@@ -125,34 +179,35 @@ NOTE
   ;;
 
 test-flakiness)
-  TDIRS=""
-  for d in tests test; do [ -d "$d" ] && TDIRS="$TDIRS $d"; done
-  if [ -z "$TDIRS" ]; then echo "no tests/ or test/ directory found"; exit 0; fi
+  tdirs=()
+  for d in tests test; do [ -d "$d" ] && tdirs+=("$d"); done
+  if [ "${#tdirs[@]}" -eq 0 ]; then
+    skip "no tests/ or test/ directory -> flakiness scan" >&2
+    exit 0
+  fi
+
+  # Vendored Bats libraries (submodules under test/bats/ from the prek-hooks
+  # Bats fragment, or test/test_helper/) are not the repo's tests (#73).
+  vendored_excludes=(--exclude-dir=bats-core --exclude-dir=bats-assert --exclude-dir=bats-support)
 
   hdr "Candidates: time dependency"
-  grep -rnE 'Sys\.time|Sys\.Date|datetime\.now|time\.time|date\.today' $TDIRS 2>/dev/null || echo "none"
+  grep -rnE "${vendored_excludes[@]}" 'Sys\.time|Sys\.Date|datetime\.now|time\.time|date\.today' "${tdirs[@]}" 2>/dev/null || echo "none"
 
   hdr "Candidates: randomness"
-  grep -rnE '\b(sample|runif|rnorm|rbinom|random\.|np\.random|uuid4)\b' $TDIRS 2>/dev/null || echo "none"
+  grep -rnE "${vendored_excludes[@]}" '\b(sample|runif|rnorm|rbinom|random\.|np\.random|uuid4|import[[:space:]]+random)\b' "${tdirs[@]}" 2>/dev/null || echo "none"
   echo "--- Cross-check: seeds that are set ---"
-  grep -rnE 'set\.seed|local_seed|random\.seed|seed *=' $TDIRS 2>/dev/null || echo "none"
+  grep -rnE "${vendored_excludes[@]}" 'set\.seed|local_seed|random\.seed|seed *=' "${tdirs[@]}" 2>/dev/null || echo "none"
 
   hdr "Candidates: network dependency"
-  grep -rnE 'https?://|httr|curl|requests\.|urllib|httpx' $TDIRS 2>/dev/null || echo "none"
+  grep -rnE "${vendored_excludes[@]}" 'https?://|httr|curl|requests\.|urllib|httpx' "${tdirs[@]}" 2>/dev/null || echo "none"
   echo "--- Cross-check: mocking/fixtures ---"
-  grep -rnE 'httptest|vcr|webmock|responses|respx|mock' $TDIRS 2>/dev/null || echo "none"
+  grep -rnE "${vendored_excludes[@]}" 'httptest|vcr|webmock|responses|respx|mock' "${tdirs[@]}" 2>/dev/null || echo "none"
 
   hdr "Candidates: sleep / timing"
-  grep -rnE 'Sys\.sleep|time\.sleep' $TDIRS 2>/dev/null || echo "none"
+  grep -rnE "${vendored_excludes[@]}" 'Sys\.sleep|time\.sleep' "${tdirs[@]}" 2>/dev/null || echo "none"
 
   hdr "Rule for the fix"
   echo "Replace only the source of nondeterminism (withr::local_seed, fixtures, mocks)."
   echo "Assertions stay unchanged. A test that checks something different afterwards is not a fix."
-  ;;
-
-*)
-  echo "Unknown job: $JOB" >&2
-  echo "security-footguns and dead-code (local) run in the CI gate, not here." >&2
-  exit 2
   ;;
 esac
