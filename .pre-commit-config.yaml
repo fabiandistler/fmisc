@@ -18,6 +18,20 @@ repos:
       - id: check-added-large-files
       - id: check-merge-conflict
 
+  # Agent context budget, included for every project type: blocks staged
+  # text files over 5000 tokens (tokens = bytes / 4) and prints how to split
+  # them. setup-hooks.sh copies the script into scripts/hooks/; lockfiles,
+  # minified bundles and generated or vendored files (generator banner, or
+  # linguist-generated / linguist-vendored in .gitattributes) are skipped.
+  # bash runs it, so a lost executable bit does not break the hook.
+  - repo: local
+    hooks:
+      - id: check-file-tokens
+        name: files stay under 5000 tokens (bytes / 4)
+        entry: bash scripts/hooks/check-file-tokens.sh
+        language: system
+        types: [text]
+
   # R formatting via air. Single binary, needs neither R nor renv.
   # Formats only .R/.r; since air 0.9, .qmd and default excludes such as
   # cpp11.R are skipped even when the hook passes them.
