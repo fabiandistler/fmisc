@@ -87,15 +87,17 @@ coverage:
 	$(R) -e "covr::package_coverage()"
 	$(R) -e "covr::report()"
 
-# Build pkgdown website
+# Build pkgdown website. The site goes to _site/, whatever _pkgdown.yml says:
+# docs/ is kept for hand-written documentation, and pkgdown refuses to clean a
+# docs/ it did not build.
 site:
 	@echo "Building pkgdown website..."
-	$(R) -e "pkgdown::build_site()"
+	$(R) -e "pkgdown::build_site(override = list(destination = '_site'))"
 
 # Preview pkgdown website
 site-preview: site
 	@echo "Opening pkgdown website..."
-	$(R) -e "pkgdown::preview_site()"
+	$(R) -e "pkgdown::preview_site(pkgdown::as_pkgdown(override = list(destination = '_site')))"
 
 # Lint code
 lint:
@@ -123,7 +125,7 @@ clean:
 	@rm -rf $(PKGNAME).Rcheck/
 	@rm -f $(PKGNAME)_*.tar.gz
 	@rm -rf man/*.Rd
-	@rm -rf docs/
+	@rm -rf _site/
 	@rm -rf src/*.o src/*.so src/*.dll
 	@find . -name '.Rhistory' -delete
 	@find . -name '.RData' -delete
@@ -143,7 +145,7 @@ setup-ci:
 	$(R) -e "usethis::use_github_actions()"
 	$(R) -e "usethis::use_readme_rmd()"
 	$(R) -e "usethis::use_news_md()"
-	$(R) -e "usethis::use_pkgdown()"
+	$(R) -e "usethis::use_pkgdown(destdir = '_site')"
 
 # Run spell check
 spellcheck:
