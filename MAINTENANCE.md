@@ -10,9 +10,9 @@ Review date: 2026-12-01 - see sunset condition below.
 
 | Field | Value |
 |---|---|
-| Last run | *(none yet)* |
-| Last job | - |
-| Next due job | `deps-audit` (no job has run yet -> catalog order) |
+| Last run | 2026-11-01 |
+| Last job | `deps-audit` |
+| Next due job | `doc-drift` (never run -> catalog order) |
 | Open maintenance PRs | - |
 
 ## Rules
@@ -54,7 +54,7 @@ and the triage half of `deps-audit`.
 
 | # | Job | Scanner | Output | Cooldown | Last run |
 |---|---|---|---|---|---|
-| 1 | `deps-audit` | yes | Report | 7d | - |
+| 1 | `deps-audit` | yes | Report | 7d | 2026-11-01 |
 | 2 | `doc-drift` | no | PR | 14d | - |
 | 3 | `dead-exports` | yes | PR | 14d | - |
 | 4 | `error-edges` | no | Report | 14d | - |
@@ -87,7 +87,7 @@ Open question per job (details in the skill under `references/jobs.md`):
 
 | Date | Job | Output | PR |
 |---|---|---|---|
-| - | - | - | - |
+| 2026-11-01 | `deps-audit` | report | (this PR) |
 
 ## Sunset condition
 
